@@ -1,7 +1,7 @@
 (function() {
   var JsonRenderer, OrderLog;
 
-  OrderLog = GLOBAL.db.OrderLog;
+  OrderLog = global.db.OrderLog;
 
   JsonRenderer = require("../lib/json_renderer");
 

@@ -1,7 +1,7 @@
-Wallet = GLOBAL.db.Wallet
-Transaction = GLOBAL.db.Transaction
-Payment = GLOBAL.db.Payment
-MarketStats = GLOBAL.db.MarketStats
+Wallet = global.db.Wallet
+Transaction = global.db.Transaction
+Payment = global.db.Payment
+MarketStats = global.db.MarketStats
 MarketHelper = require "./market_helper"
 FraudHelper = require "./fraud_helper"
 JsonRenderer = require "./json_renderer"
@@ -9,7 +9,7 @@ ClientSocket = require "./client_socket"
 math = require "./math"
 usersSocket = new ClientSocket
   namespace: "users"
-  redis: GLOBAL.appConfig().redis
+  redis: global.appConfig().redis
 
 TransactionHelper =
 
@@ -25,7 +25,7 @@ TransactionHelper =
       return callback "You can't withdraw to the same address."  if data.address is wallet.address
       data.currency = wallet.currency
       data.fee = wallet.withdrawal_fee
-      GLOBAL.db.sequelize.transaction (transaction)->
+      global.db.sequelize.transaction (transaction)->
         Payment.create(data, {transaction: transaction}).complete (err, pm)->
           if err
             console.error err
@@ -70,7 +70,7 @@ TransactionHelper =
     Wallet.findUserWalletByCurrency payment.user_id, payment.currency, (err, wallet)->
       return callback err  if err or not wallet
       totalWithdrawalAmount = parseInt math.add(MarketHelper.toBignum(wallet.withdrawal_fee), MarketHelper.toBignum(payment.amount))
-      GLOBAL.db.sequelize.transaction (transaction)->
+      global.db.sequelize.transaction (transaction)->
         wallet.addBalance totalWithdrawalAmount, transaction, (err, wallet)->
           if err
             console.error err
@@ -89,7 +89,7 @@ TransactionHelper =
                 eventData: JsonRenderer.wallet wallet
 
   pay: (payment, callback = ()->)->
-    GLOBAL.wallets[payment.currency].sendToAddress payment.address, payment.getFloat("amount"), (err, response = "")->
+    global.wallets[payment.currency].sendToAddress payment.address, payment.getFloat("amount"), (err, response = "")->
       console.error "Could not withdraw to #{payment.address} #{payment.amount} BTC", err  if err
       return payment.errored err, callback  if err
       payment.process response, callback
@@ -108,8 +108,8 @@ TransactionHelper =
               type: "transaction-update"
               user_id: updatedTransaction.user_id
               eventData: JsonRenderer.transaction updatedTransaction
-            return callback()  if category isnt "receive" or updatedTransaction.balance_loaded or not GLOBAL.wallets[currency].isBalanceConfirmed(updatedTransaction.confirmations)
-            GLOBAL.db.sequelize.transaction (mysqlTransaction)->
+            return callback()  if category isnt "receive" or updatedTransaction.balance_loaded or not global.wallets[currency].isBalanceConfirmed(updatedTransaction.confirmations)
+            global.db.sequelize.transaction (mysqlTransaction)->
               wallet.addBalance updatedTransaction.amount, mysqlTransaction, (err)->
                 if err
                   return mysqlTransaction.rollback().success ()->

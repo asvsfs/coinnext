@@ -1,7 +1,7 @@
 (function() {
   var MarketHelper, WalletHealth, restify;
 
-  WalletHealth = GLOBAL.db.WalletHealth;
+  WalletHealth = global.db.WalletHealth;
 
   MarketHelper = require("../../lib/market_helper");
 
@@ -12,10 +12,10 @@
       var account, currency;
       account = req.params.account;
       currency = req.params.currency;
-      if (!GLOBAL.wallets[currency]) {
+      if (!global.wallets[currency]) {
         return next(new restify.ConflictError("Wrong Currency."));
       }
-      return GLOBAL.wallets[currency].generateAddress(account, function(err, address) {
+      return global.wallets[currency].generateAddress(account, function(err, address) {
         if (err) {
           console.error(err);
         }
@@ -31,10 +31,10 @@
     app.get("/wallet_balance/:currency", function(req, res, next) {
       var currency;
       currency = req.params.currency;
-      if (!GLOBAL.wallets[currency]) {
+      if (!global.wallets[currency]) {
         return next(new restify.ConflictError("Wallet down or does not exist."));
       }
-      return GLOBAL.wallets[currency].getBankBalance(function(err, balance) {
+      return global.wallets[currency].getBankBalance(function(err, balance) {
         if (err) {
           console.error(err);
         }
@@ -50,10 +50,10 @@
     app.get("/wallet_info/:currency", function(req, res, next) {
       var currency;
       currency = req.params.currency;
-      if (!GLOBAL.wallets[currency]) {
+      if (!global.wallets[currency]) {
         return next(new restify.ConflictError("Wallet down or does not exist."));
       }
-      return GLOBAL.wallets[currency].getInfo(function(err, info) {
+      return global.wallets[currency].getInfo(function(err, info) {
         if (err) {
           console.error(err);
         }
@@ -63,17 +63,17 @@
         return res.send({
           currency: currency,
           info: info,
-          address: GLOBAL.appConfig().wallets[currency.toLowerCase()].wallet.address
+          address: global.appConfig().wallets[currency.toLowerCase()].wallet.address
         });
       });
     });
     return app.get("/wallet_health/:currency", function(req, res, next) {
       var currency, wallet, walletInfo;
       currency = req.params.currency;
-      if (!GLOBAL.wallets[currency]) {
+      if (!global.wallets[currency]) {
         return next(new restify.ConflictError("Wallet down or does not exist."));
       }
-      wallet = GLOBAL.wallets[currency];
+      wallet = global.wallets[currency];
       walletInfo = {};
       return wallet.getInfo(function(err, info) {
         if (err || !info) {

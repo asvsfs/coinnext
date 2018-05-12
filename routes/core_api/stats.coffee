@@ -1,5 +1,5 @@
-OrderLog = GLOBAL.db.OrderLog
-TradeStats = GLOBAL.db.TradeStats
+OrderLog = global.db.OrderLog
+TradeStats = global.db.TradeStats
 MarketHelper = require "../../lib/market_helper"
 math = require "../../lib/math"
 _ = require "underscore"

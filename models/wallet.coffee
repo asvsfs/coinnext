@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) ->
           MarketHelper.fromBigint @[attribute]
 
         generateAddress: (callback = ()->)->
-          GLOBAL.coreAPIClient.send "create_account", [@account, @currency], (err, res, body)=>
+          global.coreAPIClient.send "create_account", [@account, @currency], (err, res, body)=>
             if err
               console.error err
               return callback err, res, body

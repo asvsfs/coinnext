@@ -1,21 +1,21 @@
 (function() {
   var AuthStats, JsonRenderer, MarketHelper, MarketStats, Order, Payment, Transaction, User, UserToken, Wallet, jsonBeautifier, _;
 
-  Wallet = GLOBAL.db.Wallet;
+  Wallet = global.db.Wallet;
 
-  User = GLOBAL.db.User;
+  User = global.db.User;
 
-  Transaction = GLOBAL.db.Transaction;
+  Transaction = global.db.Transaction;
 
-  Payment = GLOBAL.db.Payment;
+  Payment = global.db.Payment;
 
-  Order = GLOBAL.db.Order;
+  Order = global.db.Order;
 
-  AuthStats = GLOBAL.db.AuthStats;
+  AuthStats = global.db.AuthStats;
 
-  UserToken = GLOBAL.db.UserToken;
+  UserToken = global.db.UserToken;
 
-  MarketStats = GLOBAL.db.MarketStats;
+  MarketStats = global.db.MarketStats;
 
   MarketHelper = require("../lib/market_helper");
 
@@ -193,7 +193,7 @@
         offset: from,
         include: [
           {
-            model: GLOBAL.db.User,
+            model: global.db.User,
             attributes: ["username", "email"]
           }
         ]
@@ -231,7 +231,7 @@
       query = {
         include: [
           {
-            model: GLOBAL.db.PaymentLog
+            model: global.db.PaymentLog
           }
         ],
         order: [["created_at", "DESC"]],
@@ -266,7 +266,7 @@
     app.put("/administratie/pay/:id", function(req, res) {
       var id;
       id = req.params.id;
-      return GLOBAL.coreAPIClient.send("process_payment", [id], (function(_this) {
+      return global.coreAPIClient.send("process_payment", [id], (function(_this) {
         return function(err, res2, body) {
           if (err) {
             return JsonRenderer.error(err, res);
@@ -290,7 +290,7 @@
     app.del("/administratie/payment/:id", function(req, res) {
       var id;
       id = req.params.id;
-      return GLOBAL.coreAPIClient.send("cancel_payment", [id], (function(_this) {
+      return global.coreAPIClient.send("cancel_payment", [id], (function(_this) {
         return function(err, res2, body) {
           if (err) {
             return JsonRenderer.error(err, res);
@@ -309,7 +309,7 @@
     app.get("/administratie/banksaldo/:currency", function(req, res) {
       var currency;
       currency = req.params.currency;
-      return GLOBAL.coreAPIClient.send("wallet_balance", [currency], (function(_this) {
+      return global.coreAPIClient.send("wallet_balance", [currency], (function(_this) {
         return function(err, res2, body) {
           if (err) {
             return JsonRenderer.error(err, res);
@@ -328,7 +328,7 @@
     app.post("/administratie/wallet_info", function(req, res) {
       var currency;
       currency = req.body.currency;
-      return GLOBAL.coreAPIClient.send("wallet_info", [currency], (function(_this) {
+      return global.coreAPIClient.send("wallet_info", [currency], (function(_this) {
         return function(err, res2, body) {
           if (err) {
             return JsonRenderer.error(err, res);

@@ -1,7 +1,7 @@
 (function() {
   var Chat, JsonRenderer;
 
-  Chat = GLOBAL.db.Chat;
+  Chat = global.db.Chat;
 
   JsonRenderer = require("../lib/json_renderer");
 

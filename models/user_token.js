@@ -148,7 +148,7 @@
           data = {
             user_id: userId,
             type: "email_confirmation",
-            token: crypto.createHash("sha256").update("email_confirmations-" + userId + "-" + seed + "-" + (GLOBAL.appConfig().salt) + "-" + (Date.now()), "utf8").digest("hex")
+            token: crypto.createHash("sha256").update("email_confirmations-" + userId + "-" + seed + "-" + (global.appConfig().salt) + "-" + (Date.now()), "utf8").digest("hex")
           };
           return UserToken.create(data).complete(callback);
         },
@@ -160,7 +160,7 @@
           data = {
             user_id: userId,
             type: "change_password",
-            token: crypto.createHash("sha256").update("change_password-" + userId + "-" + seed + "-" + (GLOBAL.appConfig().salt) + "-" + (Date.now()), "utf8").digest("hex")
+            token: crypto.createHash("sha256").update("change_password-" + userId + "-" + seed + "-" + (global.appConfig().salt) + "-" + (Date.now()), "utf8").digest("hex")
           };
           return UserToken.create(data).complete(callback);
         },

@@ -12,10 +12,10 @@ var _ = require("underscore");
 var environment = process.env.NODE_ENV || 'development';
 
 // Configure globals
-GLOBAL.appConfig = require("./configs/config");
-GLOBAL.passport = require('passport');
-GLOBAL.coreAPIClient = new CoreAPIClient({host: GLOBAL.appConfig().wallets_host});
-GLOBAL.db = require('./models/index');
+global.appConfig = require("./configs/config");
+global.passport = require('passport');
+global.coreAPIClient = new CoreAPIClient({host: global.appConfig().wallets_host});
+global.db = require('./models/index');
 
 require('./lib/admin_auth');
 
@@ -35,12 +35,12 @@ app.configure(function () {
   app.use(express.compress());
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser(GLOBAL.appConfig().session.admin.cookie_secret));
+  app.use(express.cookieParser(global.appConfig().session.admin.cookie_secret));
   app.use(express.session({
-    key: GLOBAL.appConfig().session.admin.session_key,
-    store: new RedisStore(GLOBAL.appConfig().redis),
+    key: global.appConfig().session.admin.session_key,
+    store: new RedisStore(global.appConfig().redis),
     proxy: true,
-    cookie: GLOBAL.appConfig().session.admin.cookie
+    cookie: global.appConfig().session.admin.cookie
   }));
   if (environment !== "test") {
     app.use(express.csrf());

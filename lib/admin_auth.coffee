@@ -1,5 +1,5 @@
 LocalStrategy = require('passport-local').Strategy
-AdminUser = GLOBAL.db.AdminUser
+AdminUser = global.db.AdminUser
 strategyConfig =
   usernameField: "email"
   passwordField: "password"

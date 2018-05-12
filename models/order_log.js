@@ -91,7 +91,7 @@
             },
             include: [
               {
-                model: GLOBAL.db.Order,
+                model: global.db.Order,
                 attributes: ["buy_currency", "sell_currency"],
                 where: {
                   action: MarketHelper.getOrderAction(action)
@@ -113,7 +113,7 @@
             },
             include: [
               {
-                model: GLOBAL.db.Order,
+                model: global.db.Order,
                 attributes: ["buy_currency", "sell_currency", "action"],
                 where: {}
               }

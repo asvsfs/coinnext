@@ -6,10 +6,10 @@ var restify = require('restify');
 var environment = process.env.NODE_ENV || 'development';
 
 // Configure globals
-GLOBAL.appConfig = require("./configs/config");
-GLOBAL.wallets = require('./configs/wallets');
-GLOBAL.db = require('./models/index');
-GLOBAL.queue = require('./lib/queue/index');
+global.appConfig = require("./configs/config");
+global.wallets = require('./configs/wallets');
+global.db = require('./models/index');
+global.queue = require('./lib/queue/index');
 
 // Setup express
 var server = restify.createServer();

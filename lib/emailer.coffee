@@ -19,17 +19,17 @@ class Emailer
     attachments = @getAttachments(html)
     messageData =
       to: @options.to.email
-      from: GLOBAL.appConfig().emailer.from
+      from: global.appConfig().emailer.from
       subject: @options.subject
       html: html
       generateTextFromHTML: true
       attachments: attachments
     transport = @getTransport()
-    return callback()  if not GLOBAL.appConfig().emailer.enabled
+    return callback()  if not global.appConfig().emailer.enabled
     transport.sendMail messageData, callback
 
   getTransport: ()->
-    emailer.createTransport "SMTP", GLOBAL.appConfig().emailer.transport
+    emailer.createTransport "SMTP", global.appConfig().emailer.transport
 
   getHtml: (templateName, data)->
     templatePath = "./views/emails/#{templateName}.html"
@@ -43,8 +43,8 @@ class Emailer
     attachments
 
   setUrls: ()->
-    @data.site_url = (GLOBAL.appConfig().emailer.host or @data.site_url)
-    @data.img_path = (GLOBAL.appConfig().assets_host or @data.site_url) + "/img/email"
-    @data.img_version = if GLOBAL.appConfig().assets_key then "?v=#{GLOBAL.appConfig().assets_key}" else ""
+    @data.site_url = (global.appConfig().emailer.host or @data.site_url)
+    @data.img_path = (global.appConfig().assets_host or @data.site_url) + "/img/email"
+    @data.img_version = if global.appConfig().assets_key then "?v=#{global.appConfig().assets_key}" else ""
 
 exports = module.exports = Emailer

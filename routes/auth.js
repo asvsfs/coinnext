@@ -3,11 +3,11 @@
 
   reCaptcha = require("recaptcha-async");
 
-  User = GLOBAL.db.User;
+  User = global.db.User;
 
-  UserToken = GLOBAL.db.UserToken;
+  UserToken = global.db.UserToken;
 
-  AuthStats = GLOBAL.db.AuthStats;
+  AuthStats = global.db.AuthStats;
 
   JsonRenderer = require("../lib/json_renderer");
 
@@ -49,7 +49,7 @@
         title: "Send Password - Coinnext.com",
         errors: errors,
         success: success,
-        recaptchaPublicKey: GLOBAL.appConfig().recaptcha.public_key
+        recaptchaPublicKey: global.appConfig().recaptcha.public_key
       });
     });
     app.post("/send-password", function(req, res) {
@@ -76,7 +76,7 @@
           });
         }
       });
-      return recaptcha.checkAnswer(GLOBAL.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field);
+      return recaptcha.checkAnswer(global.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field);
     });
     app.get("/change-password/:token", function(req, res) {
       var oldCsrf, oldStagingAuth, token;

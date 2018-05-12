@@ -285,7 +285,7 @@
           if (options.include_logs) {
             query.include = [
               {
-                model: GLOBAL.db.OrderLog,
+                model: global.db.OrderLog,
                 required: false,
                 attributes: ["matched_amount", "result_amount", "unit_price"],
                 where: {}
@@ -398,7 +398,7 @@
           if (callback == null) {
             callback = function() {};
           }
-          return GLOBAL.coreAPIClient.sendWithData("publish_order", this.values, (function(_this) {
+          return global.coreAPIClient.sendWithData("publish_order", this.values, (function(_this) {
             return function(err, res, body) {
               if (err) {
                 console.error(err);
@@ -416,7 +416,7 @@
           if (callback == null) {
             callback = function() {};
           }
-          return GLOBAL.coreAPIClient.send("cancel_order", [this.id], (function(_this) {
+          return global.coreAPIClient.send("cancel_order", [this.id], (function(_this) {
             return function(err, res, body) {
               if (err) {
                 console.error(err);

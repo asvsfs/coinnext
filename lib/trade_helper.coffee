@@ -1,17 +1,17 @@
-Order = GLOBAL.db.Order
-OrderLog = GLOBAL.db.OrderLog
-Wallet = GLOBAL.db.Wallet
-MarketStats = GLOBAL.db.MarketStats
+Order = global.db.Order
+OrderLog = global.db.OrderLog
+Wallet = global.db.Wallet
+MarketStats = global.db.MarketStats
 MarketHelper = require "./market_helper"
 JsonRenderer = require "./json_renderer"
 MarketHelper = require "./market_helper"
 ClientSocket = require "./client_socket"
 orderSocket = new ClientSocket
   namespace: "orders"
-  redis: GLOBAL.appConfig().redis
+  redis: global.appConfig().redis
 usersSocket = new ClientSocket
   namespace: "users"
-  redis: GLOBAL.appConfig().redis
+  redis: global.appConfig().redis
 math = require "./math"
 
 TradeHelper =
@@ -23,7 +23,7 @@ TradeHelper =
       return callback "Wallet #{data.buy_currency} does not exist."  if err or not buyWallet
       Wallet.findOrCreateUserWalletByCurrency data.user_id, data.sell_currency, (err, wallet)->
         return callback "Wallet #{data.sell_currency} does not exist."  if err or not wallet
-        GLOBAL.db.sequelize.transaction (transaction)->
+        global.db.sequelize.transaction (transaction)->
           wallet.holdBalance holdBalance, transaction, (err, wallet)->
             if err or not wallet
               console.error err
@@ -60,7 +60,7 @@ TradeHelper =
       return callback "Could not find order to cancel #{orderId} - #{err}"  if err
       return callback "Could not find order to cancel #{orderId}"  if not order
       Wallet.findUserWalletByCurrency order.user_id, order.sell_currency, (err, wallet)->
-        GLOBAL.db.sequelize.transaction (transaction)->
+        global.db.sequelize.transaction (transaction)->
           wallet.holdBalance -order.left_hold_balance, transaction, (err, wallet)->
             if err or not wallet
               return transaction.rollback().success ()->
@@ -90,7 +90,7 @@ TradeHelper =
   matchOrders: (matchedData, callback)->
     delete matchedData[0].id
     delete matchedData[1].id
-    GLOBAL.db.sequelize.transaction (transaction)->
+    global.db.sequelize.transaction (transaction)->
       Order.findByIdWithTransaction matchedData[0].order_id, transaction, (err, orderToMatch)->
         return callback "Wrong order to complete #{matchedData[0].order_id} - #{err}"  if not orderToMatch or err or orderToMatch.status is "completed"
         Order.findByIdWithTransaction matchedData[1].order_id, transaction, (err, matchingOrder)->

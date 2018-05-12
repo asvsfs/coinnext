@@ -182,7 +182,7 @@ module.exports = (sequelize, DataTypes) ->
           query.where.deleted_at = null  if not options.include_deleted
           if options.include_logs
             query.include = [
-              model: GLOBAL.db.OrderLog
+              model: global.db.OrderLog
               required: false
               attributes: ["matched_amount", "result_amount", "unit_price"]
               where: {}
@@ -248,7 +248,7 @@ module.exports = (sequelize, DataTypes) ->
           not @in_queue and @status isnt "completed"
 
         publish: (callback = ()->)->
-          GLOBAL.coreAPIClient.sendWithData "publish_order", @values, (err, res, body)=>
+          global.coreAPIClient.sendWithData "publish_order", @values, (err, res, body)=>
             if err
               console.error err
               return callback err, res, body
@@ -257,7 +257,7 @@ module.exports = (sequelize, DataTypes) ->
             callback body
 
         cancel: (callback = ()->)->
-          GLOBAL.coreAPIClient.send "cancel_order", [@id], (err, res, body)=>
+          global.coreAPIClient.send "cancel_order", [@id], (err, res, body)=>
             if err
               console.error err
               return callback err, res, body

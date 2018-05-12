@@ -8,9 +8,9 @@ walletsEngine = require "./../../../core_api"
 request = require "supertest"
 
 beforeEach (done)->
-  GLOBAL.db.sequelize.sync({force: true}).complete ()->
-    GLOBAL.db.sequelize.query("TRUNCATE TABLE #{GLOBAL.db.MarketStats.tableName}").complete ()->
-      GLOBAL.db.MarketStats.bulkCreate(marketStats).complete ()->
+  global.db.sequelize.sync({force: true}).complete ()->
+    global.db.sequelize.query("TRUNCATE TABLE #{global.db.MarketStats.tableName}").complete ()->
+      global.db.MarketStats.bulkCreate(marketStats).complete ()->
         done()
 
 describe "Orders Routes", ->
@@ -25,7 +25,7 @@ describe "Orders Routes", ->
 
     describe "when the user is not logged in", ()->
       it "returns 409", (done)->
-        request(GLOBAL.appConfig().app_host)
+        request(global.appConfig().app_host)
         .post("/orders")
         .send(orderData)
         .expect(409)
@@ -35,7 +35,7 @@ describe "Orders Routes", ->
       describe "when the user is not verified", ()->
         it "returns 409", (done)->
           auth.login {email_verified: false}, (err, cookie)->
-            request(GLOBAL.appConfig().app_host)
+            request(global.appConfig().app_host)
             .post("/orders")
             .set("cookie", cookie)
             .send(orderData)
@@ -46,7 +46,7 @@ describe "Orders Routes", ->
         describe "when the wallet doesn't have enough funds", ()->
           it "returns 409", (done)->
             auth.login (err, cookie)->
-              request(GLOBAL.appConfig().app_host)
+              request(global.appConfig().app_host)
               .post("/orders")
               .set("cookie", cookie)
               .send(orderData)
@@ -56,13 +56,13 @@ describe "Orders Routes", ->
         describe "when the wallet has enough funds", ()->
           it "returns 200 and the new order", (done)->
             auth.login (err, cookie, user)->
-              GLOBAL.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
+              global.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
                 wallet.addBalance MarketHelper.toBigint(0.05), null, ()->
                   resultData =
                     id: 1, type: 'limit', action: 'buy', buy_currency: 'LTC', sell_currency: 'BTC',
                     amount: 5, matched_amount: 0, result_amount: 0, fee: 0, unit_price: 0.01, status: 'open',
                     in_queue: true, published: false
-                  request(GLOBAL.appConfig().app_host)
+                  request(global.appConfig().app_host)
                   .post("/orders")
                   .set("cookie", cookie)
                   .send(orderData)
@@ -75,53 +75,53 @@ describe "Orders Routes", ->
 
           it "puts the balance on hold", (done)->
             auth.login (err, cookie, user)->
-              GLOBAL.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
+              global.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
                 wallet.addBalance MarketHelper.toBigint(0.05), null, ()->
-                  request(GLOBAL.appConfig().app_host)
+                  request(global.appConfig().app_host)
                   .post("/orders")
                   .set("cookie", cookie)
                   .send(orderData)
                   .end (err, res)->
-                    GLOBAL.db.Wallet.findUserWalletByCurrency user.id, "BTC", (err, wallet)->
+                    global.db.Wallet.findUserWalletByCurrency user.id, "BTC", (err, wallet)->
                       wallet.hold_balance.should.eql MarketHelper.toBigint(0.05)
                       done()
 
           it "decreases the balance", (done)->
             auth.login (err, cookie, user)->
-              GLOBAL.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
+              global.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
                 wallet.addBalance MarketHelper.toBigint(0.05), null, ()->
-                  request(GLOBAL.appConfig().app_host)
+                  request(global.appConfig().app_host)
                   .post("/orders")
                   .set("cookie", cookie)
                   .send(orderData)
                   .end (err, res)->
-                    GLOBAL.db.Wallet.findUserWalletByCurrency user.id, "BTC", (err, wallet)->
+                    global.db.Wallet.findUserWalletByCurrency user.id, "BTC", (err, wallet)->
                       wallet.balance.should.eql 0
                       done()
 
           xit "publishes a order", (done)->
             auth.login (err, cookie, user)->
-              GLOBAL.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
+              global.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
                 wallet.addBalance MarketHelper.toBigint(0.05), null, ()->
-                  request(GLOBAL.appConfig().app_host)
+                  request(global.appConfig().app_host)
                   .post("/orders")
                   .set("cookie", cookie)
                   .send(orderData)
                   .end (err, res)->
-                    GLOBAL.db.Order.find(1).complete (err, order)->
+                    global.db.Order.find(1).complete (err, order)->
                       order.published.should.eql true
                       done()
 
           it "opens the order", (done)->
             auth.login (err, cookie, user)->
-              GLOBAL.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
+              global.db.Wallet.findOrCreateUserWalletByCurrency user.id, "BTC", (err, wallet)->
                 wallet.addBalance MarketHelper.toBigint(0.05), null, ()->
-                  request(GLOBAL.appConfig().app_host)
+                  request(global.appConfig().app_host)
                   .post("/orders")
                   .set("cookie", cookie)
                   .send(orderData)
                   .end (err, res)->
-                    GLOBAL.db.Order.find(1).complete (err, order)->
+                    global.db.Order.find(1).complete (err, order)->
                       order.status.should.eql "open"
                       done()
 

@@ -11,8 +11,8 @@ describe "FraudHelper", ->
   describe "checkWalletBalance", ()->
     describe "when the current balance matches and the hold balance matches", ()->
       beforeEach (done)->
-        GLOBAL.db.sequelize.sync({force: true}).complete ()->
-          GLOBAL.db.Wallet.create({id: 1, user_id: 1, balance: MarketHelper.toBigint(27), hold_balance: MarketHelper.toBigint(45), currency: "LTC"}).success ()->
+        global.db.sequelize.sync({force: true}).complete ()->
+          global.db.Wallet.create({id: 1, user_id: 1, balance: MarketHelper.toBigint(27), hold_balance: MarketHelper.toBigint(45), currency: "LTC"}).success ()->
             walletTransactions = [
               {wallet_id: 1, user_id: 1, amount: MarketHelper.toBigint(200), category: "receive", balance_loaded: false}
               {wallet_id: 1, user_id: 1, amount: MarketHelper.toBigint(20), category: "receive", balance_loaded: true}
@@ -35,10 +35,10 @@ describe "FraudHelper", ->
               {order_id: 2, matched_amount: MarketHelper.toBigint(2), result_amount: MarketHelper.toBigint(2), unit_price: MarketHelper.toBigint(0.1), status: "completed"}
               {order_id: 3, matched_amount: MarketHelper.toBigint(15), result_amount: MarketHelper.toBigint(1.5), unit_price: MarketHelper.toBigint(0.1), status: "partiallyCompleted"}
             ]
-            GLOBAL.db.Transaction.bulkCreate(walletTransactions).success ()->
-              GLOBAL.db.Payment.bulkCreate(walletPayments).success ()->
-                GLOBAL.db.Order.bulkCreate(orders).success ()->
-                  GLOBAL.db.OrderLog.bulkCreate(orderLogs).success ()->
+            global.db.Transaction.bulkCreate(walletTransactions).success ()->
+              global.db.Payment.bulkCreate(walletPayments).success ()->
+                global.db.Order.bulkCreate(orders).success ()->
+                  global.db.OrderLog.bulkCreate(orderLogs).success ()->
                     done()
 
       it "returns the balance difference between the deposits, wihdrawals and orders", (done)->
@@ -58,8 +58,8 @@ describe "FraudHelper", ->
 
     describe "when the current balance does not match", ()->
       beforeEach (done)->
-        GLOBAL.db.sequelize.sync({force: true}).complete ()->
-          GLOBAL.db.Wallet.create({id: 1, user_id: 1, balance: MarketHelper.toBigint(2.6), hold_balance: MarketHelper.toBigint(0.2), currency: "BTC"}).success ()->
+        global.db.sequelize.sync({force: true}).complete ()->
+          global.db.Wallet.create({id: 1, user_id: 1, balance: MarketHelper.toBigint(2.6), hold_balance: MarketHelper.toBigint(0.2), currency: "BTC"}).success ()->
             walletTransactions = [
               {wallet_id: 1, user_id: 1, amount: MarketHelper.toBigint(0.3), category: "receive", balance_loaded: false}
               {wallet_id: 1, user_id: 1, amount: MarketHelper.toBigint(0.5), category: "receive", balance_loaded: true}
@@ -82,10 +82,10 @@ describe "FraudHelper", ->
               {order_id: 2, matched_amount: MarketHelper.toBigint(2), result_amount: MarketHelper.toBigint(2), unit_price: MarketHelper.toBigint(0.1), status: "completed"}
               {order_id: 3, matched_amount: MarketHelper.toBigint(15), result_amount: MarketHelper.toBigint(1.5), unit_price: MarketHelper.toBigint(0.1), status: "partiallyCompleted"}
             ]
-            GLOBAL.db.Transaction.bulkCreate(walletTransactions).success ()->
-              GLOBAL.db.Payment.bulkCreate(walletPayments).success ()->
-                GLOBAL.db.Order.bulkCreate(orders).success ()->
-                  GLOBAL.db.OrderLog.bulkCreate(orderLogs).success ()->
+            global.db.Transaction.bulkCreate(walletTransactions).success ()->
+              global.db.Payment.bulkCreate(walletPayments).success ()->
+                global.db.Order.bulkCreate(orders).success ()->
+                  global.db.OrderLog.bulkCreate(orderLogs).success ()->
                     done()
 
       it "returns the balance difference between the deposits, wihdrawals and orders", (done)->
@@ -105,8 +105,8 @@ describe "FraudHelper", ->
 
     describe "when there is a partiallyCompleted deleted order", ()->
       beforeEach (done)->
-        GLOBAL.db.sequelize.sync({force: true}).complete ()->
-          GLOBAL.db.Wallet.create({id: 1, user_id: 1, balance: MarketHelper.toBigint(27), hold_balance: MarketHelper.toBigint(45), currency: "LTC"}).success ()->
+        global.db.sequelize.sync({force: true}).complete ()->
+          global.db.Wallet.create({id: 1, user_id: 1, balance: MarketHelper.toBigint(27), hold_balance: MarketHelper.toBigint(45), currency: "LTC"}).success ()->
             walletTransactions = [
               {wallet_id: 1, user_id: 1, amount: MarketHelper.toBigint(200), category: "receive", balance_loaded: false}
               {wallet_id: 1, user_id: 1, amount: MarketHelper.toBigint(20), category: "receive", balance_loaded: true}
@@ -131,10 +131,10 @@ describe "FraudHelper", ->
               {order_id: 3, matched_amount: MarketHelper.toBigint(15), result_amount: MarketHelper.toBigint(1.5), unit_price: MarketHelper.toBigint(0.1), status: "partiallyCompleted"}
               {order_id: 5, matched_amount: MarketHelper.toBigint(2), result_amount: MarketHelper.toBigint(0.2), unit_price: MarketHelper.toBigint(0.1), status: "partiallyCompleted"}
             ]
-            GLOBAL.db.Transaction.bulkCreate(walletTransactions).success ()->
-              GLOBAL.db.Payment.bulkCreate(walletPayments).success ()->
-                GLOBAL.db.Order.bulkCreate(orders).success ()->
-                  GLOBAL.db.OrderLog.bulkCreate(orderLogs).success ()->
+            global.db.Transaction.bulkCreate(walletTransactions).success ()->
+              global.db.Payment.bulkCreate(walletPayments).success ()->
+                global.db.Order.bulkCreate(orders).success ()->
+                  global.db.OrderLog.bulkCreate(orderLogs).success ()->
                     done()
 
       it "returns the balance difference between the deposits, wihdrawals and orders", (done)->

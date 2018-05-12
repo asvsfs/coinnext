@@ -1,7 +1,7 @@
 reCaptcha = require "recaptcha-async"
-User = GLOBAL.db.User
-UserToken = GLOBAL.db.UserToken
-AuthStats = GLOBAL.db.AuthStats
+User = global.db.User
+UserToken = global.db.UserToken
+AuthStats = global.db.AuthStats
 JsonRenderer = require "../lib/json_renderer"
 
 module.exports = (app)->
@@ -36,7 +36,7 @@ module.exports = (app)->
       title: "Send Password - Coinnext.com"
       errors: errors
       success: success
-      recaptchaPublicKey: GLOBAL.appConfig().recaptcha.public_key
+      recaptchaPublicKey: global.appConfig().recaptcha.public_key
 
   app.post "/send-password", (req, res)->
     email = req.body.email
@@ -51,7 +51,7 @@ module.exports = (app)->
           return res.redirect "/send-password?success=true"  if not user
           user.sendChangePasswordLink ()->
             return res.redirect "/send-password?success=true"
-    recaptcha.checkAnswer GLOBAL.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field
+    recaptcha.checkAnswer global.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field
 
   app.get "/change-password/:token", (req, res)->
     token = req.params.token

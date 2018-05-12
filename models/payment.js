@@ -183,7 +183,7 @@
           if (callback == null) {
             callback = function() {};
           }
-          return GLOBAL.coreAPIClient.sendWithData("create_payment", data, (function(_this) {
+          return global.coreAPIClient.sendWithData("create_payment", data, (function(_this) {
             return function(err, res, body) {
               if (err) {
                 console.error(err);
@@ -220,7 +220,7 @@
           }
           this.status = "processed";
           this.transaction_id = response;
-          GLOBAL.db.PaymentLog.create({
+          global.db.PaymentLog.create({
             payment_id: this.id,
             log: response
           });
@@ -231,7 +231,7 @@
             callback = function() {};
           }
           this.status = "canceled";
-          GLOBAL.db.PaymentLog.create({
+          global.db.PaymentLog.create({
             payment_id: this.id,
             log: reason
           });
@@ -243,7 +243,7 @@
           if (callback == null) {
             callback = function() {};
           }
-          GLOBAL.db.PaymentLog.create({
+          global.db.PaymentLog.create({
             payment_id: this.id,
             log: reason
           });
@@ -252,7 +252,7 @@
           });
         },
         markAsFraud: function(reason, callback) {
-          GLOBAL.db.PaymentLog.create({
+          global.db.PaymentLog.create({
             payment_id: this.id,
             log: JSON.stringify(reason)
           });

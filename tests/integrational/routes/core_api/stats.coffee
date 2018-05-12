@@ -7,8 +7,8 @@ request = require "supertest"
 describe "Stats Api", ->
 
   beforeEach (done)->
-    GLOBAL.db.sequelize.sync({force: true}).complete ()->
-      GLOBAL.db.sequelize.query("TRUNCATE TABLE #{GLOBAL.db.MarketStats.tableName}").complete ()->
+    global.db.sequelize.sync({force: true}).complete ()->
+      global.db.sequelize.query("TRUNCATE TABLE #{global.db.MarketStats.tableName}").complete ()->
         done()
 
   describe "POST /trade_stats", ()->
@@ -47,8 +47,8 @@ describe "Stats Api", ->
         {order_id: 9, matched_amount: MarketHelper.toBigint(3000000), result_amount: MarketHelper.toBigint(1680000), unit_price: MarketHelper.toBigint(0.56), status: "completed", time: startTime + 170000}
         {order_id: 10, matched_amount: MarketHelper.toBigint(2000000), result_amount: MarketHelper.toBigint(140000), unit_price: MarketHelper.toBigint(0.07), status: "completed", time: startTime + 190000}
       ]
-      GLOBAL.db.Order.bulkCreate(orders).complete ()->
-        GLOBAL.db.OrderLog.bulkCreate(orderLogs).complete ()->
+      global.db.Order.bulkCreate(orders).complete ()->
+        global.db.OrderLog.bulkCreate(orderLogs).complete ()->
           done()
 
     it "returns 200 ok", (done)->
@@ -101,7 +101,7 @@ describe "Stats Api", ->
       .send()
       .expect(200)
       .end ()->
-        GLOBAL.db.TradeStats.findAll().complete (err, tradeStats)->
+        global.db.TradeStats.findAll().complete (err, tradeStats)->
           expected =
             1: {id: 1, type: "LTC_BTC", open_price: MarketHelper.toBigint 0.2, close_price: MarketHelper.toBigint 0.01, high_price: MarketHelper.toBigint 0.95, low_price: MarketHelper.toBigint 0.01, volume: MarketHelper.toBigint 20, exchange_volume: MarketHelper.toBigint 37.5, start_time: new Date(startTime), end_time: new Date(endTime)}
             2: {id: 2, type: "DOGE_BTC", open_price: MarketHelper.toBigint 0.5, close_price: MarketHelper.toBigint 0.07, high_price: MarketHelper.toBigint 0.56, low_price: MarketHelper.toBigint 0.07, volume: MarketHelper.toBigint 405000000, exchange_volume: MarketHelper.toBigint 174820000, start_time: new Date(startTime), end_time: new Date(endTime)}

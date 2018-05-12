@@ -102,7 +102,7 @@ class CryptoWallet
     existentConfirmations >= @confirmations
 
   loadOptions: ()->
-    GLOBAL.appConfig().wallets[@initialCurrency.toLowerCase()]
+    global.appConfig().wallets[@initialCurrency.toLowerCase()]
 
   loadCertificate: (path)->
     require("fs").readFileSync("#{__dirname}/../#{path}")

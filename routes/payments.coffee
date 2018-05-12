@@ -1,5 +1,5 @@
-Payment = GLOBAL.db.Payment
-Wallet = GLOBAL.db.Wallet
+Payment = global.db.Payment
+Wallet = global.db.Wallet
 MarketHelper = require "../lib/market_helper"
 JsonRenderer = require "../lib/json_renderer"
 _ = require "underscore"

@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) ->
             ]
             limit: MESSAGES_LIMIT
             include: [
-              {model: GLOBAL.db.User, attributes: ["username"]}
+              {model: global.db.User, attributes: ["username"]}
             ]
           Chat.findAll(query).complete callback
 

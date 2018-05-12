@@ -1,6 +1,6 @@
 environment = process.env.NODE_ENV or 'development'
-GLOBAL.appConfig = require "./configs/config"
-GLOBAL.db = require './models/index'
+global.appConfig = require "./configs/config"
+global.db = require './models/index'
 
 option "-e", "--email [EMAIL]", "User email"
 option "-p", "--pass [PASS]", "User pass"
@@ -9,22 +9,22 @@ option "-u", "--user [ID]", "User ID"
 option "-o", "--order [ID]", "Order ID"
 
 task "db:create_tables", "Create all tables", ()->
-  GLOBAL.db.sequelize.sync().complete ()->
+  global.db.sequelize.sync().then ()->
 
 task "db:create_tables_force", "Drop and create all tables", ()->
   return console.log "Not in production!"  if environment is "production"
-  GLOBAL.db.sequelize.query("DROP TABLE SequelizeMeta").complete ()->
-    GLOBAL.db.sequelize.sync({force: true}).complete ()->
+  global.db.sequelize.query("DROP TABLE SequelizeMeta").then ()->
+    global.db.sequelize.sync({force: true}).then ()->
 
 task "db:seed_market_stats", "Seed default market stats", ()->
-  MarketStats = GLOBAL.db.MarketStats
+  MarketStats = global.db.MarketStats
   marketStats = require './models/seeds/market_stats'
   for stats in marketStats
-    MarketStats.create(stats).complete ()->
+    MarketStats.create(stats).then ()->
 
 task "db:seed_trade_stats", "Seed default trade stats", ()->
   return console.log "Not in production!"  if environment is "production"
-  TradeStats = GLOBAL.db.TradeStats
+  TradeStats = global.db.TradeStats
   tradeStats = require './models/seeds/trade_stats'
   now = Date.now()
   halfHour = 1800000
@@ -39,13 +39,13 @@ task "db:seed_trade_stats", "Seed default trade stats", ()->
     stat.start_time = startTimes[stat.type]
     stat.end_time = stat.start_time + halfHour
     startTimes[stat.type] = stat.end_time
-  GLOBAL.db.sequelize.query("TRUNCATE TABLE #{TradeStats.tableName}").complete ()->
+  global.db.sequelize.query("TRUNCATE TABLE #{TradeStats.tableName}").then ()->
     TradeStats.bulkCreate(tradeStats).success ()->
       TradeStats.findAll().success (result)->
         console.log JSON.stringify result
 
 task "db:migrate", "Run pending database migrations", ()->
-  migrator = GLOBAL.db.sequelize.getMigrator
+  migrator = global.db.sequelize.getMigrator
     path:        "#{process.cwd()}/models/migrations"
     filesFilter: /\.coffee$/
     coffee: true
@@ -53,7 +53,7 @@ task "db:migrate", "Run pending database migrations", ()->
     console.log "Database migrations finished."
 
 task "db:migrate_undo", "Undo database migrations", ()->
-  migrator = GLOBAL.db.sequelize.getMigrator
+  migrator = global.db.sequelize.getMigrator
     path:        "#{process.cwd()}/models/migrations"
     filesFilter: /\.coffee$/
     coffee: true
@@ -64,7 +64,7 @@ task "admin:generate_user", "Add new admin user -e -p", (opts)->
   data =
     email: opts.email
     password: opts.pass
-  GLOBAL.db.AdminUser.createNewUser data, (err, newUser)->
+  global.db.AdminUser.createNewUser data, (err, newUser)->
     return console.error err  if err
     newUser.generateGAuthData (data, newUser)->
       console.log data.google_auth_qr
@@ -89,7 +89,7 @@ task "fraud:check_user_wallets", "Check user wallets for fraud", (opts)->
       cb err,
         wallet_id: wallet.id
         result: result
-  GLOBAL.db.Wallet.findAll({where: {user_id: opts.user}}).complete (err, wallets)->
+  global.db.Wallet.findAll({where: {user_id: opts.user}}).then (err, wallets)->
     async.mapSeries wallets, checkWalletBalance, (err, results)->
       console.log results
 
@@ -112,7 +112,7 @@ task "fraud:check_all_wallets_balances", "Check user wallets for fraud", ()->
       totals[wallet.currency] = 0  if not totals[wallet.currency]?
       totals[wallet.currency] += (wallet.total_balance)
       cb err
-  GLOBAL.db.Wallet.findAll().complete (err, wallets)->
+  global.db.Wallet.findAll().then (err, wallets)->
     async.mapSeries wallets, checkWalletBalance, (err, results)->
       console.log "Wrong hold balances: ", wrongHoldBalanceWalletsIds
       console.log "Wrong balances: ", wrongBalanceWalletsIds

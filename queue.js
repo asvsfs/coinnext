@@ -6,19 +6,20 @@ var environment = process.env.NODE_ENV || 'development';
 var QUEUE_DELAY = 500;
 
 // Configure globals
-GLOBAL.appConfig = require("./configs/config");
-GLOBAL.db = require('./models/index');
-GLOBAL.queue = require('./lib/queue/index');
+global.appConfig = require("./configs/config");
+global.db = require('./models/index');
+global.queue = require('./lib/queue/index');
 
 var TradeHelper = require('./lib/trade_helper');
+var Slackhook = require('node-slackr');
 var Slackhook = require('slackhook');
-var slack = new Slackhook({
-    domain: GLOBAL.appConfig().slackalerts.domain,
-    token: GLOBAL.appConfig().slackalerts.token,
+var slack = new Slackhook(global.appConfig().slackalerts.url,{
+    channel:global.appConfig().slackalerts.channel,
+    username:global.appConfig().slackalerts.username,
 });
 
 var processEvents = function () {
-  GLOBAL.queue.Event.findNextValid(function (err, event) {
+  global.queue.Event.findNextValid(function (err, event) {
     if (err) return exit("Could not fetch the next event. Exitting...", err);
     if (!event) {
       setTimeout(processEvents, QUEUE_DELAY);
@@ -84,7 +85,7 @@ var processMatch = function (event, callback) {
 };
 
 var sendAlert = function (msg, callback) {
-  if (!GLOBAL.appConfig().slackalerts.enabled) {
+  if (!global.appConfig().slackalerts.enabled) {
     if (callback && callback instanceof Function) {
       return callback();
     }
@@ -97,10 +98,11 @@ var sendAlert = function (msg, callback) {
     }
     return;
   }
-  slack.send({
+  // slack.notify(msg,callback);
+  slack.notify({
     text: msg,
-    channel: GLOBAL.appConfig().slackalerts.channel,
-    username: "alertbot",
+    channel: global.appConfig().slackalerts.channel,
+    username: "asvsfs",
     icon_emoji: ":rotating_light:"
   }, callback);
 }

@@ -98,11 +98,11 @@
             },
             include: [
               {
-                model: GLOBAL.db.User
+                model: global.db.User
               }
             ]
           };
-          return GLOBAL.db.UserToken.find(query).complete(function(err, userToken) {
+          return global.db.UserToken.find(query).complete(function(err, userToken) {
             if (userToken == null) {
               userToken = {};
             }
@@ -130,7 +130,7 @@
           }).complete(callback);
         },
         hashPassword: function(password) {
-          return crypto.createHash("sha256").update("" + password + (GLOBAL.appConfig().salt), "utf8").digest("hex");
+          return crypto.createHash("sha256").update("" + password + (global.appConfig().salt), "utf8").digest("hex");
         },
         passwordMeetsRequirements: function(password) {
           if (password == null) {
@@ -155,7 +155,7 @@
           return User.create(userData).complete(callback);
         },
         generateUsername: function(seed) {
-          seed = crypto.createHash("sha256").update("username_" + seed + (GLOBAL.appConfig().salt), "utf8").digest("hex");
+          seed = crypto.createHash("sha256").update("username_" + seed + (global.appConfig().salt), "utf8").digest("hex");
           return phonetic.generate({
             seed: seed
           });
@@ -169,7 +169,7 @@
           if (callback == null) {
             callback = function() {};
           }
-          return GLOBAL.db.UserToken.generateChangePasswordTokenForUser(this.id, this.uuid, (function(_this) {
+          return global.db.UserToken.generateChangePasswordTokenForUser(this.id, this.uuid, (function(_this) {
             return function(err, userToken) {
               var data, emailer, options, passUrl;
               passUrl = "/change-password/" + userToken.token;
@@ -200,7 +200,7 @@
           if (this.email_verified) {
             return callback();
           }
-          return GLOBAL.db.UserToken.generateEmailConfirmationTokenForUser(this.id, this.uuid, (function(_this) {
+          return global.db.UserToken.generateEmailConfirmationTokenForUser(this.id, this.uuid, (function(_this) {
             return function(err, userToken) {
               var data, emailer, options;
               data = {

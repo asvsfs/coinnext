@@ -1,19 +1,19 @@
 (function() {
   var AuthStats, JsonRenderer, MarketHelper, MarketStats, OrderLog, TradeStats, UserToken, Wallet, WalletHealth, _, _str;
 
-  Wallet = GLOBAL.db.Wallet;
+  Wallet = global.db.Wallet;
 
-  WalletHealth = GLOBAL.db.WalletHealth;
+  WalletHealth = global.db.WalletHealth;
 
-  MarketStats = GLOBAL.db.MarketStats;
+  MarketStats = global.db.MarketStats;
 
-  TradeStats = GLOBAL.db.TradeStats;
+  TradeStats = global.db.TradeStats;
 
-  AuthStats = GLOBAL.db.AuthStats;
+  AuthStats = global.db.AuthStats;
 
-  UserToken = GLOBAL.db.UserToken;
+  UserToken = global.db.UserToken;
 
-  OrderLog = GLOBAL.db.OrderLog;
+  OrderLog = global.db.OrderLog;
 
   JsonRenderer = require("../lib/json_renderer");
 

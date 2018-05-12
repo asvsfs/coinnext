@@ -1,9 +1,9 @@
 (function() {
   var JsonRenderer, MarketHelper, Payment, Wallet, _;
 
-  Payment = GLOBAL.db.Payment;
+  Payment = global.db.Payment;
 
-  Wallet = GLOBAL.db.Wallet;
+  Wallet = global.db.Wallet;
 
   MarketHelper = require("../lib/market_helper");
 

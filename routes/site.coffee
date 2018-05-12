@@ -1,10 +1,10 @@
-Wallet = GLOBAL.db.Wallet
-WalletHealth = GLOBAL.db.WalletHealth
-MarketStats = GLOBAL.db.MarketStats
-TradeStats = GLOBAL.db.TradeStats
-AuthStats = GLOBAL.db.AuthStats
-UserToken = GLOBAL.db.UserToken
-OrderLog = GLOBAL.db.OrderLog
+Wallet = global.db.Wallet
+WalletHealth = global.db.WalletHealth
+MarketStats = global.db.MarketStats
+TradeStats = global.db.TradeStats
+AuthStats = global.db.AuthStats
+UserToken = global.db.UserToken
+OrderLog = global.db.OrderLog
 JsonRenderer = require "../lib/json_renderer"
 MarketHelper = require "../lib/market_helper"
 _str = require "../lib/underscore_string"

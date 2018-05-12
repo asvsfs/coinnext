@@ -1,4 +1,4 @@
-Wallet = GLOBAL.db.Wallet
+Wallet = global.db.Wallet
 MarketHelper = require "../lib/market_helper"
 JsonRenderer = require "../lib/json_renderer"
 

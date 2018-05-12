@@ -63,9 +63,9 @@ module.exports = (sequelize, DataTypes) ->
             where:
               token: token
             include: [
-              {model: GLOBAL.db.User}
+              {model: global.db.User}
             ]
-          GLOBAL.db.UserToken.find(query).complete (err, userToken = {})->
+          global.db.UserToken.find(query).complete (err, userToken = {})->
             callback err, userToken.user
         
         findByEmail: (email, callback = ()->)->
@@ -75,7 +75,7 @@ module.exports = (sequelize, DataTypes) ->
           User.find({where:{username: username}}).complete callback
         
         hashPassword: (password)->
-          crypto.createHash("sha256").update("#{password}#{GLOBAL.appConfig().salt}", "utf8").digest("hex")
+          crypto.createHash("sha256").update("#{password}#{global.appConfig().salt}", "utf8").digest("hex")
         
         passwordMeetsRequirements: (password = "")->
           return false if password.length < 8           # min 8 characters
@@ -91,7 +91,7 @@ module.exports = (sequelize, DataTypes) ->
           User.create(userData).complete callback
 
         generateUsername: (seed)->
-          seed = crypto.createHash("sha256").update("username_#{seed}#{GLOBAL.appConfig().salt}", "utf8").digest("hex")
+          seed = crypto.createHash("sha256").update("username_#{seed}#{global.appConfig().salt}", "utf8").digest("hex")
           phonetic.generate
             seed: seed
 
@@ -101,7 +101,7 @@ module.exports = (sequelize, DataTypes) ->
           @password is User.hashPassword(password)
 
         sendChangePasswordLink: (callback = ()->)->
-          GLOBAL.db.UserToken.generateChangePasswordTokenForUser @id, @uuid, (err, userToken)=>
+          global.db.UserToken.generateChangePasswordTokenForUser @id, @uuid, (err, userToken)=>
             passUrl = "/change-password/#{userToken.token}"
             data =
               "pass_url": passUrl
@@ -117,7 +117,7 @@ module.exports = (sequelize, DataTypes) ->
 
         sendEmailVerificationLink: (callback = ()->)->
           return callback()  if @email_verified
-          GLOBAL.db.UserToken.generateEmailConfirmationTokenForUser @id, @uuid, (err, userToken)=>
+          global.db.UserToken.generateEmailConfirmationTokenForUser @id, @uuid, (err, userToken)=>
             data =
               "verification_url": "/verify/#{userToken.token}"
             options =

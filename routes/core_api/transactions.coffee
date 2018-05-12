@@ -1,8 +1,8 @@
 restify = require "restify"
 async = require "async"
-Wallet = GLOBAL.db.Wallet
-Transaction = GLOBAL.db.Transaction
-Payment = GLOBAL.db.Payment
+Wallet = global.db.Wallet
+Transaction = global.db.Transaction
+Payment = global.db.Payment
 JsonRenderer = require "../../lib/json_renderer"
 TransactionHelper = require "../../lib/transaction_helper"
 paymentsProcessedUserIds = []
@@ -13,7 +13,7 @@ module.exports = (app)->
   app.put "/transaction/:currency/:tx_id", (req, res, next)->
     txId = req.params.tx_id
     currency = req.params.currency
-    GLOBAL.wallets[currency].getTransaction txId, (err, walletTransaction)->
+    global.wallets[currency].getTransaction txId, (err, walletTransaction)->
       subTransactions = _.clone walletTransaction.details
       delete walletTransaction.details
       loadTransactionCallback = (subTransaction, callback)->
@@ -25,7 +25,7 @@ module.exports = (app)->
 
   app.post "/load_latest_transactions/:currency", (req, res, next)->
     currency = req.params.currency
-    GLOBAL.wallets[currency].getTransactions "*", 100, 0, (err, transactions)->
+    global.wallets[currency].getTransactions "*", 100, 0, (err, transactions)->
       console.error err  if err
       loadTransactionCallback = (transaction, callback)->
         TransactionHelper.loadTransaction transaction, currency, callback

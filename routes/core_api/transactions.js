@@ -5,11 +5,11 @@
 
   async = require("async");
 
-  Wallet = GLOBAL.db.Wallet;
+  Wallet = global.db.Wallet;
 
-  Transaction = GLOBAL.db.Transaction;
+  Transaction = global.db.Transaction;
 
-  Payment = GLOBAL.db.Payment;
+  Payment = global.db.Payment;
 
   JsonRenderer = require("../../lib/json_renderer");
 
@@ -24,7 +24,7 @@
       var currency, txId;
       txId = req.params.tx_id;
       currency = req.params.currency;
-      return GLOBAL.wallets[currency].getTransaction(txId, function(err, walletTransaction) {
+      return global.wallets[currency].getTransaction(txId, function(err, walletTransaction) {
         var loadTransactionCallback, subTransactions;
         subTransactions = _.clone(walletTransaction.details);
         delete walletTransaction.details;
@@ -44,7 +44,7 @@
     app.post("/load_latest_transactions/:currency", function(req, res, next) {
       var currency;
       currency = req.params.currency;
-      return GLOBAL.wallets[currency].getTransactions("*", 100, 0, function(err, transactions) {
+      return global.wallets[currency].getTransactions("*", 100, 0, function(err, transactions) {
         var loadTransactionCallback;
         if (err) {
           console.error(err);

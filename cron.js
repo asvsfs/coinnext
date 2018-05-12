@@ -2,7 +2,7 @@
 if (process.env.NODE_ENV === "production") require("./configs/logger");
 
 // Configure globals
-GLOBAL.appConfig = require("./configs/config");
+global.appConfig = require("./configs/config");
 
 var fs = require("fs");
 var request = require("request");
@@ -24,8 +24,8 @@ var transactionsJob = new CronJob({
       transactionsInProgress = true;
       nextCurrency = fs.readFileSync(cronCurrencyPath).toString();
       if (excludedCurrencies.indexOf(nextCurrency) === -1) {
-        var url = "http://" + GLOBAL.appConfig().wallets_host + "/load_latest_transactions/" + nextCurrency;
-        var statusUrl = "http://" + GLOBAL.appConfig().wallets_host + "/wallet_health/" + nextCurrency;
+        var url = "http://" + global.appConfig().wallets_host + "/load_latest_transactions/" + nextCurrency;
+        var statusUrl = "http://" + global.appConfig().wallets_host + "/wallet_health/" + nextCurrency;
         request.post(url, function (err, httpResponse, body) {
           if (err) {
             console.error(nextCurrency, "Error loading transactions.", err);
@@ -60,7 +60,7 @@ var paymentsJob = new CronJob({
   cronTime: "0 */5 * * * *",
   onTick: function() {
     paymentsInProgress = true;
-    var url = "http://" + GLOBAL.appConfig().wallets_host + "/process_pending_payments";
+    var url = "http://" + global.appConfig().wallets_host + "/process_pending_payments";
     request.post(url, function (err, httpResponse, body) {
       if (err) {
         console.error("Could not process payments.", err);
@@ -78,7 +78,7 @@ var tradeStatsJob = new CronJob({
   cronTime: "0 */30 * * * *",
   onTick: function() {
     tradeStatsInProgress = true;
-    var url = "http://" + GLOBAL.appConfig().wallets_host + "/trade_stats";
+    var url = "http://" + global.appConfig().wallets_host + "/trade_stats";
     request.post(url, function (err, httpResponse, body) {
       if (err) {
         console.error("Could not aggregate trade stats.", err);

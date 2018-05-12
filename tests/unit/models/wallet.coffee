@@ -14,18 +14,18 @@ describe "Wallet", ->
   ]
 
   beforeEach (done)->
-    GLOBAL.coreAPIClient =
+    global.coreAPIClient =
       send: (action, data, callback)->
         if action is "create_account"
           return callback null, null, {address: "address_#{data[0]}_#{data[1]}"}
         return callback "Unknown action"
-    GLOBAL.db.sequelize.sync({force: true}).complete ()->
-      GLOBAL.db.Wallet.create({currency: "BTC", user_id: 1}).complete (err, wl)->
+    global.db.sequelize.sync({force: true}).complete ()->
+      global.db.Wallet.create({currency: "BTC", user_id: 1}).complete (err, wl)->
         wallet = wl
         done()
   
   afterEach ()->
-    GLOBAL.coreAPIClient = undefined
+    global.coreAPIClient = undefined
 
 
   describe "account", ()->
@@ -90,33 +90,33 @@ describe "Wallet", ->
     savedWalletId = undefined
     
     beforeEach (done)->
-      GLOBAL.db.Wallet.create({user_id: "user_id", currency: "BTC"}).complete (err, wl)->
+      global.db.Wallet.create({user_id: "user_id", currency: "BTC"}).complete (err, wl)->
         savedWalletId = wl.id
-        GLOBAL.db.Wallet.create({user_id: "user_id", currency: "LTC"}).complete ()->
-          GLOBAL.db.Wallet.create({user_id: "user_id2", currency: "LTC"}).complete ()->
+        global.db.Wallet.create({user_id: "user_id", currency: "LTC"}).complete ()->
+          global.db.Wallet.create({user_id: "user_id2", currency: "LTC"}).complete ()->
             done()
 
     describe "when there is a wallet for the given user with the given currency", ()->
       it "returns the first wallet with the given user id and currency", (done)->
-        GLOBAL.db.Wallet.findUserWalletByCurrency "user_id", "BTC", (err, wl)->
+        global.db.Wallet.findUserWalletByCurrency "user_id", "BTC", (err, wl)->
           wl.id.should.eql savedWalletId
           done()
 
 
   describe "findUserWallets", ()->
     beforeEach (done)->
-      GLOBAL.db.Wallet.create({user_id: 2, currency: "BTC", created: Date.now() - 1000}).complete (err, wl)->
-        GLOBAL.db.Wallet.create({user_id: 2, currency: "LTC", created: Date.now()}).complete ()->
-          GLOBAL.db.Wallet.create({user_id: 3, currency: "LTC"}).complete ()->
+      global.db.Wallet.create({user_id: 2, currency: "BTC", created: Date.now() - 1000}).complete (err, wl)->
+        global.db.Wallet.create({user_id: 2, currency: "LTC", created: Date.now()}).complete ()->
+          global.db.Wallet.create({user_id: 3, currency: "LTC"}).complete ()->
             done()
 
     it "returns the user wallets", (done)->
-      GLOBAL.db.Wallet.findUserWallets 2, (err, wallets)->
+      global.db.Wallet.findUserWallets 2, (err, wallets)->
         wallets.length.should.eql 2
         done()
 
     it "orders the wallets desc by created", (done)->
-      GLOBAL.db.Wallet.findUserWallets 2, (err, wallets)->
+      global.db.Wallet.findUserWallets 2, (err, wallets)->
         [wallets[0].currency, wallets[1].currency].toString().should.eql ["BTC", "LTC"].toString()
         done()
 
@@ -125,14 +125,14 @@ describe "Wallet", ->
     savedWalletId = undefined
     
     beforeEach (done)->
-      GLOBAL.db.Wallet.create({user_id: 2, currency: "BTC"}).complete ()->
-        GLOBAL.db.Wallet.create({user_id: 2, currency: "LTC"}).complete (err, wl)->
+      global.db.Wallet.create({user_id: 2, currency: "BTC"}).complete ()->
+        global.db.Wallet.create({user_id: 2, currency: "LTC"}).complete (err, wl)->
           savedWalletId = wl.id
-          GLOBAL.db.Wallet.create({user_id: 3, currency: "LTC"}).complete ()->
+          global.db.Wallet.create({user_id: 3, currency: "LTC"}).complete ()->
             done()
 
     it "returns the user wallet by the given user id and wallet id", (done)->
-      GLOBAL.db.Wallet.findUserWallet 2, savedWalletId, (err, wl)->
+      global.db.Wallet.findUserWallet 2, savedWalletId, (err, wl)->
         wl.id.should.eql savedWalletId
         done()
 
@@ -141,11 +141,11 @@ describe "Wallet", ->
     savedWalletId = undefined
     
     beforeEach (done)->
-      GLOBAL.db.Wallet.create({user_id: 2, currency: "BTC"}).complete (err, wl)->
+      global.db.Wallet.create({user_id: 2, currency: "BTC"}).complete (err, wl)->
         savedWalletId = wl.id
         done()
 
     it "returns a wallet by the given account", (done)->
-      GLOBAL.db.Wallet.findByAccount "wallet_#{savedWalletId}", (err, wl)->
+      global.db.Wallet.findByAccount "wallet_#{savedWalletId}", (err, wl)->
         wl.id.should.eql savedWalletId
         done()

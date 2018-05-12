@@ -3,13 +3,13 @@
 
   MarketHelper = require("../lib/market_helper");
 
-  MarketStats = GLOBAL.db.MarketStats;
+  MarketStats = global.db.MarketStats;
 
-  TradeStats = GLOBAL.db.TradeStats;
+  TradeStats = global.db.TradeStats;
 
-  OrderLog = GLOBAL.db.OrderLog;
+  OrderLog = global.db.OrderLog;
 
-  Order = GLOBAL.db.Order;
+  Order = global.db.Order;
 
   JsonRenderer = require("./../lib/json_renderer");
 

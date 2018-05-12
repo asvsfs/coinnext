@@ -106,8 +106,8 @@ module.exports = (sequelize, DataTypes) ->
         trackFromCancelledOrder: (order, callback = ()->)->
           type = if order.action is "buy" then "#{order.buy_currency}_#{order.sell_currency}" else "#{order.sell_currency}_#{order.buy_currency}"
           MarketStats.find({where: {type: MarketHelper.getMarket(type)}}).complete (err, marketStats)->
-            GLOBAL.db.Order.findTopBid order.buy_currency, order.sell_currency, (err1, topBidOrder)->
-              GLOBAL.db.Order.findTopAsk order.buy_currency, order.sell_currency, (err2, topAskOrder)->
+            global.db.Order.findTopBid order.buy_currency, order.sell_currency, (err1, topBidOrder)->
+              global.db.Order.findTopAsk order.buy_currency, order.sell_currency, (err2, topAskOrder)->
                 marketStats.top_bid = if topBidOrder then topBidOrder.unit_price else 0
                 marketStats.top_ask = if topAskOrder then topAskOrder.unit_price else 0
                 marketStats.save().complete callback
@@ -115,8 +115,8 @@ module.exports = (sequelize, DataTypes) ->
         trackFromMatchedOrder: (orderToMatch, matchingOrder, callback = ()->)->
           type = if orderToMatch.action is "buy" then "#{orderToMatch.buy_currency}_#{orderToMatch.sell_currency}" else "#{orderToMatch.sell_currency}_#{orderToMatch.buy_currency}"
           MarketStats.find({where: {type: MarketHelper.getMarket(type)}}).complete (err, marketStats)->
-            GLOBAL.db.Order.findTopBid orderToMatch.buy_currency, orderToMatch.sell_currency, (err1, topBidOrder)->
-              GLOBAL.db.Order.findTopAsk orderToMatch.buy_currency, orderToMatch.sell_currency, (err2, topAskOrder)->
+            global.db.Order.findTopBid orderToMatch.buy_currency, orderToMatch.sell_currency, (err1, topBidOrder)->
+              global.db.Order.findTopAsk orderToMatch.buy_currency, orderToMatch.sell_currency, (err2, topAskOrder)->
                 marketStats.top_bid = if topBidOrder then topBidOrder.unit_price else 0
                 marketStats.top_ask = if topAskOrder then topAskOrder.unit_price else 0
                 marketStats.save().complete callback
@@ -136,7 +136,7 @@ module.exports = (sequelize, DataTypes) ->
                 marketStats.volume1 = parseInt math.add(MarketHelper.toBignum(marketStats.volume1), MarketHelper.toBignum(orderLog.matched_amount))
                 # BTC Volume Traded
                 marketStats.volume2 = parseInt math.select(MarketHelper.toBignum(marketStats.volume2)).add(MarketHelper.toBignum(orderLog.result_amount)).add(MarketHelper.toBignum(orderLog.fee)).done()
-                GLOBAL.db.TradeStats.findLast24hByType type, (err, tradeStats = {})->
+                global.db.TradeStats.findLast24hByType type, (err, tradeStats = {})->
                   growthRatio = MarketStats.calculateGrowthRatio tradeStats.close_price, orderLog.unit_price
                   marketStats.growth_ratio = math.round MarketHelper.toBigint(growthRatio), 0
                   marketStats.save().complete callback

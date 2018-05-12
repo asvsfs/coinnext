@@ -1,9 +1,9 @@
 (function() {
   var JsonRenderer, User, Wallet;
 
-  User = GLOBAL.db.User;
+  User = global.db.User;
 
-  Wallet = GLOBAL.db.Wallet;
+  Wallet = global.db.Wallet;
 
   JsonRenderer = require('../lib/json_renderer');
 

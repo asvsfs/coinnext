@@ -1,7 +1,7 @@
 restify = require "restify"
-Order = GLOBAL.db.Order
-Wallet = GLOBAL.db.Wallet
-MarketStats = GLOBAL.db.MarketStats
+Order = global.db.Order
+Wallet = global.db.Wallet
+MarketStats = global.db.MarketStats
 TradeHelper = require "../../lib/trade_helper"
 JsonRenderer = require "../../lib/json_renderer"
 MarketHelper = require "../../lib/market_helper"
@@ -24,7 +24,7 @@ module.exports = (app)->
           sell_currency: MarketHelper.getCurrency newOrder.sell_currency
           amount: newOrder.amount
           unit_price: newOrder.unit_price
-        GLOBAL.queue.Event.addOrder orderData, (err)->
+        global.queue.Event.addOrder orderData, (err)->
           if err
             console.error "Could add add_order event for order #{newOrder.id} - #{err}"
             return next(new restify.ConflictError "Could not submit order.")  if err
@@ -41,8 +41,8 @@ module.exports = (app)->
       orderCurrency = order["#{order.action}_currency"]
       MarketStats.findEnabledMarket orderCurrency, "BTC", (err, market)->
         return next(new restify.ConflictError "#{new Date()} - Will not process order #{orderId}, the market for #{orderCurrency} is disabled.")  if not market
-        GLOBAL.db.sequelize.transaction (transaction)->
-          GLOBAL.queue.Event.addCancelOrder {order_id: orderId}, (err)->
+        global.db.sequelize.transaction (transaction)->
+          global.queue.Event.addCancelOrder {order_id: orderId}, (err)->
             if err
               return transaction.rollback().success ()->
                 next(new restify.ConflictError "Could not cancel order #{orderId} - #{err}")

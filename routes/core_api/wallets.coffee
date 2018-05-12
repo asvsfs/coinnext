@@ -1,4 +1,4 @@
-WalletHealth = GLOBAL.db.WalletHealth
+WalletHealth = global.db.WalletHealth
 MarketHelper = require "../../lib/market_helper"
 restify = require "restify"
 
@@ -7,8 +7,8 @@ module.exports = (app)->
   app.post "/create_account/:account/:currency", (req, res, next)->
     account   = req.params.account
     currency = req.params.currency
-    return next(new restify.ConflictError "Wrong Currency.")  if not GLOBAL.wallets[currency]
-    GLOBAL.wallets[currency].generateAddress account, (err, address)->
+    return next(new restify.ConflictError "Wrong Currency.")  if not global.wallets[currency]
+    global.wallets[currency].generateAddress account, (err, address)->
       console.error err  if err
       return next(new restify.ConflictError "Could not generate address.")  if err
       res.send
@@ -17,8 +17,8 @@ module.exports = (app)->
 
   app.get "/wallet_balance/:currency", (req, res, next)->
     currency = req.params.currency
-    return next(new restify.ConflictError "Wallet down or does not exist.")  if not GLOBAL.wallets[currency]
-    GLOBAL.wallets[currency].getBankBalance (err, balance)->
+    return next(new restify.ConflictError "Wallet down or does not exist.")  if not global.wallets[currency]
+    global.wallets[currency].getBankBalance (err, balance)->
       console.error err  if err
       return next(new restify.ConflictError "Wallet inaccessible.")  if err
       res.send
@@ -27,19 +27,19 @@ module.exports = (app)->
 
   app.get "/wallet_info/:currency", (req, res, next)->
     currency = req.params.currency
-    return next(new restify.ConflictError "Wallet down or does not exist.")  if not GLOBAL.wallets[currency]
-    GLOBAL.wallets[currency].getInfo (err, info)->
+    return next(new restify.ConflictError "Wallet down or does not exist.")  if not global.wallets[currency]
+    global.wallets[currency].getInfo (err, info)->
       console.error err  if err
       return next(new restify.ConflictError "Wallet inaccessible.")  if err
       res.send
         currency: currency
         info: info
-        address: GLOBAL.appConfig().wallets[currency.toLowerCase()].wallet.address
+        address: global.appConfig().wallets[currency.toLowerCase()].wallet.address
 
   app.get "/wallet_health/:currency", (req, res, next)->
     currency = req.params.currency
-    return next(new restify.ConflictError "Wallet down or does not exist.")  if not GLOBAL.wallets[currency]
-    wallet = GLOBAL.wallets[currency]
+    return next(new restify.ConflictError "Wallet down or does not exist.")  if not global.wallets[currency]
+    wallet = global.wallets[currency]
     walletInfo = {}
     wallet.getInfo (err, info)->
       if err or not info

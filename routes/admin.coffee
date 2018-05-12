@@ -1,11 +1,11 @@
-Wallet = GLOBAL.db.Wallet
-User = GLOBAL.db.User
-Transaction = GLOBAL.db.Transaction
-Payment = GLOBAL.db.Payment
-Order = GLOBAL.db.Order
-AuthStats = GLOBAL.db.AuthStats
-UserToken = GLOBAL.db.UserToken
-MarketStats = GLOBAL.db.MarketStats
+Wallet = global.db.Wallet
+User = global.db.User
+Transaction = global.db.Transaction
+Payment = global.db.Payment
+Order = global.db.Order
+AuthStats = global.db.AuthStats
+UserToken = global.db.UserToken
+MarketStats = global.db.MarketStats
 MarketHelper = require "../lib/market_helper"
 JsonRenderer = require "../lib/json_renderer"
 jsonBeautifier = require "../lib/json_beautifier"
@@ -139,7 +139,7 @@ module.exports = (app)->
       limit: count
       offset: from
       include: [
-        {model: GLOBAL.db.User, attributes: ["username", "email"]}
+        {model: global.db.User, attributes: ["username", "email"]}
       ]
     if userId
       query.where =
@@ -162,7 +162,7 @@ module.exports = (app)->
     from = if req.query.from? then parseInt(req.query.from) else 0
     query =
       include: [
-        {model: GLOBAL.db.PaymentLog}
+        {model: global.db.PaymentLog}
       ]
       order: [
         ["created_at", "DESC"]
@@ -186,7 +186,7 @@ module.exports = (app)->
 
   app.put "/administratie/pay/:id", (req, res)->
     id = req.params.id
-    GLOBAL.coreAPIClient.send "process_payment", [id], (err, res2, body)=>
+    global.coreAPIClient.send "process_payment", [id], (err, res2, body)=>
       return JsonRenderer.error err, res  if err
       if body and body.paymentId?
         Payment.findById id, (err, payment)->
@@ -198,7 +198,7 @@ module.exports = (app)->
 
   app.del "/administratie/payment/:id", (req, res)->
     id = req.params.id
-    GLOBAL.coreAPIClient.send "cancel_payment", [id], (err, res2, body)=>
+    global.coreAPIClient.send "cancel_payment", [id], (err, res2, body)=>
       return JsonRenderer.error err, res  if err
       if body and body.paymentId?
         res.json
@@ -209,7 +209,7 @@ module.exports = (app)->
 
   app.get "/administratie/banksaldo/:currency", (req, res)->
     currency = req.params.currency
-    GLOBAL.coreAPIClient.send "wallet_balance", [currency], (err, res2, body)=>
+    global.coreAPIClient.send "wallet_balance", [currency], (err, res2, body)=>
       return JsonRenderer.error err, res  if err
       if body and body.balance?
         res.json body
@@ -220,7 +220,7 @@ module.exports = (app)->
 
   app.post "/administratie/wallet_info", (req, res)->
     currency = req.body.currency
-    GLOBAL.coreAPIClient.send "wallet_info", [currency], (err, res2, body)=>
+    global.coreAPIClient.send "wallet_info", [currency], (err, res2, body)=>
       return JsonRenderer.error err, res  if err
       if body and body.info?
         res.json body

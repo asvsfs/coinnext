@@ -5,7 +5,7 @@ wallets = {}
 
 for currency of MarketHelper.getCurrencies()
   walletType = currency.toLowerCase()
-  options = if process.env.NODE_ENV isnt "production" and not GLOBAL.appConfig().wallets[walletType]? then GLOBAL.appConfig().wallets["btc"] else GLOBAL.appConfig().wallets[walletType]
+  options = if process.env.NODE_ENV isnt "production" and not global.appConfig().wallets[walletType]? then global.appConfig().wallets["btc"] else global.appConfig().wallets[walletType]
   if process.env.NODE_ENV is "test"
     path = "#{process.cwd()}/tests/helpers/#{walletType}_wallet_mock.js"
     if fs.existsSync path

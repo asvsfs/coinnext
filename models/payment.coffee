@@ -122,7 +122,7 @@ module.exports = (sequelize, DataTypes) ->
               callback err, parseInt(math.add(MarketHelper.toBignum(totalAmount), MarketHelper.toBignum(totalFee)))
 
         submit: (data, callback = ()->)->
-          GLOBAL.coreAPIClient.sendWithData "create_payment", data, (err, res, body)=>
+          global.coreAPIClient.sendWithData "create_payment", data, (err, res, body)=>
             if err
               console.error err
               return callback err, res, body
@@ -148,28 +148,28 @@ module.exports = (sequelize, DataTypes) ->
         process: (response, callback = ()->)->
           @status = "processed"
           @transaction_id = response
-          GLOBAL.db.PaymentLog.create
+          global.db.PaymentLog.create
             payment_id: @id
             log: response
           @save().complete callback
 
         cancel: (reason, callback = ()->)->
           @status = "canceled"
-          GLOBAL.db.PaymentLog.create
+          global.db.PaymentLog.create
             payment_id: @id
             log: reason
           @save().complete (e, p)->
             callback reason, p
 
         errored: (reason, callback = ()->)->
-          GLOBAL.db.PaymentLog.create
+          global.db.PaymentLog.create
             payment_id: @id
             log: reason
           @save().complete (e, p)->
             callback reason, p
 
         markAsFraud: (reason, callback)->
-          GLOBAL.db.PaymentLog.create
+          global.db.PaymentLog.create
             payment_id: @id
             log: JSON.stringify reason
           @fraud = true

@@ -1,9 +1,9 @@
 (function() {
   var MarketHelper, OrderLog, TradeStats, math, _;
 
-  OrderLog = GLOBAL.db.OrderLog;
+  OrderLog = global.db.OrderLog;
 
-  TradeStats = GLOBAL.db.TradeStats;
+  TradeStats = global.db.TradeStats;
 
   MarketHelper = require("../../lib/market_helper");
 

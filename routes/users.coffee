@@ -1,5 +1,5 @@
-User = GLOBAL.db.User
-Wallet = GLOBAL.db.Wallet
+User = global.db.User
+Wallet = global.db.Wallet
 JsonRenderer = require '../lib/json_renderer'
 
 module.exports = (app)->

@@ -65,7 +65,7 @@ module.exports = (sequelize, DataTypes) ->
                 gte: new Date(startTime)
                 lte: new Date(endTime)
             include: [
-              model: GLOBAL.db.Order
+              model: global.db.Order
               attributes: ["buy_currency", "sell_currency"]
               where:
                 action: MarketHelper.getOrderAction action
@@ -80,7 +80,7 @@ module.exports = (sequelize, DataTypes) ->
             where:
               active: true
             include: [
-              model: GLOBAL.db.Order
+              model: global.db.Order
               attributes: ["buy_currency", "sell_currency", "action"]
               where: {}
             ]

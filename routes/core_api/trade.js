@@ -3,11 +3,11 @@
 
   restify = require("restify");
 
-  Order = GLOBAL.db.Order;
+  Order = global.db.Order;
 
-  Wallet = GLOBAL.db.Wallet;
+  Wallet = global.db.Wallet;
 
-  MarketStats = GLOBAL.db.MarketStats;
+  MarketStats = global.db.MarketStats;
 
   TradeHelper = require("../../lib/trade_helper");
 
@@ -39,7 +39,7 @@
             amount: newOrder.amount,
             unit_price: newOrder.unit_price
           };
-          return GLOBAL.queue.Event.addOrder(orderData, function(err) {
+          return global.queue.Event.addOrder(orderData, function(err) {
             if (err) {
               console.error("Could add add_order event for order " + newOrder.id + " - " + err);
               if (err) {
@@ -70,8 +70,8 @@
           if (!market) {
             return next(new restify.ConflictError("" + (new Date()) + " - Will not process order " + orderId + ", the market for " + orderCurrency + " is disabled."));
           }
-          return GLOBAL.db.sequelize.transaction(function(transaction) {
-            return GLOBAL.queue.Event.addCancelOrder({
+          return global.db.sequelize.transaction(function(transaction) {
+            return global.queue.Event.addCancelOrder({
               order_id: orderId
             }, function(err) {
               if (err) {

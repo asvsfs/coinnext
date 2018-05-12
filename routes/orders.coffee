@@ -1,6 +1,6 @@
-Order = GLOBAL.db.Order
-Wallet = GLOBAL.db.Wallet
-MarketStats = GLOBAL.db.MarketStats
+Order = global.db.Order
+Wallet = global.db.Wallet
+MarketStats = global.db.MarketStats
 MarketHelper = require "../lib/market_helper"
 JsonRenderer = require "../lib/json_renderer"
 _ = require "underscore"

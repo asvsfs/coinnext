@@ -1,8 +1,8 @@
 MarketHelper = require "../lib/market_helper"
-MarketStats = GLOBAL.db.MarketStats
-TradeStats = GLOBAL.db.TradeStats
-OrderLog = GLOBAL.db.OrderLog
-Order = GLOBAL.db.Order
+MarketStats = global.db.MarketStats
+TradeStats = global.db.TradeStats
+OrderLog = global.db.OrderLog
+Order = global.db.Order
 JsonRenderer = require "./../lib/json_renderer"
 
 module.exports = (app)->

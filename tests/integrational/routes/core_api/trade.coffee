@@ -9,9 +9,9 @@ describe "Trade Api", ->
   wallet = undefined
 
   beforeEach (done)->
-    GLOBAL.db.sequelize.sync({force: true}).complete ()->
-      GLOBAL.db.sequelize.query("TRUNCATE TABLE #{GLOBAL.db.MarketStats.tableName}").complete ()->
-        GLOBAL.db.MarketStats.bulkCreate(marketStats).complete ()->
+    global.db.sequelize.sync({force: true}).complete ()->
+      global.db.sequelize.query("TRUNCATE TABLE #{global.db.MarketStats.tableName}").complete ()->
+        global.db.MarketStats.bulkCreate(marketStats).complete ()->
           done()
   ###
   describe "TradeHelper.matchOrders", ()->
@@ -27,8 +27,8 @@ describe "Trade Api", ->
           {id: 1, user_id: 1, type: "limit", action: "buy", buy_currency: "LTC", sell_currency: "BTC", amount: MarketHelper.toBigint(10), unit_price: MarketHelper.toBigint(0.1), status: "open", published: true}
           {id: 2, user_id: 2, type: "limit", action: "sell", buy_currency: "BTC", sell_currency: "LTC", amount: MarketHelper.toBigint(5), unit_price: MarketHelper.toBigint(0.1), status: "open", published: true}
         ]
-        GLOBAL.db.Wallet.bulkCreate(wallets).complete ()->
-          GLOBAL.db.Order.bulkCreate(orders).complete ()->
+        global.db.Wallet.bulkCreate(wallets).complete ()->
+          global.db.Order.bulkCreate(orders).complete ()->
             done()
 
       matchTime = new Date()
@@ -51,7 +51,7 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.Order.find(1).complete (err, order)->
+          global.db.Order.find(1).complete (err, order)->
             order.amount.should.eql MarketHelper.toBigint 10
             order.matched_amount.should.eql MarketHelper.toBigint 5
             order.result_amount.should.eql MarketHelper.toBigint 4.99
@@ -66,7 +66,7 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.Order.find(2).complete (err, order)->
+          global.db.Order.find(2).complete (err, order)->
             order.amount.should.eql MarketHelper.toBigint 5
             order.matched_amount.should.eql MarketHelper.toBigint 5
             order.result_amount.should.eql MarketHelper.toBigint 0.499
@@ -81,7 +81,7 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.OrderLog.find({where: {order_id: 1}}).complete (err, orderLog)->
+          global.db.OrderLog.find({where: {order_id: 1}}).complete (err, orderLog)->
             orderLog.matched_amount.should.eql MarketHelper.toBigint 5
             orderLog.result_amount.should.eql MarketHelper.toBigint 4.99
             orderLog.fee.should.eql MarketHelper.toBigint 0.01
@@ -97,7 +97,7 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.OrderLog.find({where: {order_id: 2}}).complete (err, orderLog)->
+          global.db.OrderLog.find({where: {order_id: 2}}).complete (err, orderLog)->
             orderLog.matched_amount.should.eql MarketHelper.toBigint 5
             orderLog.result_amount.should.eql MarketHelper.toBigint 0.499
             orderLog.fee.should.eql MarketHelper.toBigint 0.001
@@ -113,8 +113,8 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.Wallet.find(1).complete (err, sellWallet)->
-            GLOBAL.db.Wallet.find(2).complete (err, buyWallet)->
+          global.db.Wallet.find(1).complete (err, sellWallet)->
+            global.db.Wallet.find(2).complete (err, buyWallet)->
               sellWallet.balance.should.eql MarketHelper.toBigint 9
               sellWallet.hold_balance.should.eql MarketHelper.toBigint 0.5
               buyWallet.balance.should.eql MarketHelper.toBigint 4.99
@@ -127,8 +127,8 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.Wallet.find(3).complete (err, buyWallet)->
-            GLOBAL.db.Wallet.find(4).complete (err, sellWallet)->
+          global.db.Wallet.find(3).complete (err, buyWallet)->
+            global.db.Wallet.find(4).complete (err, sellWallet)->
               sellWallet.balance.should.eql MarketHelper.toBigint 5
               sellWallet.hold_balance.should.eql 0
               buyWallet.balance.should.eql MarketHelper.toBigint 0.499
@@ -142,7 +142,7 @@ describe "Trade Api", ->
         .expect(200)
         .end ()->
           setTimeout ()->
-              GLOBAL.db.MarketStats.getStats (err, stats)->
+              global.db.MarketStats.getStats (err, stats)->
                 stats["LTC_BTC"].growth_ratio.should.eql MarketHelper.toBigint 100
                 stats["LTC_BTC"].last_price.should.eql MarketHelper.toBigint 0.1
                 stats["LTC_BTC"].day_high.should.eql MarketHelper.toBigint 0.1
@@ -166,8 +166,8 @@ describe "Trade Api", ->
           {id: 1, user_id: 1, type: "limit", action: "buy", buy_currency: "LTC", sell_currency: "BTC", amount:  MarketHelper.toBigint(10), unit_price:  MarketHelper.toBigint(0.1), status: "open", published: true}
           {id: 2, user_id: 2, type: "limit", action: "sell", buy_currency: "BTC", sell_currency: "LTC", amount:  MarketHelper.toBigint(5), unit_price:  MarketHelper.toBigint(0.05), status: "open", published: true}
         ]
-        GLOBAL.db.Wallet.bulkCreate(wallets).complete ()->
-          GLOBAL.db.Order.bulkCreate(orders).complete ()->
+        global.db.Wallet.bulkCreate(wallets).complete ()->
+          global.db.Order.bulkCreate(orders).complete ()->
             done()
 
       matchTime = new Date()
@@ -190,7 +190,7 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.Order.find(1).complete (err, order)->
+          global.db.Order.find(1).complete (err, order)->
             order.amount.should.eql MarketHelper.toBigint 10
             order.matched_amount.should.eql MarketHelper.toBigint 5
             order.result_amount.should.eql MarketHelper.toBigint 4.99
@@ -205,7 +205,7 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.Order.find(2).complete (err, order)->
+          global.db.Order.find(2).complete (err, order)->
             order.amount.should.eql MarketHelper.toBigint 5
             order.matched_amount.should.eql MarketHelper.toBigint 5
             order.result_amount.should.eql MarketHelper.toBigint 0.2495
@@ -220,7 +220,7 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.OrderLog.find({where: {order_id: 1}}).complete (err, orderLog)->
+          global.db.OrderLog.find({where: {order_id: 1}}).complete (err, orderLog)->
             orderLog.matched_amount.should.eql MarketHelper.toBigint 5
             orderLog.result_amount.should.eql MarketHelper.toBigint 4.99
             orderLog.fee.should.eql MarketHelper.toBigint 0.01
@@ -235,7 +235,7 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.OrderLog.find({where: {order_id: 2}}).complete (err, orderLog)->
+          global.db.OrderLog.find({where: {order_id: 2}}).complete (err, orderLog)->
             orderLog.matched_amount.should.eql MarketHelper.toBigint 5
             orderLog.result_amount.should.eql MarketHelper.toBigint 0.2495
             orderLog.fee.should.eql MarketHelper.toBigint 0.0005
@@ -250,8 +250,8 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.Wallet.find(1).complete (err, sellWallet)->
-            GLOBAL.db.Wallet.find(2).complete (err, buyWallet)->
+          global.db.Wallet.find(1).complete (err, sellWallet)->
+            global.db.Wallet.find(2).complete (err, buyWallet)->
               sellWallet.balance.should.eql MarketHelper.toBigint 9.25
               sellWallet.hold_balance.should.eql MarketHelper.toBigint 0.5
               buyWallet.balance.should.eql MarketHelper.toBigint 4.99
@@ -264,8 +264,8 @@ describe "Trade Api", ->
         .send(matchData)
         .expect(200)
         .end ()->
-          GLOBAL.db.Wallet.find(3).complete (err, buyWallet)->
-            GLOBAL.db.Wallet.find(4).complete (err, sellWallet)->
+          global.db.Wallet.find(3).complete (err, buyWallet)->
+            global.db.Wallet.find(4).complete (err, sellWallet)->
               sellWallet.balance.should.eql MarketHelper.toBigint 5
               sellWallet.hold_balance.should.eql 0
               buyWallet.balance.should.eql MarketHelper.toBigint 0.2495
@@ -279,7 +279,7 @@ describe "Trade Api", ->
         .expect(200)
         .end ()->
           setTimeout ()->
-              GLOBAL.db.MarketStats.getStats (err, stats)->
+              global.db.MarketStats.getStats (err, stats)->
                 stats["LTC_BTC"].growth_ratio.should.eql MarketHelper.toBigint 100
                 stats["LTC_BTC"].last_price.should.eql MarketHelper.toBigint 0.05
                 stats["LTC_BTC"].day_high.should.eql MarketHelper.toBigint 0.05

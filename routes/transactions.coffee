@@ -1,4 +1,4 @@
-Transaction = GLOBAL.db.Transaction
+Transaction = global.db.Transaction
 JsonRenderer = require "../lib/json_renderer"
 
 module.exports = (app)->

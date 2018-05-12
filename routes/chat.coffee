@@ -1,4 +1,4 @@
-Chat = GLOBAL.db.Chat
+Chat = global.db.Chat
 JsonRenderer = require "../lib/json_renderer"
 
 module.exports = (app)->

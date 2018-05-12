@@ -1,7 +1,7 @@
-Wallet = GLOBAL.db.Wallet
-Transaction = GLOBAL.db.Transaction
-Payment = GLOBAL.db.Payment
-Order = GLOBAL.db.Order
+Wallet = global.db.Wallet
+Transaction = global.db.Transaction
+Payment = global.db.Payment
+Order = global.db.Order
 MarketHelper = require "./market_helper"
 async = require "async"
 math = require "./math"

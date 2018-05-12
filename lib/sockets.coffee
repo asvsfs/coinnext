@@ -2,12 +2,12 @@ io = require "socket.io"
 SessionSockets = require "session.socket.io"
 redis = require "redis"
 SocketsRedisStore = require "socket.io/lib/stores/redis"
-socketPub = redis.createClient GLOBAL.appConfig().redis.port, GLOBAL.appConfig().redis.host, {auth_pass: GLOBAL.appConfig().redis.pass}
-socketSub = redis.createClient GLOBAL.appConfig().redis.port, GLOBAL.appConfig().redis.host, {auth_pass: GLOBAL.appConfig().redis.pass}
-socketClient = redis.createClient GLOBAL.appConfig().redis.port, GLOBAL.appConfig().redis.host, {auth_pass: GLOBAL.appConfig().redis.pass}
-externalEventsSub = redis.createClient GLOBAL.appConfig().redis.port, GLOBAL.appConfig().redis.host, {auth_pass: GLOBAL.appConfig().redis.pass}
+socketPub = redis.createClient global.appConfig().redis.port, global.appConfig().redis.host, {auth_pass: global.appConfig().redis.pass}
+socketSub = redis.createClient global.appConfig().redis.port, global.appConfig().redis.host, {auth_pass: global.appConfig().redis.pass}
+socketClient = redis.createClient global.appConfig().redis.port, global.appConfig().redis.host, {auth_pass: global.appConfig().redis.pass}
+externalEventsSub = redis.createClient global.appConfig().redis.port, global.appConfig().redis.host, {auth_pass: global.appConfig().redis.pass}
 
-Chat = GLOBAL.db.Chat
+Chat = global.db.Chat
 JsonRenderer = require "./json_renderer"
 
 sockets = {}
@@ -22,7 +22,7 @@ initSockets = (server, env, sessionStore, cookieParser)->
     sockets.io.enable "browser client minification"
     sockets.io.enable "browser client etag"
     sockets.io.enable "browser client gzip"
-    sockets.io.set "origins", "#{GLOBAL.appConfig().users.hostname}:*"
+    sockets.io.set "origins", "#{global.appConfig().users.hostname}:*"
 
   sockets.io.set "store", new SocketsRedisStore
     redis: redis
@@ -44,7 +44,7 @@ initSockets = (server, env, sessionStore, cookieParser)->
         console.error "Could not emit to socket #{data}: #{e}"
       @
 
-  sockets.sessionSockets = new SessionSockets sockets.io, sessionStore, cookieParser, GLOBAL.appConfig().session.session_key
+  sockets.sessionSockets = new SessionSockets sockets.io, sessionStore, cookieParser, global.appConfig().session.session_key
 
   sockets.sessionSockets.of("/users").on "connection", (err, socket, session)->
     socket.user_id = session.passport.user  if session and session.passport

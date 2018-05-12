@@ -1,11 +1,11 @@
 (function() {
   var JsonRenderer, MarketHelper, MarketStats, Order, Wallet, _;
 
-  Order = GLOBAL.db.Order;
+  Order = global.db.Order;
 
-  Wallet = GLOBAL.db.Wallet;
+  Wallet = global.db.Wallet;
 
-  MarketStats = GLOBAL.db.MarketStats;
+  MarketStats = global.db.MarketStats;
 
   MarketHelper = require("../lib/market_helper");
 

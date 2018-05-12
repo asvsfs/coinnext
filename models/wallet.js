@@ -152,7 +152,7 @@
           if (callback == null) {
             callback = function() {};
           }
-          return GLOBAL.coreAPIClient.send("create_account", [this.account, this.currency], (function(_this) {
+          return global.coreAPIClient.send("create_account", [this.account, this.currency], (function(_this) {
             return function(err, res, body) {
               if (err) {
                 console.error(err);

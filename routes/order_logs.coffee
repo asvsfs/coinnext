@@ -1,4 +1,4 @@
-OrderLog = GLOBAL.db.OrderLog
+OrderLog = global.db.OrderLog
 JsonRenderer = require "../lib/json_renderer"
 
 module.exports = (app)->

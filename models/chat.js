@@ -36,7 +36,7 @@
             limit: MESSAGES_LIMIT,
             include: [
               {
-                model: GLOBAL.db.User,
+                model: global.db.User,
                 attributes: ["username"]
               }
             ]

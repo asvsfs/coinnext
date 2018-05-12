@@ -9,7 +9,7 @@
 
   for (currency in MarketHelper.getCurrencies()) {
     walletType = currency.toLowerCase();
-    options = process.env.NODE_ENV !== "production" && (GLOBAL.appConfig().wallets[walletType] == null) ? GLOBAL.appConfig().wallets["btc"] : GLOBAL.appConfig().wallets[walletType];
+    options = process.env.NODE_ENV !== "production" && (global.appConfig().wallets[walletType] == null) ? global.appConfig().wallets["btc"] : global.appConfig().wallets[walletType];
     if (process.env.NODE_ENV === "test") {
       path = "" + (process.cwd()) + "/tests/helpers/" + walletType + "_wallet_mock.js";
       if (fs.existsSync(path)) {
