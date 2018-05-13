@@ -1,7 +1,7 @@
 (function() {
   var AuthStats, JsonRenderer, User, UserToken, reCaptcha;
 
-  reCaptcha = require("recaptcha-async");
+  Recaptcha = require("express-recaptcha").Recaptcha;
 
   User = global.db.User;
 
@@ -49,34 +49,48 @@
         title: "Send Password - Coinnext.com",
         errors: errors,
         success: success,
-        recaptchaPublicKey: global.appConfig().recaptcha.public_key
+        recaptchaPublicKey: global.appConfig().recaptcha.site_key
       });
     });
     app.post("/send-password", function(req, res) {
-      var dataIsLoaded, email, recaptcha;
+      var dataIsLoaded, email;
       email = req.body.email;
       if (!email) {
         return res.redirect("/send-password");
       }
+      var recaptcha = new Recaptcha(global.appConfig().recaptcha.site_key,global.appConfig().recaptcha.private_key);
       dataIsLoaded = false;
-      recaptcha = new reCaptcha.reCaptcha();
-      recaptcha.on("data", function(captchaRes) {
-        if (!dataIsLoaded) {
-          dataIsLoaded = true;
-          if (!captchaRes.is_valid) {
-            return res.redirect("/send-password?error=invalid-captcha");
-          }
-          return User.findByEmail(email, function(err, user) {
-            if (!user) {
-              return res.redirect("/send-password?success=true");
-            }
-            return user.sendChangePasswordLink(function() {
-              return res.redirect("/send-password?success=true");
-            });
-          });
+      recaptcha.verify(req, function(err, data){
+        if (err) {
+          return res.redirect("/send-password?error=invalid-captcha");
         }
+        return User.findByEmail(email, function(err, user) {
+          if (!user) {
+            return res.redirect("/send-password?success=true");
+          }
+          return user.sendChangePasswordLink(function() {
+            return res.redirect("/send-password?success=true");
+          });
+        });
       });
-      return recaptcha.checkAnswer(global.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field);
+      // recaptcha = new reCaptcha.reCaptcha();
+      // recaptcha.on("data", function(captchaRes) {
+      //   if (!dataIsLoaded) {
+      //     dataIsLoaded = true;
+      //     if (!captchaRes.is_valid) {
+      //       return res.redirect("/send-password?error=invalid-captcha");
+      //     }
+      //     return User.findByEmail(email, function(err, user) {
+      //       if (!user) {
+      //         return res.redirect("/send-password?success=true");
+      //       }
+      //       return user.sendChangePasswordLink(function() {
+      //         return res.redirect("/send-password?success=true");
+      //       });
+      //     });
+      //   }
+      // });
+      // return recaptcha.checkAnswer(global.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field);
     });
     app.get("/change-password/:token", function(req, res) {
       var oldCsrf, oldStagingAuth, token;
