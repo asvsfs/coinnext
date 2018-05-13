@@ -13,7 +13,7 @@
 
   _ = require("underscore");
 
-  BANNED_USERNAMES_REGEX = /admin|coinnext/ig;
+  BANNED_USERNAMES_REGEX = /admin|separdaz/ig;
 
   module.exports = function(sequelize, DataTypes) {
     var User;

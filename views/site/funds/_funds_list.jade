@@ -1,9 +1,9 @@
 .fund-list.container
   .con-header
-    .con-header-title Wallets
+    .con-header-title کیف پول ها
   - var availableCurrencies = [];
   ul.fund-nav
-    li(class="#{wallet ? '' : 'active'}"): a(href='/funds') Overview
+    li(class="#{wallet ? '' : 'active'}"): a(href='/funds') بررسی اجمالی
     - each wl in wallets
       li(class="#{wallet && wallet.id == wl.id ? 'active' : ''}"): a(href='/funds/#{wl.currency}') 
         .label #{wl.currency}

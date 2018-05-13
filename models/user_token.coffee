@@ -73,7 +73,7 @@ module.exports = (sequelize, DataTypes) ->
 
         generateGAuthData: ()->
           gData = speakeasy.generate_key
-            name: "coinnext.com"
+            name: "separdaz.com"
             length: 20
             google_auth_qr: true
           data =

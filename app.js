@@ -91,7 +91,7 @@ var server = http.createServer(app);
 require("./lib/sockets")(server, environment, sessionStore, cookieParser);
 
 server.listen(app.get('port'), function(){
-  console.log("Coinnext is running on port %d in %s mode", app.get("port"), app.settings.env);
+  console.log("Separdaz is running on port %d in %s mode", app.get("port"), app.settings.env);
 });
 
 

@@ -16,7 +16,7 @@ module.exports = (app)->
     MarketStats.getStats (err, marketStats)->
       OrderLog.getNumberOfTrades null, (err, tradesCount)->
         res.render "site/index",
-          title: if req.user then 'Home - Coinnext' else 'Coinnext - Cryptocurrency Exchange'
+          title: if req.user then 'Home - Separdaz' else 'Separdaz - Cryptocurrency Exchange'
           page: "home"
           user: req.user
           marketStats: JsonRenderer.marketStats marketStats
@@ -43,7 +43,7 @@ module.exports = (app)->
               wallet2 = Wallet.build
                 currency: currency2
             res.render "site/trade",
-              title: "Trade #{MarketHelper.getCurrencyName(currency1)} to #{MarketHelper.getCurrencyName(currency2)} #{currency1}/#{currency2} - Coinnext"
+              title: "Trade #{MarketHelper.getCurrencyName(currency1)} to #{MarketHelper.getCurrencyName(currency2)} #{currency1}/#{currency2} - Separdaz"
               page: "trade"
               user: req.user
               currency1: currency1
@@ -55,7 +55,7 @@ module.exports = (app)->
               _str: _str
       else
         res.render "site/trade",
-          title: "Trade #{MarketHelper.getCurrencyName(currency1)} to #{MarketHelper.getCurrencyName(currency2)} #{currency1}/#{currency2} - Coinnext - Cryptocurrency Exchange"
+          title: "Trade #{MarketHelper.getCurrencyName(currency1)} to #{MarketHelper.getCurrencyName(currency2)} #{currency1}/#{currency2} - Separdaz - Cryptocurrency Exchange"
           page: "trade"
           currency1: currency1
           currency2: currency2
@@ -76,7 +76,7 @@ module.exports = (app)->
         currencies = MarketHelper.getSortedCurrencyNames()
         currencies = _.omit currencies, removedCurrencies
         res.render "site/funds",
-          title: 'Funds - Coinnext'
+          title: 'Funds - Separdaz'
           page: "funds"
           user: req.user
           wallets: wallets
@@ -96,7 +96,7 @@ module.exports = (app)->
           currencies = MarketHelper.getSortedCurrencyNames()
           currencies = _.omit currencies, removedCurrencies
           res.render "site/funds/wallet",
-            title: "#{req.params.currency} - Funds - Coinnext"
+            title: "#{req.params.currency} - Funds - Separdaz"
             page: "funds"
             user: req.user
             wallets: wallets
@@ -124,7 +124,7 @@ module.exports = (app)->
   app.get "/settings/preferences", (req, res)->
     return res.redirect "/login"  if not req.user
     res.render "site/settings/preferences",
-      title: 'Preferences - Settings - Coinnext'
+      title: 'Preferences - Settings - Separdaz'
       page: 'settings'
       user: req.user
 
@@ -133,7 +133,7 @@ module.exports = (app)->
     AuthStats.findByUser req.user.id, (err, authStats)->
       UserToken.findByUserAndType req.user.id, "google_auth", (err, googleToken)->
         res.render "site/settings/security",
-          title: 'Security - Settings - Coinnext'
+          title: 'Security - Settings - Separdaz'
           page: 'settings'
           user: req.user
           authStats: authStats
@@ -145,38 +145,38 @@ module.exports = (app)->
       sortedWallets = _.sortBy wallets, (w)->
         w.currency
       res.render "site/status",
-        title: 'Status - Coinnext'
+        title: 'Status - Separdaz'
         page: "status"
         wallets: sortedWallets
 
   # Static Pages
   app.get "/legal/terms", (req, res)->
     res.render "static/terms",
-      title: 'Terms - Coinnext'
+      title: 'Terms - Separdaz'
       user: req.user
 
   app.get "/legal/privacy", (req, res)->
     res.render "static/privacy",
-      title: 'Privacy - Coinnext'
+      title: 'Privacy - Separdaz'
       user: req.user
 
   app.get "/legal/cookie", (req, res)->
     res.render "static/cookie",
-      title: 'Cookie - Coinnext'
+      title: 'Cookie - Separdaz'
       user: req.user
 
   app.get "/fees", (req, res)->
     res.render "static/fees",
-      title: 'Fees - Coinnext'
+      title: 'Fees - Separdaz'
       user: req.user
       MarketHelper: MarketHelper
 
   app.get "/security", (req, res)->
     res.render "static/security",
-      title: 'Security - Coinnext'
+      title: 'Security - Separdaz'
       user: req.user
 
   app.get "/api", (req, res)->
     res.render "static/api",
-      title: 'API - Coinnext'
+      title: 'API - Separdaz'
       user: req.user

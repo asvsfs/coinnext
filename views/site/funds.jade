@@ -9,13 +9,13 @@ block content
       .col-main#finances-cnt
         #wallets.container
           .con-header
-            h3.con-header-title Balances
+            h3.con-header-title موجودی ها
           table.trade-data
             tr
-              th Currency
-              th Total Balance
-              th Available Balance
-              th Held for Orders
+              th ارز
+              th کل موجودی
+              th موجودی در دسترس
+              th در سفارش
             - each wallet in wallets
               tr.wallet(data-id="#{wallet._id}")
                 td <a href="/funds/#{wallet.currency}">#{wallet.currency}</a>
@@ -26,32 +26,33 @@ block content
         // Open Orders (All)
         #open-orders.container
           .con-header
-            h3.con-header-title Open Orders
+            h3.con-header-title سفارشات باز
           table.trade-data
             thead
               tr
-                th Market
-                th Date
-                th Type
-                th Price
-                th Amount
-                th Total
-                th Action
+                th بازار
+                th تاریخ
+                th نوع
+                th قیمت
+                th مقدار
+                th کل
+                th عمل
             tbody#overview-open-orders-cnt
 
         // Order History
         #order-history.order-history.container
           .con-header
-            h3.con-header-title Order History
+            h3.con-header-title تاریخچه سفارشات
           .table-wrap
             table.trade-data
               thead
                 tr
-                  th Market
-                  th Date
-                  th Type
-                  th Price
-                  th Amount
+                  th بازار
+                  th تاریخ
+                  th نوع
+                  th قیمت
+                  th مقدار
+                  th کل
                   th Total
               tbody#overview-closed-orders-cnt
 

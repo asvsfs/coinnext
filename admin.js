@@ -80,7 +80,7 @@ app.configure('production', function(){
 var server = http.createServer(app);
 
 server.listen(app.get('port'), function(){
-  console.log("Coinnext admin is running on port %d in %s mode", app.get("port"), app.settings.env);
+  console.log("Separdaz admin is running on port %d in %s mode", app.get("port"), app.settings.env);
 });
 
 

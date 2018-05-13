@@ -5,7 +5,7 @@ Emailer   = require "../lib/emailer"
 phonetic  = require "phonetic"
 _         = require "underscore"
 
-BANNED_USERNAMES_REGEX = /admin|coinnext/ig
+BANNED_USERNAMES_REGEX = /admin|separdaz/ig
 
 module.exports = (sequelize, DataTypes) ->
 

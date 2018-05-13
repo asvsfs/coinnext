@@ -8,16 +8,16 @@ block content
       .col-main
         #balance.container
           .con-header
-            h3.con-header-title
+            h3.con-header-title(style="margin:10px")
               img(src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==", alt="icon", class="coin-icon #{wallet.currency_name.toLowerCase()}")
-              | #{currencies[wallet.currency]} Balance
+              | موجودی #{currencies[wallet.currency]} 
             .header-aside
-              a(href="/trade/#{wallet.currency}/BTC") Trade #{wallet.currency}/BTC 
+              a(href="/trade/#{wallet.currency}/BTC") مبادله #{wallet.currency}/BTC 
           table.trade-data
             tr
-              th Total Balance
-              th Available Balance
-              th Held for Orders
+              th کل موجودی
+              th موجودی در دسترس
+              th در سفارش
             tr
               td <span data-wallet-balance-id="#{wallet.id}">#{_str.toFixed(wallet.getFloat('total_balance'))}</span> #{wallet.currency}
               td <span data-wallet-available-balance-id="#{wallet.id}">#{_str.toFixed(wallet.getFloat('balance'))}</span> #{wallet.currency}
@@ -26,12 +26,12 @@ block content
         // Pending Transactions
         #pending-transactions.container
           .con-header
-            h3.con-header-title Pending Transactions
+            h3.con-header-title تراکنش های در حال انجام
           table.trade-data
             tr
-              th Description
-              th Amount
-              th Confirms
+              th توضیحات
+              th مقدار
+              th تاییدیه ها
             tbody#pending-transactions-cnt(data-wallet-id="#{wallet.id}")
 
         // Deposit
@@ -39,83 +39,84 @@ block content
           .two-col-wrap
             .transaction-con.container
               .con-header
-                h3.con-header-title <i class="icon-circle-arrow-down"></i> Deposit #{currencies[wallet.currency]}
+                h3.con-header-title <i class="icon-circle-arrow-down"></i> سپرده #{currencies[wallet.currency]}
               .con-body
-                //label Deposits are permanently disabled. <br />For more information please see <a href="http://blog.coinnext.com/2014/06/24/closing-down/">here</a>.
-                label To deposit #{currencies[wallet.currency]}, send to this address:
+                //label Deposits are permanently disabled. <br />For more information please see <a href="http://blog.separdaz.com/2014/06/24/closing-down/">here</a>.
+                label به سپرده #{currencies[wallet.currency]}, بفرست به این آدرس:
                 .coin-deposit-address
                   code#address-row #{wallet.address}
                   - if (!wallet.address)
-                    button#generate-address(data-id="#{wallet.id}") Generate Wallet Address
+                    button#generate-address(data-id="#{wallet.id}") ایجاد آدس کیف پول
                   .coin-deposit-actions
-                    button#show-qr-bt Show QR
-                    button#copy-address(data-clipboard-text="#{wallet.address ? wallet.address : ''}") Copy
+                    button#show-qr-bt نشان QR
+                    button#copy-address(data-clipboard-text="#{wallet.address ? wallet.address : ''}") کپی
                 #qr-address-cnt.qr-address(data-address="#{wallet.address ? wallet.address : ''}")
                 ul.terms
-                  li Your deposit will be credited after #{wallet.network_confirmations} network confirmations.
+                  li سپرده شما بعد از #{wallet.network_confirmations} تایید شبکه به حساب می آید.
           .two-col-wrap
             .transaction-con.container
               .con-header
-                h3.con-header-title <i class="icon-circle-arrow-up"></i> Withdraw #{currencies[wallet.currency]}
-                .header-balance <a href="#" class="amount"><span data-wallet-available-balance-id="#{wallet.id}" data-withdrawal-fee="#{wallet.getFloat('withdrawal_fee')}">#{_str.toFixed(wallet.getFloat('balance'))}</span>  #{wallet.currency}</a> Available
+                h3.con-header-title(style="float:right") <i class="icon-circle-arrow-up"></i> برداشت #{currencies[wallet.currency]}
+                .header-balance موجود <a href="#" class="amount"><span data-wallet-available-balance-id="#{wallet.id}" data-withdrawal-fee="#{wallet.getFloat('withdrawal_fee')}">#{_str.toFixed(wallet.getFloat('balance'))}</span>  #{wallet.currency}</a> 
+                
               .con-body
                 form#withdraw-form
                   input(type="hidden", name="wallet_id", value="#{wallet.id}")
-                  label Enter the amount you would like to withdraw:
+                  label مقدار مورد نظر برای برداشت را وارد کنید:
                   .currency-input
                     input#withdrawal-amount.amount-field(type="text", name="amount", placeholder="Amount")
                     .overlay-amount #{wallet.currency}
-                  label Enter a #{currencies[wallet.currency]} address:
+                  label آدرس #{currencies[wallet.currency]} وارد کنید:
                   .address-input
                     input(type="text", name="address", placeholder="#{wallet.currency} address", data-currency="#{wallet.currency}")
                   .withdraw-button
-                    button Withdraw
+                    button برداشت
                   ul.terms
-                    li Fee for withdrawal is #{wallet.getFloat('withdrawal_fee')} #{wallet.currency}.
+                    li کارمزد برداشت #{wallet.getFloat('withdrawal_fee')} #{wallet.currency}.
 
         // Open Orders (All)
         #open-orders.container
           .con-header
-            h3.con-header-title Open Orders
+            h3.con-header-title سفارشات باز
           table.trade-data
             thead
               tr
-                th Market
-                th Date
-                th Type
-                th Price
-                th Amount
-                th Total
-                th Action
+                th بازار
+                th تاریخ
+                th نوع
+                th قیمت
+                th مقدار
+                th کل
+                th عمل
             tbody#open-orders-cnt(data-currency1="#{wallet.currency}")
 
         // Order History
         #order-history.order-history.container
           .con-header
-            h3.con-header-title Order History
+            h3.con-header-title تاریخچه سفارشات
           .table-wrap
             table.trade-data
               thead
                 tr
-                  th Market
-                  th Date
-                  th Type
-                  th Price
-                  th Amount
-                  th Total
+                  th بازار
+                th تاریخ
+                th نوع
+                th قیمت
+                th مقدار
+                th کل
               tbody#closed-orders-cnt(data-currency1="#{wallet.currency}")
 
         // Transaction History
         #balance-history.balance-history.container
           .con-header
-            h3.con-header-title Transaction History
+            h3.con-header-title تاریخچه تراکنش ها
           .table-wrap
             table.trade-data
               thead
                 tr
-                  th Date
-                  th Description
-                  th Amount
+                  th تاریخ
+                  th توضیحات
+                  th مقدار
               tbody#transactions-history-cnt(data-wallet-id="#{wallet.id}")
                 
   include ../../templates/pending_transaction

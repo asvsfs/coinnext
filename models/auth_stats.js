@@ -70,7 +70,7 @@
             to: {
               email: email
             },
-            subject: "Login on Coinnext.com",
+            subject: "Login on Separdaz.com",
             template: "user_login_notice"
           };
           emailer = new Emailer(options, data);

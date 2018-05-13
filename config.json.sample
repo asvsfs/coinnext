@@ -21,7 +21,7 @@
     },
     "slackalerts": {
       "enabled": false,
-      "domain": "coinnext",
+      "domain": "separdaz",
       "token": "25Kj3veGYbD8A4ZoHDynWCxc",
       "channel": "#alerts"
     },
@@ -49,7 +49,7 @@
     "emailer": {
       "enabled": false,
       "host": "http://localhost:5000",
-      "from": "Coinnext Mailer <no-reply@coinnext.com>",
+      "from": "Separdaz Mailer <no-reply@separdaz.com>",
       "transport": {
         "host": "email-smtp.us-east-1.amazonaws.com",
         "port": 465,
@@ -97,7 +97,7 @@
     },
     "slackalerts": {
       "enabled": false,
-      "domain": "coinnext",
+      "domain": "separdaz",
       "token": "25Kj3veGYbD8A4ZoHDynWCxc",
       "channel": "#alerts"
     },
@@ -125,7 +125,7 @@
     "emailer": {
       "enabled": false,
       "host": "http://localhost:5000",
-      "from": "Coinnext Mailer <no-reply@coinnext.com>",
+      "from": "Separdaz Mailer <no-reply@separdaz.com>",
       "transport": {
         "host": "email-smtp.us-east-1.amazonaws.com",
         "port": 465,
@@ -172,7 +172,7 @@
     },
     "slackalerts": {
       "enabled": false,
-      "domain": "coinnext",
+      "domain": "separdaz",
       "token": "25Kj3veGYbD8A4ZoHDynWCxc",
       "channel": "#alerts"
     },
@@ -199,8 +199,8 @@
     "salt": "coinnextsecret#1999",
     "emailer": {
       "enabled": true,
-      "host": "https://coinnext.com",
-      "from": "Coinnext Mailer <no-reply@coinnext.com>",
+      "host": "https://separdaz.com",
+      "from": "Separdaz Mailer <no-reply@separdaz.com>",
       "transport": {
         "host": "email-smtp.us-east-1.amazonaws.com",
         "port": 465,
@@ -218,7 +218,7 @@
     "wallets_host": "localhost:6000",
     "engine_api_host": "http://localhost:7000",
     "users": {
-      "hostname": "http://direct.coinnext.com"
+      "hostname": "http://direct.separdaz.com"
     },
     "assets_host": "https://d2fsloj9ifsfv5.cloudfront.net",
     "assets_key": "1397587150588",

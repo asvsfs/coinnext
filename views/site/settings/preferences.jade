@@ -6,28 +6,28 @@ block content
       .col-aside
         ul.sub-nav
           //li: a(href='/settings') Settings
-          li.active: a(href='/settings/preferences') Preferences
-          li: a(href='/settings/security') Security
+          li.active: a(href='/settings/preferences') تنظیمات
+          li: a(href='/settings/security') امنیت
 
       .col-main
         .container
           .con-header
-            h1.con-header-title Social
-          .con-body
-            fieldset.checkbox
+            h1.con-header-title اجتماعی
+          .con-body(style="direction:rtl")
+            fieldset.checkbox(style="float:right")
               label(for="chat_enabled")
                 input(type="checkbox" name="chat_enabled" id="chat_enabled" checked=(user.chat_enabled))
-                | Chat
+                | چت
             form#username-update-form
               fieldset
-                label(for="username") Username
+                label(for="username") نام کاربری
                 input(type="text" name="username" id="username" placeholder="username" value=user.username)
         .container
           .con-header
-            h1.con-header-title Notifications
-          .con-body
-            fieldset.checkbox
+            h1.con-header-title نوتیفیکیشن(اطلاعیه ها)
+          .con-body(style="direction:rtl")
+            fieldset.checkbox(style="float:right")
               label(for="email_auth_enabled")
                 input(type="checkbox" name="email_auth_enabled" id="email_auth_enabled" checked=(user.email_auth_enabled))
-                | Email on authentication
+                | ایمیل دریافت نوتیفیکیشن
             

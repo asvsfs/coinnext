@@ -33,7 +33,7 @@ module.exports = (app)->
       errors = [req.query.error]
     success = req.query.success
     res.render "auth/send_password",
-      title: "Send Password - Coinnext.com"
+      title: "Send Password - Separdaz.com"
       errors: errors
       success: success
       recaptchaPublicKey: global.appConfig().recaptcha.public_key
@@ -65,7 +65,7 @@ module.exports = (app)->
         return res.redirect "/404"  if not userToken
         if req.query.error
           errors = [req.query.error]
-        res.render "auth/change_password", {title: "Change Password - Coinnext.com", token: token, errors: errors}
+        res.render "auth/change_password", {title: "Change Password - Separdaz.com", token: token, errors: errors}
 
   app.post "/change-password", (req, res)->
     token = req.body.token
@@ -107,7 +107,7 @@ module.exports = (app)->
         User.findByToken token, (err, user)->
           return res.redirect "/404"  if not user
           user.setEmailVerified (err, u)->
-            res.render "auth/verify", {title: "Verify Account - Coinnext.com", user: u}
+            res.render "auth/verify", {title: "Verify Account - Separdaz.com", user: u}
             UserToken.invalidateByToken token
 
   app.get "/resend", (req, res)->
@@ -124,7 +124,7 @@ module.exports = (app)->
         User.findByToken userToken.token, (err, user)->
           return res.redirect "/404"  if not user
           user.sendEmailVerificationLink ()->
-            res.render "auth/resend_verify_link", {title: "Resend Verification Link - Coinnext.com", user: user}
+            res.render "auth/resend_verify_link", {title: "Resend Verification Link - Separdaz.com", user: user}
             UserToken.invalidateByToken userToken.token
 
   app.post "/google_auth", (req, res)->

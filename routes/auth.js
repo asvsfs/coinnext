@@ -46,7 +46,7 @@
       }
       success = req.query.success;
       return res.render("auth/send_password", {
-        title: "Send Password - Coinnext.com",
+        title: "Send Password - Separdaz.com",
         errors: errors,
         success: success,
         recaptchaPublicKey: global.appConfig().recaptcha.site_key
@@ -110,7 +110,7 @@
             errors = [req.query.error];
           }
           return res.render("auth/change_password", {
-            title: "Change Password - Coinnext.com",
+            title: "Change Password - Separdaz.com",
             token: token,
             errors: errors
           });
@@ -189,7 +189,7 @@
             }
             return user.setEmailVerified(function(err, u) {
               res.render("auth/verify", {
-                title: "Verify Account - Coinnext.com",
+                title: "Verify Account - Separdaz.com",
                 user: u
               });
               return UserToken.invalidateByToken(token);
@@ -220,7 +220,7 @@
             }
             return user.sendEmailVerificationLink(function() {
               res.render("auth/resend_verify_link", {
-                title: "Resend Verification Link - Coinnext.com",
+                title: "Resend Verification Link - Separdaz.com",
                 user: user
               });
               return UserToken.invalidateByToken(userToken.token);

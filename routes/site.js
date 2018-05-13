@@ -28,7 +28,7 @@
       return MarketStats.getStats(function(err, marketStats) {
         return OrderLog.getNumberOfTrades(null, function(err, tradesCount) {
           return res.render("site/index", {
-            title: req.user ? 'Home - Coinnext' : 'Coinnext - Cryptocurrency Exchange',
+            title: req.user ? 'Home - Separdaz' : 'Separdaz - Cryptocurrency Exchange',
             page: "home",
             user: req.user,
             marketStats: JsonRenderer.marketStats(marketStats),
@@ -67,7 +67,7 @@
                 });
               }
               return res.render("site/trade", {
-                title: "Trade " + (MarketHelper.getCurrencyName(currency1)) + " to " + (MarketHelper.getCurrencyName(currency2)) + " " + currency1 + "/" + currency2 + " - Coinnext",
+                title: "Trade " + (MarketHelper.getCurrencyName(currency1)) + " to " + (MarketHelper.getCurrencyName(currency2)) + " " + currency1 + "/" + currency2 + " - Separdaz",
                 page: "trade",
                 user: req.user,
                 currency1: currency1,
@@ -82,7 +82,7 @@
           });
         } else {
           return res.render("site/trade", {
-            title: "Trade " + (MarketHelper.getCurrencyName(currency1)) + " to " + (MarketHelper.getCurrencyName(currency2)) + " " + currency1 + "/" + currency2 + " - Coinnext - Cryptocurrency Exchange",
+            title: "Trade " + (MarketHelper.getCurrencyName(currency1)) + " to " + (MarketHelper.getCurrencyName(currency2)) + " " + currency1 + "/" + currency2 + " - Separdaz - Cryptocurrency Exchange",
             page: "trade",
             currency1: currency1,
             currency2: currency2,
@@ -115,7 +115,7 @@
           currencies = MarketHelper.getSortedCurrencyNames();
           currencies = _.omit(currencies, removedCurrencies);
           return res.render("site/funds", {
-            title: 'Funds - Coinnext',
+            title: 'Funds - Separdaz',
             page: "funds",
             user: req.user,
             wallets: wallets,
@@ -148,7 +148,7 @@
             currencies = MarketHelper.getSortedCurrencyNames();
             currencies = _.omit(currencies, removedCurrencies);
             return res.render("site/funds/wallet", {
-              title: "" + req.params.currency + " - Funds - Coinnext",
+              title: "" + req.params.currency + " - Funds - Separdaz",
               page: "funds",
               user: req.user,
               wallets: wallets,
@@ -178,7 +178,7 @@
         return res.redirect("/login");
       }
       return res.render("site/settings/preferences", {
-        title: 'Preferences - Settings - Coinnext',
+        title: 'Preferences - Settings - Separdaz',
         page: 'settings',
         user: req.user
       });
@@ -190,7 +190,7 @@
       return AuthStats.findByUser(req.user.id, function(err, authStats) {
         return UserToken.findByUserAndType(req.user.id, "google_auth", function(err, googleToken) {
           return res.render("site/settings/security", {
-            title: 'Security - Settings - Coinnext',
+            title: 'Security - Settings - Separdaz',
             page: 'settings',
             user: req.user,
             authStats: authStats,
@@ -206,7 +206,7 @@
           return w.currency;
         });
         return res.render("site/status", {
-          title: 'Status - Coinnext',
+          title: 'Status - Separdaz',
           page: "status",
           wallets: sortedWallets
         });
@@ -214,38 +214,38 @@
     });
     app.get("/legal/terms", function(req, res) {
       return res.render("static/terms", {
-        title: 'Terms - Coinnext',
+        title: 'Terms - Separdaz',
         user: req.user
       });
     });
     app.get("/legal/privacy", function(req, res) {
       return res.render("static/privacy", {
-        title: 'Privacy - Coinnext',
+        title: 'Privacy - Separdaz',
         user: req.user
       });
     });
     app.get("/legal/cookie", function(req, res) {
       return res.render("static/cookie", {
-        title: 'Cookie - Coinnext',
+        title: 'Cookie - Separdaz',
         user: req.user
       });
     });
     app.get("/fees", function(req, res) {
       return res.render("static/fees", {
-        title: 'Fees - Coinnext',
+        title: 'Fees - Separdaz',
         user: req.user,
         MarketHelper: MarketHelper
       });
     });
     app.get("/security", function(req, res) {
       return res.render("static/security", {
-        title: 'Security - Coinnext',
+        title: 'Security - Separdaz',
         user: req.user
       });
     });
     return app.get("/api", function(req, res) {
       return res.render("static/api", {
-        title: 'API - Coinnext',
+        title: 'API - Separdaz',
         user: req.user
       });
     });
