@@ -64,11 +64,11 @@ class App.TradeView extends App.MasterView
             min: 0.00000001
         messages:
           amount:
-            required: "Please provide an amount."
-            min: "Please provide an amount bigger than 0.0000001"
+            required: "لطفا مقداری را تایین کنید."
+            min: "مقدار تایین شده باید بیشتر از 0.0000001 باشد"
           unit_price:
-            required: "Please provide an amount."
-            min: "Please provide an amount bigger than 0.000001"
+            required: "لطفا مقداری را تایین کنید."
+            min: "لطفا مقداری بیشتر از 0.000001 تایین کنید"
         submitHandler: (form)=>
           @onOrderSubmit form
           return false

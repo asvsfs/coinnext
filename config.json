@@ -1,0 +1,244 @@
+{
+  "development" : {
+    "mysql": {
+      "db": "exchange_dev",
+      "user": "exchange_dev",
+      "password": "whatsnew",
+      "port": 3306,
+      "host": "138.68.68.235",
+      "logging": true,
+      "dialect":"mysql"
+    },
+    "queue": {
+      "db": "queue",
+      "user": "queue",
+      "password": "whatsnew",
+      "port": 3306,
+      "host": "138.68.68.235",
+      "logging": true,
+      "dialect":"mysql"
+    },
+    "redis": {
+      "uri":  "redis://h:p8c8e04acb775fe2a72f9d8ef93fc4980a91b0967dfe6dbe9a0e2e3b266cb1c88@ec2-34-246-92-26.eu-west-1.compute.amazonaws.com:6669",
+      "host": "ec2-34-246-92-26.eu-west-1.compute.amazonaws.com",
+      "port": "6669",
+      "user": "h",
+      "pass": "p8c8e04acb775fe2a72f9d8ef93fc4980a91b0967dfe6dbe9a0e2e3b266cb1c88"
+      
+    },
+    "slackalerts": {
+      "enabled": false,
+      "domain": "nomarz",
+      "username":"asvsfs",
+      "url":"https://hooks.slack.com/services/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",
+      "token": "25Kj3veGYbD8A4ZoHDynWCxc",
+      "channel": "#general"
+    },
+    "session": {
+      "cookie_secret": "secretkey",
+      "session_key": "cnxweb",
+      "cookie": {
+        "maxAge": 43200000,
+        "path": "/",
+        "httpOnly": true,
+        "secure": false
+      },
+      "admin": {
+        "cookie_secret": "adminsecretkey",
+        "session_key": "cnxadmin",
+        "cookie": {
+          "maxAge": 2592000000,
+          "path": "/",
+          "httpOnly": true,
+          "secure": true
+        }
+      }
+    },
+    "salt": "coinnextsecret#1999",
+    "emailer": {
+      "enabled": true,
+      "host": "http://localhost:5000",
+      "from": "Separdaz Mailer <info@separdaz.com>",
+      "transport": {
+        "host": "mail.separdaz.com",
+        "port": 25,
+        "secure": false,
+        "auth": {
+            "user": "info@separdaz.com",
+            "pass": "Whatsnew1%%"
+        },
+        "tls": {
+          "rejectUnauthorized":false
+        }
+      }
+    },
+    "wallets": {
+    },
+    "app_host": "localhost:5000",
+    "wallets_host": "localhost:6000",
+    "rpcuser":"7feb4192-8b2b-4422-bbb1-ccb17104acf0",
+    "rpcpassword":"Whatsnew1%%",
+    "rpcport":"443",
+    "engine_api_host": "http://localhost:7000",
+    "users": {
+      "hostname": "http://localhost:5000",
+      "events_endpoint": "http://localhost:5000/user_event"
+    },
+    "recaptcha": {
+      "site_key": "6Lciqj8UAAAAAIiMhAqDVA31pYeKYTOC-epp606q",
+      "private_key": "6Lciqj8UAAAAAItoVp56HIeyg4oKWQthZW87QdMb"
+    }
+  },
+  "test" : {
+    "mysql": {
+      "db": "coinnext_test",
+      "user": "root",
+      "password": "",
+      "port": 3306,
+      "host": "localhost",
+      "logging": true
+    },
+    "queue": {
+      "db": "coinnext_queue_test",
+      "user": "root",
+      "password": "",
+      "port": 3306,
+      "host": "localhost",
+      "logging": true
+    },
+    "redis": {
+      "db": "coinnext_auth_test"
+    },
+    "slackalerts": {
+      "enabled": false,
+      "domain": "coinnext",
+      "token": "25Kj3veGYbD8A4ZoHDynWCxc",
+      "channel": "#alerts"
+    },
+    "session": {
+      "cookie_secret": "secretkey",
+      "session_key": "cnxweb",
+      "cookie": {
+        "maxAge": 43200000,
+        "path": "/",
+        "httpOnly": true,
+        "secure": true
+      },
+      "admin": {
+        "cookie_secret": "adminsecretkey",
+        "session_key": "cnxadmin",
+        "cookie": {
+          "maxAge": 2592000000,
+          "path": "/",
+          "httpOnly": true,
+          "secure": true
+        }
+      }
+    },
+    "salt": "coinnextsecret#1999",
+    "emailer": {
+      "enabled": false,
+      "host": "http://localhost:5000",
+      "from": "Coinnext Mailer <no-reply@coinnext.com>",
+      "transport": {
+        "host": "email-smtp.us-east-1.amazonaws.com",
+        "port": 465,
+        "secureConnection": true,
+        "auth": {
+          "user": "",
+          "pass": ""
+        },
+        "debug": true
+      }
+    },
+    "wallets": {
+    },
+    "app_host": "localhost:5000",
+    "wallets_host": "localhost:6000",
+    "engine_api_host": "http://localhost:7000",
+    "users": {
+      "hostname": "http://localhost:5000"
+    }
+  },
+  "production" : {
+    "mysql": {
+      "db": "coinnext_production",
+      "user": "root",
+      "password": "",
+      "port": 3306,
+      "host": "localhost",
+      "logging": true
+    },
+    "queue": {
+      "db": "coinnext_queue_production",
+      "user": "root",
+      "password": "",
+      "port": 3306,
+      "host": "localhost",
+      "logging": true
+    },
+    "redis": {
+      "host": "",
+      "port": "",
+      "user": "",
+      "pass": "",
+      "db": "coinnext_auth"
+    },
+    "slackalerts": {
+      "enabled": false,
+      "domain": "coinnext",
+      "token": "25Kj3veGYbD8A4ZoHDynWCxc",
+      "channel": "#alerts"
+    },
+    "session": {
+      "cookie_secret": "secretkey",
+      "session_key": "cnxweb",
+      "cookie": {
+        "maxAge": 43200000,
+        "path": "/",
+        "httpOnly": true,
+        "secure": true
+      },
+      "admin": {
+        "cookie_secret": "adminsecretkey",
+        "session_key": "cnxadmin",
+        "cookie": {
+          "maxAge": 2592000000,
+          "path": "/",
+          "httpOnly": true,
+          "secure": true
+        }
+      }
+    },
+    "salt": "coinnextsecret#1999",
+    "emailer": {
+      "enabled": true,
+      "host": "https://coinnext.com",
+      "from": "Coinnext Mailer <no-reply@coinnext.com>",
+      "transport": {
+        "host": "email-smtp.us-east-1.amazonaws.com",
+        "port": 465,
+        "secureConnection": true,
+        "auth": {
+          "user": "",
+          "pass": ""
+        },
+        "debug": false
+      }
+    },
+    "wallets": {
+    },
+    "app_host": "localhost:5000",
+    "wallets_host": "localhost:6000",
+    "engine_api_host": "http://localhost:7000",
+    "users": {
+      "hostname": "http://direct.coinnext.com"
+    },
+    "assets_host": "https://d2fsloj9ifsfv5.cloudfront.net",
+    "assets_key": "1397587150588",
+    "recaptcha": {
+      "public_key": "",
+      "private_key": ""
+    }
+  }
+}

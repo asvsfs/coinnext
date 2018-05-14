@@ -71,6 +71,15 @@ app.use(require('connect-assets')(connectAssetsOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 // app.use(app.router);
+
+app.use(function(req, res, next) {
+  var origin = req.headers.origin ;
+	if(origin){
+		res.setHeader('Access-Control-Allow-Origin', origin);
+	}
+  return next();
+});
+
 app.use(function(err, req, res, next) {
   console.error(err);
   res.render("errors/500");
@@ -110,6 +119,7 @@ if (global.appConfig().site_auth) {
 
 // Routes
 require('./routes/site')(app);
+require('./routes/tradeView')(app);
 require('./routes/auth')(app);
 require('./routes/users')(app);
 require('./routes/wallets')(app);

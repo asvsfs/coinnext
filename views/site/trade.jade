@@ -1,5 +1,6 @@
 extends ../layout
 
+
 block content
   #trade.main-content(role='main', data-currency1="#{wallet1.currency}", data-currency2="#{wallet2.currency}")
     .wrapper
@@ -10,7 +11,7 @@ block content
         #coin-stats.coin-stats
           ul
             li.last-price
-              label Last Price:
+              label آخرین قیمت:
               div
                 | #{_str.toFixed(coinStats.last_price)} #{currency2} 
                 span(class="rate #{coinStats.growth_ratio > 0 ? 'up' : ''} #{coinStats.growth_ratio < 0 ? 'down' : ''} #{coinStats.growth_ratio == 0 ? 'none' : ''}") #{_str.roundTo(coinStats.growth_ratio, 2) * (coinStats.growth_ratio < 0 ? -1 : 1)}%
@@ -21,7 +22,7 @@ block content
               label 24hr Low:
               div #{_str.toFixed(coinStats.day_low)} #{currency2}
             li.volume
-              label Volume:
+              label حجم:
               div #{_str.satoshiRound(coinStats.volume2)} #{currency2}
         
         - if (user)
@@ -37,7 +38,7 @@ block content
             span.abbreviation
               img(src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==", alt="icon", class="coin-icon #{wallet1.currency_name.toLowerCase()}")
               | #{wallet1.currency}/#{wallet2.currency}
-            <strong>#{wallet1.currency_name}</strong> to <strong>#{wallet2.currency_name}</strong> Exchange
+            <strong>#{wallet1.currency_name}</strong> به <strong>#{wallet2.currency_name}</strong> 
           #trade-chart.graph
 
         // Order Box
@@ -45,8 +46,8 @@ block content
           .two-col-wrap
             #buy-box.order-box
               .con-header
-                h3.con-header-title <i class="icon-circle-arrow-down"></i> Buy #{wallet1.currency}
-                .header-balance <a href="#" class="amount" data-amount="#{_str.toFixed(wallet2.getFloat('balance'))}" data-type="buy"><span data-wallet-available-balance-id="#{wallet2.id}">#{_str.toFixed(wallet2.getFloat('balance'))}</span> #{wallet2.currency}</a> Available
+                h3.con-header-title <i class="icon-circle-arrow-down"></i> خرید #{wallet1.currency}
+                .header-balance <a href="#" class="amount" data-amount="#{_str.toFixed(wallet2.getFloat('balance'))}" data-type="buy"><span data-wallet-available-balance-id="#{wallet2.id}">#{_str.toFixed(wallet2.getFloat('balance'))}</span> #{wallet2.currency}</a> در دسترس
               .order-box-body
                 #limit-buy-box.limit-order
                   form#limit-buy-form.order-form
@@ -55,32 +56,30 @@ block content
                     input(name="action", type="hidden", value="buy")
                     input(name="sell_currency", type="hidden", value="#{wallet2.currency}")
                     input(name="buy_currency", type="hidden", value="#{wallet1.currency}")
-                    label Amount to Buy:
+                    label مقدار خرید:
                     .currency-input
-                      input#buy-amount-input.amount-field(type="text", name="amount", maxlength="25")
-                      .overlay-amount #{wallet1.currency}
-                    label Price per #{wallet1.currency}:
+                      input#buy-amount-input.amount-field(type="text", name="amount", maxlength="25" placeholder=" #{wallet1.currency}")
+                    label قیمت هر #{wallet1.currency}:
                     .currency-input
-                      input#buy-unit-price.amount-field(type="text", name="unit_price", value="#{_str.toFixed(coinStats.last_price)}")
-                      .overlay-amount #{wallet2.currency}
+                      input#buy-unit-price.amount-field(type="text", name="unit_price", value="#{_str.toFixed(coinStats.last_price)}" placeholder="#{wallet2.currency}")
                     table.order-overview
                       tr.subtotal
-                        th Total to spend:
+                        th کل خرج:
                         td <span id="buy-subtotal" class="amount">0</span> #{wallet2.currency}
                       tr.fee
-                        th Fee:
+                        th کارمزد:
                         td <span id="buy-fee" class="amount" data-fee="#{wallet1.fee}">0</span> #{wallet1.currency}
                       tr.to-receive
-                        th Approx. #{wallet1.currency} to receive:
+                        th مقدار تقریبی. #{wallet1.currency} برای دریافت:
                         td <span id="buy-amount-result" class="amount">0</span> #{wallet1.currency}
                     .confirm-order
-                      button Buy #{wallet1.currency_name}
+                      button خرید #{wallet1.currency_name}
 
           .two-col-wrap
             #sell-box.order-box
               .con-header
-                h3.con-header-title <i class="icon-circle-arrow-up"></i> Sell #{wallet1.currency}
-                .header-balance <a href="#" class="amount" data-amount="#{_str.toFixed(wallet1.getFloat('balance'))}" data-type="sell"><span data-wallet-available-balance-id="#{wallet1.id}">#{_str.toFixed(wallet1.getFloat('balance'))}</span> #{wallet1.currency}</a> Available
+                h3.con-header-title <i class="icon-circle-arrow-up"></i> فروش #{wallet1.currency}
+                .header-balance <a href="#" class="amount" data-amount="#{_str.toFixed(wallet1.getFloat('balance'))}" data-type="sell"><span data-wallet-available-balance-id="#{wallet1.id}">#{_str.toFixed(wallet1.getFloat('balance'))}</span> #{wallet1.currency}</a> در دسترس
               .order-box-body
                 #limit-sell-box.limit-order
                   form#limit-sell-form.order-form
@@ -89,42 +88,40 @@ block content
                     input(name="action", type="hidden", value="sell")
                     input(name="sell_currency", type="hidden", value="#{wallet1.currency}")
                     input(name="buy_currency", type="hidden", value="#{wallet2.currency}")
-                    label Amount to Sell:
+                    label مقدار فروش:
                     .currency-input
-                      input#sell-amount-input.amount-field(type="text", name="amount", maxlength="25")
-                      .overlay-amount #{wallet1.currency}
-                    label Price per #{wallet1.currency}:
+                      input#sell-amount-input.amount-field(type="text", name="amount", maxlength="25" placeholder="#{wallet1.currency}")
+                    label قیمت هر #{wallet1.currency}:
                     .currency-input
-                      input#sell-unit-price.amount-field(type="text", name="unit_price", value="#{_str.toFixed(coinStats.last_price)}")
-                      .overlay-amount #{wallet2.currency}
+                      input#sell-unit-price.amount-field(type="text", name="unit_price", value="#{_str.toFixed(coinStats.last_price)}" placeholder="#{wallet2.currency}")
                     table.order-overview
                       tr.subtotal 
-                        th Total to receive:
+                        th کل دریافتی:
                         td <span id="sell-subtotal" class="amount">0</span> #{wallet2.currency}
                       tr.fee
-                        th Fee:
+                        th کارمز:
                         td <span id="sell-fee" class="amount" data-fee="#{wallet2.fee}">0</span> #{wallet2.currency}
                       tr.to-receive
-                        th Approx. #{wallet2.currency} to receive:
+                        th مقدار تقریبی. #{wallet2.currency} برای دریافت:
                         td <span id="sell-amount-result" class="amount">0</span> #{wallet2.currency}
                     .confirm-order
-                      button Sell #{wallet1.currency_name}
+                      button فروش #{wallet1.currency_name}
 
         // Open Orders
         - if (user)
           section#open-orders.container
             .con-header
-              h3.con-header-title Open Orders
+              h3.con-header-title سفارشات باز
             .table-wrap
               table.trade-data
                 thead
                   tr
-                    th Date
-                    th Type
-                    th Price
+                    th تاریخ
+                    th نوع
+                    th قیمت
                     th #{wallet1.currency}
                     th #{wallet2.currency}
-                    th Action
+                    th عمل
                 tbody#open-orders-cnt(data-currency1="#{wallet1.currency}", data-currency2="#{wallet2.currency}")
         
         // Order Book
@@ -132,13 +129,13 @@ block content
           .two-col-wrap
             #sell-orders.order-book
               .con-header
-                h3.con-header-title Sell Orders
-                .order-book-total Total: <span id="order-book-sell-volume-total">0</span> #{wallet1.currency}
+                h3.con-header-title سفارشات فروش
+                .order-book-total کل: <span id="order-book-sell-volume-total">0</span> #{wallet1.currency}
               .table-wrap
                 table.trade-data
                   thead
                     tr
-                      th Price
+                      th قیمت
                       th #{wallet1.currency}
                       th #{wallet2.currency}
                   tbody#order-book-sell-cnt(data-currency1="#{wallet1.currency}", data-currency2="#{wallet2.currency}")
@@ -146,12 +143,12 @@ block content
           .two-col-wrap
             #buy-orders.order-book
               .con-header
-                h3.con-header-title Buy Orders
-                .order-book-total Total: <span id="order-book-buy-volume-total">0</span> #{wallet1.currency}
+                h3.con-header-title سفارشات خرید
+                .order-book-total کل: <span id="order-book-buy-volume-total">0</span> #{wallet1.currency}
               table.trade-data
                 thead
                   tr
-                    th Price
+                    th قیمت
                     th #{wallet1.currency}
                     th #{wallet2.currency}
                 tbody#order-book-buy-cnt(data-currency1="#{wallet1.currency}", data-currency2="#{wallet2.currency}")
@@ -159,14 +156,14 @@ block content
         // Trade History
         section#trade-history.trade-history.container
           .con-header
-            h3.con-header-title Trade History
+            h3.con-header-title تارخچه مبادله
           .table-wrap
             table.trade-data
               thead
                 tr
-                  th Date
-                  th Type
-                  th Price
+                  th تاریخ
+                  th نوع
+                  th قیمت
                   th #{wallet1.currency}
                   th #{wallet2.currency}
               tbody#closed-orders-cnt(data-currency1="#{wallet1.currency}", data-currency2="#{wallet2.currency}")

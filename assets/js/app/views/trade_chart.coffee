@@ -3,6 +3,24 @@ class App.TradeChartView extends App.MasterView
   collection: null
 
   initialize: (options = {})->
+    console.log "hey"
+    TradingView.onready ()->
+      widget = window.tvWidget = new TradingView.widget 
+        debug:true
+        fullscreen:true
+        symbol: 'LTC_BTC'
+        interval: '30m'
+        container_id: "tv_chart_container"
+        datafeed: new new App.UDFCompatibleDatafeed("http://localhost:5000")
+        library_path: "charting_library/"
+        locale: getParameterByName('lang') || 'en'
+        drawings_access : type:'black', tools: [ { name: "Regression Trend" } ]
+        disabled_features: ["use_localstorage_for_settings"]
+        enabled_features: ["study_templates"]
+        charts_storage_url: 'http://saveload.tradingview.com'
+        charts_storage_api_version: "1.1"
+        client_id: 'tradingview.com'
+        user_id: 'public_user_id'
 
   render: ()->
     @collection.fetch

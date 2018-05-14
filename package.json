@@ -24,6 +24,7 @@
     "express-recaptcha": "^4.0.2",
     "express-session": "^1.15.6",
     "express-simple-cdn": "*",
+    "grunt": "^1.0.2",
     "helmet": "^3.12.0",
     "ip": "^1.1.5",
     "jade": "^1.11.0",
@@ -55,12 +56,13 @@
     "winston": "^2.4.2"
   },
   "devDependencies": {
-    "mocha": "*",
-    "should": "*",
     "growl": "*",
-    "nodemock": "*",
-    "supertest": "*",
     "grunt-contrib-coffee": "*",
-    "grunt-contrib-watch": "*"
+    "grunt-contrib-watch": "*",
+    "grunt-js2coffee": "^0.3.0",
+    "mocha": "*",
+    "nodemock": "*",
+    "should": "*",
+    "supertest": "*"
   }
 }

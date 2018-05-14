@@ -46,7 +46,7 @@ block content
                 .coin-deposit-address
                   code#address-row #{wallet.address}
                   - if (!wallet.address)
-                    button#generate-address(data-id="#{wallet.id}") ایجاد آدس کیف پول
+                    button#generate-address(data-id="#{wallet.id}") ایجاد آدرس کیف پول
                   .coin-deposit-actions
                     button#show-qr-bt نشان QR
                     button#copy-address(data-clipboard-text="#{wallet.address ? wallet.address : ''}") کپی

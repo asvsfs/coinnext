@@ -1,8 +1,8 @@
 #globalchat.chatbox
-  ul#messages-list.message-list
+  ul#messages-list.message-list(style="direction:rtl")
   .message-post
     - if (user)
-      input#chat-message-box(type="text", placeholder="Type here to chat...").chat-message-input
-      button#send-message-bt Send
+      input#chat-message-box(type="text", placeholder="برای چت اینجا تایپ کنید...").chat-message-input
+      button#send-message-bt ارسال
     - else
-      p.login-required You need to be logged in to chat. <a href="/login">Login</a>
+      p.login-required لطفا ابتدا وارد شوید. <a href="/login">ورود</a>

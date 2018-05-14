@@ -18,6 +18,7 @@
 //= require vendor/zxcvbn
 //= require vendor/socket.io
 //= require vendor/mailcheck
+//= require vendor/charting_library/charting_library.min.js
 
 //= require app/helpers/crypto_currency
 
