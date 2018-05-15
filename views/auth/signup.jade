@@ -6,25 +6,25 @@ block content
       .auth-wrap
         .auth-box
           h1
-            | Create your account
-            .promo Register now and <b>pay no fees for 90 days</b>.
+            | اکانت خود را بسازید
+            .promo هیمن الان ثبت نام کنید <b>برای 30 روز کارمزد ندهید</b>.
           form#signup-form(action="/user", method="post")
             #error-cnt
             .control-group
-              label(for="email").label Email address
+              label(for="email").label آدرس ایمیل
               .input-prepend
                 span.add-on
                   i.icon-envelope
                 input#signup-email(type="email", name="email", placeholder="Email", tabindex="1", autofocus, autocomplete="off")
               #hint.hint
             .control-group
-              label(for="password").label Choose a password
+              label(for="password").label کلمه عبور را انتخاب کنید
               .input-prepend
                 span.add-on
                   i.icon-lock
                 input#signup-password(type="password", name="password" placeholder="Minimum of 8 characters, at least 1 number", tabindex="2", autocomplete="off")
             .control-group
-              label(for="repeat_password").label Confirm your password
+              label(for="repeat_password").label تایید کلمه عبور
               .input-prepend
                 span.add-on
                   i.icon-lock
@@ -37,7 +37,7 @@ block content
                 span#s4.cell
               span#strength-text
             input#login-btn(type="submit", value="Create Account", tabindex="4")
-            p.misc There is <b>no further ID verification required</b> to get started.
+            //- p.misc There is <b>no further ID verification required</b> to get started.
 
         p.terms
-          | By creating an account you agree<br /> to our <a href="/legal/terms">Terms of Service</a> and <a href="/legal/privacy">Privacy Policy</a>.
+          | با ساخت این اکانت شما با<br /> <a href="/legal/terms">قوانین خدمات</a> و <a href="/legal/privacy">حفظ حریم خصوصی را موافقت میکنید</a>.

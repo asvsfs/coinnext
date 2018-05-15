@@ -4,11 +4,11 @@ block content
   .main-content(role='main')
     .wrapper
       .auth-box
-        h1 Email Verification
+        h1 تاییدیه ایمیل
         - if (user && user.email_verified)
           p.msg 
-            | Your email was successfully verified.
+            | ایمیل شما با موفقیت تایید شد.
         - else
-          p.msg Your email could not be verified.
+          p.msg ایمیل شما تایید نشد.
         br
-        |  <a href="/">Return to home page.</a>
+        |  <a href="/">بازگشت به صفحه اول.</a>
