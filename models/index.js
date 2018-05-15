@@ -60,7 +60,7 @@
     db.Order.hasMany(db.OrderLog),
     db.OrderLog.belongsTo(db.Order)
   ]).then((values)=>{
-    console.log(values);
+    // console.log(values);
   })
   
 
