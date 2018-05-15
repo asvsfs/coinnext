@@ -38,6 +38,7 @@
     "nodemailer": "^4.6.4",
     "passport": "^0.4.0",
     "passport-local": "*",
+    "passport.socketio": "^3.7.0",
     "phonetic": "^0.1.1",
     "recaptcha-async": "*",
     "redis": "^2.8.0",
