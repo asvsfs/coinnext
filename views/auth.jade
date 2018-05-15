@@ -21,20 +21,20 @@ html(lang='en')
         nav.site-nav
           ul.nav
             - if (user)
-              li: a(href='/funds', class=(page === 'funds' ? 'active' : '')) Funds
+              li: a(href='/funds', class=(page === 'funds' ? 'active' : '')) سرمایه
               li.dropdown
                 a(href="/settings", class=(page === 'settings' ? 'active' : '')).dropdown-toggle
                   | #{user.email}
                   .caret
                 ul.dropdown-menu
-                  li: a(href="/settings") Settings
-                  li: a(href="http://support.separdaz.com") Support
-                  li: a(href='/logout') Logout
+                  li: a(href="/settings") تنظیمات
+                  li: a(href="http://support.separdaz.com") پشتیبانی
+                  li: a(href='/logout') خروج
             - else
               nav.auth-nav
                 ul.nav
-                  li: a(href='/login').btn.white Login
-                  li: a(href='/signup').btn Open New Account
+                  li: a(href='/login').btn.white ورود
+                  li: a(href='/signup').btn ساخت حساب جدید
     block content
 
     != js('application')
