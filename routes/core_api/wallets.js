@@ -7,20 +7,22 @@
 
   restify = require("restify");
 
+  errors = require('restify-errors');
+  
   module.exports = function(app) {
     app.post("/create_account/:account/:currency", function(req, res, next) {
       var account, currency;
       account = req.params.account;
       currency = req.params.currency;
       if (!global.wallets[currency]) {
-        return next(new restify.ConflictError("Wrong Currency."));
+        return next(new errors.InternalServerError("Wrong Currency."));
       }
       return global.wallets[currency].generateAddress(account, function(err, address) {
         if (err) {
           console.error(err);
         }
         if (err) {
-          return next(new restify.ConflictError("Could not generate address."));
+          return next(new errors.InternalServerError("Could not generate address."));
         }
         return res.send({
           account: account,
@@ -32,14 +34,14 @@
       var currency;
       currency = req.params.currency;
       if (!global.wallets[currency]) {
-        return next(new restify.ConflictError("Wallet down or does not exist."));
+        return next(new errors.InternalServerError("Wallet down or does not exist."));
       }
       return global.wallets[currency].getBankBalance(function(err, balance) {
         if (err) {
           console.error(err);
         }
         if (err) {
-          return next(new restify.ConflictError("Wallet inaccessible."));
+          return next(new errors.InternalServerError("Wallet inaccessible."));
         }
         return res.send({
           currency: currency,
@@ -51,14 +53,14 @@
       var currency;
       currency = req.params.currency;
       if (!global.wallets[currency]) {
-        return next(new restify.ConflictError("Wallet down or does not exist."));
+        return next(new errors.InternalServerError("Wallet down or does not exist."));
       }
       return global.wallets[currency].getInfo(function(err, info) {
         if (err) {
           console.error(err);
         }
         if (err) {
-          return next(new restify.ConflictError("Wallet inaccessible."));
+          return next(new errors.InternalServerError("Wallet inaccessible."));
         }
         return res.send({
           currency: currency,
@@ -71,7 +73,7 @@
       var currency, wallet, walletInfo;
       currency = req.params.currency;
       if (!global.wallets[currency]) {
-        return next(new restify.ConflictError("Wallet down or does not exist."));
+        return next(new errors.InternalServerError("Wallet down or does not exist."));
       }
       wallet = global.wallets[currency];
       walletInfo = {};
@@ -86,7 +88,7 @@
           walletInfo.lastUpdated = null;
           return WalletHealth.updateFromWalletInfo(walletInfo, function(err, result) {
             if (err) {
-              return next(new restify.ConflictError("Can't update wallet health from walletInfo"));
+              return next(new errors.InternalServerError("Can't update wallet health from walletInfo"));
             }
             return res.send({
               message: "Wallet health check performed on " + (new Date()),
@@ -105,7 +107,7 @@
           walletInfo.status = MarketHelper.getWalletLastUpdatedStatus(walletInfo.last_updated);
           return WalletHealth.updateFromWalletInfo(walletInfo, function(err, result) {
             if (err) {
-              return next(new restify.ConflictError("Can't update wallet health from walletInfo"));
+              return next(new errors.InternalServerError("Can't update wallet health from walletInfo"));
             }
             return res.send({
               message: "Wallet health check performed on " + (new Date()),

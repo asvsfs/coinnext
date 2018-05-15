@@ -37,7 +37,7 @@ module.exports = (app)->
   app.post "/create_payment", (req, res, next)->
     data = req.body
     TransactionHelper.createPayment data, (err, payment)->
-      return next(new restify.ConflictError err)  if err
+      return next(new errors.InternalServerError err)  if err
       res.json JsonRenderer.payment payment
 
   app.post "/process_pending_payments", (req, res, next)->
@@ -51,7 +51,7 @@ module.exports = (app)->
     paymentId = req.params.payment_id
     TransactionHelper.paymentsProcessedUserIds = []
     Payment.findNonProcessedById paymentId, (err, payment)->
-      return next(new restify.ConflictError "Could not find non processed payment #{paymentId}")  if not payment
+      return next(new errors.InternalServerError "Could not find non processed payment #{paymentId}")  if not payment
       TransactionHelper.processPayment payment, (err, result)->
         Payment.findById paymentId, (err, processedPayment)->
           res.send
@@ -67,9 +67,9 @@ module.exports = (app)->
   app.del "/cancel_payment/:payment_id", (req, res, next)->
     paymentId = req.params.payment_id
     Payment.findById paymentId, (err, payment)->
-      return next(new restify.ConflictError "Could not cancel already processed payment #{paymentId}.")  if payment.isProcessed()
+      return next(new errors.InternalServerError "Could not cancel already processed payment #{paymentId}.")  if payment.isProcessed()
       TransactionHelper.cancelPayment payment, (err, result)->
-        return next(new restify.ConflictError "Could not cancel already payment #{paymentId} - #{err}")  if err
+        return next(new errors.InternalServerError "Could not cancel already payment #{paymentId} - #{err}")  if err
         res.send
           paymentId: paymentId
           status: "removed"

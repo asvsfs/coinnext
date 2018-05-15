@@ -13,9 +13,9 @@ module.exports = (app)->
     data.in_queue = true
     orderCurrency = data["#{data.action}_currency"]
     MarketStats.findEnabledMarket orderCurrency, "BTC", (err, market)->
-      return next(new restify.ConflictError "Market for #{orderCurrency} is disabled.")  if not market
+      return next(new errors.InternalServerError "Market for #{orderCurrency} is disabled.")  if not market
       TradeHelper.createOrder data, (err, newOrder)->
-        return next(new restify.ConflictError err)  if err
+        return next(new errors.InternalServerError err)  if err
         orderData =
           external_order_id: newOrder.id
           type: newOrder.type
@@ -27,7 +27,7 @@ module.exports = (app)->
         global.queue.Event.addOrder orderData, (err)->
           if err
             console.error "Could add add_order event for order #{newOrder.id} - #{err}"
-            return next(new restify.ConflictError "Could not submit order.")  if err
+            return next(new errors.InternalServerError "Could not submit order.")  if err
           res.send
             id: newOrder.id
           TradeHelper.pushOrderUpdate
@@ -37,20 +37,20 @@ module.exports = (app)->
   app.del "/cancel_order/:order_id", (req, res, next)->
     orderId = req.params.order_id
     Order.findById orderId, (err, order)->
-      return next(new restify.ConflictError err)  if err or not order or not order.canBeCanceled()
+      return next(new errors.InternalServerError err)  if err or not order or not order.canBeCanceled()
       orderCurrency = order["#{order.action}_currency"]
       MarketStats.findEnabledMarket orderCurrency, "BTC", (err, market)->
-        return next(new restify.ConflictError "#{new Date()} - Will not process order #{orderId}, the market for #{orderCurrency} is disabled.")  if not market
+        return next(new errors.InternalServerError "#{new Date()} - Will not process order #{orderId}, the market for #{orderCurrency} is disabled.")  if not market
         global.db.sequelize.transaction (transaction)->
           global.queue.Event.addCancelOrder {order_id: orderId}, (err)->
             if err
               return transaction.rollback().success ()->
-                next(new restify.ConflictError "Could not cancel order #{orderId} - #{err}")
+                next(new errors.InternalServerError "Could not cancel order #{orderId} - #{err}")
             order.in_queue = true
             order.save({transaction: transaction}).complete (err)->
               if err
                 return transaction.rollback().success ()->
-                  next(new restify.ConflictError "Could not set order #{orderId} for canceling - #{err}")
+                  next(new errors.InternalServerError "Could not set order #{orderId} for canceling - #{err}")
               transaction.commit().success ()->
                 res.send
                   id: orderId

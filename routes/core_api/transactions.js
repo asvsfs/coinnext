@@ -15,6 +15,8 @@
 
   TransactionHelper = require("../../lib/transaction_helper");
 
+  errors = require('restify-errors');
+  
   paymentsProcessedUserIds = [];
 
   _ = require("underscore");
@@ -68,7 +70,7 @@
       data = req.body;
       return TransactionHelper.createPayment(data, function(err, payment) {
         if (err) {
-          return next(new restify.ConflictError(err));
+          return next(new errors.InternalServerError(err));
         }
         return res.json(JsonRenderer.payment(payment));
       });
@@ -90,7 +92,7 @@
       TransactionHelper.paymentsProcessedUserIds = [];
       return Payment.findNonProcessedById(paymentId, function(err, payment) {
         if (!payment) {
-          return next(new restify.ConflictError("Could not find non processed payment " + paymentId));
+          return next(new errors.InternalServerError("Could not find non processed payment " + paymentId));
         }
         return TransactionHelper.processPayment(payment, function(err, result) {
           return Payment.findById(paymentId, function(err, processedPayment) {
@@ -115,11 +117,11 @@
       paymentId = req.params.payment_id;
       return Payment.findById(paymentId, function(err, payment) {
         if (payment.isProcessed()) {
-          return next(new restify.ConflictError("Could not cancel already processed payment " + paymentId + "."));
+          return next(new errors.InternalServerError("Could not cancel already processed payment " + paymentId + "."));
         }
         return TransactionHelper.cancelPayment(payment, function(err, result) {
           if (err) {
-            return next(new restify.ConflictError("Could not cancel already payment " + paymentId + " - " + err));
+            return next(new errors.InternalServerError("Could not cancel already payment " + paymentId + " - " + err));
           }
           return res.send({
             paymentId: paymentId,

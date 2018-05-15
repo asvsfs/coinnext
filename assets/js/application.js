@@ -21,6 +21,7 @@
 //= require vendor/charting_library/charting_library.min.js
 
 //= require app/helpers/crypto_currency
+//= require app/helpers/datafeed
 
 //= require app/models/user
 //= require app/models/google_auth

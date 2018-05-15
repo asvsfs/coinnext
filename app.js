@@ -39,6 +39,7 @@ app.enable("trust proxy");
 app.disable('x-powered-by');
 app.set('port', process.env.PORT || 5000);
 app.set('views', __dirname + '/views');
+app.set('charting_library',__dirname +'/charting_library');
 app.set('view engine', 'jade');
 app.use(compression());
 app.use(bodyParser());

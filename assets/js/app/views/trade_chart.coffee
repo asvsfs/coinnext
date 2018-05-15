@@ -3,17 +3,16 @@ class App.TradeChartView extends App.MasterView
   collection: null
 
   initialize: (options = {})->
-    console.log "hey"
     TradingView.onready ()->
       widget = window.tvWidget = new TradingView.widget 
         debug:true
         fullscreen:true
         symbol: 'LTC_BTC'
         interval: '30m'
-        container_id: "tv_chart_container"
-        datafeed: new new App.UDFCompatibleDatafeed("http://localhost:5000")
-        library_path: "charting_library/"
-        locale: getParameterByName('lang') || 'en'
+        container_id: "trade-chart"
+        datafeed: new App.DataFeed("http://localhost:5000",@type)
+        library_path: "/assets/vendor/charting_library/"
+        locale:  'en'
         drawings_access : type:'black', tools: [ { name: "Regression Trend" } ]
         disabled_features: ["use_localstorage_for_settings"]
         enabled_features: ["study_templates"]
@@ -22,12 +21,21 @@ class App.TradeChartView extends App.MasterView
         client_id: 'tradingview.com'
         user_id: 'public_user_id'
 
+
+
+  getParameterByName : (name) ->
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]')
+    regex = new RegExp("[\\?&]#{name}=([^&#]*)")
+    results = regex.exec(location.search)
+    if results == null then '' else decodeURIComponent(results[1].replace(/\+/g, ' '))
+
   render: ()->
     @collection.fetch
       success: ()=>
         @renderChart @collection.toJSON()
 
   renderChart: (data)->
+    return
     # split the data set into ohlc and volume
     ohlc = []
     volume = []

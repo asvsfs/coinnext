@@ -77,14 +77,14 @@
      * GET /history?symbol=<ticker_name>&from=<unix_timestamp>&to=
      * GET /history?symbol=BEAM~0&resolution=D&from=1386493512&to=1395133512
      */
-    app.get('/history', (req,res)=>{
+    app.post('/history', (req,res)=>{
       console.log('history')
       
-      let symbol = req.query.symbol;
-      let resolution = req.query.resolution;
-      let from = req.query.from;
-      let to = req.query.to;
-      let tt = 1526214860;
+      let symbol = req.body.symbol;
+      let resolution = req.body.resolution;
+      let from = req.body.from;
+      let to = req.body.to;
+      let marketId = req.body.marketId;
     //   return res.json({
     //     s: "ok",
     //     t: [tt+30, tt+(30*60), tt+(30*60*2), tt+(30*60*3)],
@@ -97,7 +97,7 @@
 
 
       return TradeStats.findByTime({
-        marketId : 1,
+        marketId : marketId,
         startTime : from,
         endTime : to
         
@@ -112,8 +112,54 @@
     /**
      * GET /marks?symbol=<ticker_name>&from=<unix_timestamp>&to=
      */
-    app.get('/marks', (req,res)=>{
-      console.log('hey')
+    app.post('/currentCandle', (req,res)=>{
+      console.log('currentCandle')
+      //GET CURRENT CANDLE
+      var endTime, halfHour, markets, now, startTime;
+      now = Date.now();
+      halfHour = req.body.step || 1800000;
+      endTime = now - now % halfHour;
+      startTime = endTime - halfHour;
+      markets = {};
+      return OrderLog.findByTimeAndAction(startTime, endTime, "sell", function(err, orderLogs) {
+        var marketType, orderLog, _i, _len;
+        for (_i = 0, _len = orderLogs.length; _i < _len; _i++) {
+          orderLog = orderLogs[_i];
+          marketType = "" + orderLog.order.sell_currency + "_" + orderLog.order.buy_currency;
+          if (!markets[marketType]) {
+            markets[marketType] = {
+              type: marketType,
+              time: startTime,
+              end_time: endTime,
+              open: 0,
+              high: 0,
+              low: 0,
+              volume: 0,
+              exchange_volume: 0
+            };
+          }
+          if (markets[marketType].open === 0) {
+            markets[marketType].open = orderLog.unit_price;
+          }
+          markets[marketType].close = orderLog.unit_price;
+          if (orderLog.unit_price > markets[marketType].high) {
+            markets[marketType].high = orderLog.unit_price;
+          }
+          if (orderLog.unit_price < markets[marketType].low || markets[marketType].low === 0) {
+            markets[marketType].low = orderLog.unit_price;
+          }
+          markets[marketType].volume = parseInt(math.add(MarketHelper.toBignum(markets[marketType].volume), MarketHelper.toBignum(orderLog.matched_amount)));
+          markets[marketType].exchange_volume = parseInt(math.add(MarketHelper.toBignum(markets[marketType].exchange_volume), MarketHelper.toBignum(orderLog.result_amount)));
+        }
+        markets = _.values(markets);
+        
+        // return TradeStats.bulkCreate(markets).complete(function(err, result) {
+        //   return res.send({
+        //     message: "Trade stats aggregated from " + (new Date(startTime)) + " to " + (new Date(endTime)),
+        //     result: result
+        //   });
+        // });
+      });
     })
 
     app.get('/timescale_marks', (req,res)=>{

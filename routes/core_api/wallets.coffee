@@ -7,30 +7,30 @@ module.exports = (app)->
   app.post "/create_account/:account/:currency", (req, res, next)->
     account   = req.params.account
     currency = req.params.currency
-    return next(new restify.ConflictError "Wrong Currency.")  if not global.wallets[currency]
+    return next(new errors.InternalServerError "Wrong Currency.")  if not global.wallets[currency]
     global.wallets[currency].generateAddress account, (err, address)->
       console.error err  if err
-      return next(new restify.ConflictError "Could not generate address.")  if err
+      return next(new errors.InternalServerError "Could not generate address.")  if err
       res.send
         account: account
         address: address
 
   app.get "/wallet_balance/:currency", (req, res, next)->
     currency = req.params.currency
-    return next(new restify.ConflictError "Wallet down or does not exist.")  if not global.wallets[currency]
+    return next(new errors.InternalServerError "Wallet down or does not exist.")  if not global.wallets[currency]
     global.wallets[currency].getBankBalance (err, balance)->
       console.error err  if err
-      return next(new restify.ConflictError "Wallet inaccessible.")  if err
+      return next(new errors.InternalServerError "Wallet inaccessible.")  if err
       res.send
         currency: currency
         balance: balance
 
   app.get "/wallet_info/:currency", (req, res, next)->
     currency = req.params.currency
-    return next(new restify.ConflictError "Wallet down or does not exist.")  if not global.wallets[currency]
+    return next(new errors.InternalServerError "Wallet down or does not exist.")  if not global.wallets[currency]
     global.wallets[currency].getInfo (err, info)->
       console.error err  if err
-      return next(new restify.ConflictError "Wallet inaccessible.")  if err
+      return next(new errors.InternalServerError "Wallet inaccessible.")  if err
       res.send
         currency: currency
         info: info
@@ -38,7 +38,7 @@ module.exports = (app)->
 
   app.get "/wallet_health/:currency", (req, res, next)->
     currency = req.params.currency
-    return next(new restify.ConflictError "Wallet down or does not exist.")  if not global.wallets[currency]
+    return next(new errors.InternalServerError "Wallet down or does not exist.")  if not global.wallets[currency]
     wallet = global.wallets[currency]
     walletInfo = {}
     wallet.getInfo (err, info)->
@@ -51,7 +51,7 @@ module.exports = (app)->
         walletInfo.balance = null
         walletInfo.lastUpdated = null
         return WalletHealth.updateFromWalletInfo walletInfo, (err, result)->
-          return next(new restify.ConflictError "Can't update wallet health from walletInfo")  if err
+          return next(new errors.InternalServerError "Can't update wallet health from walletInfo")  if err
           res.send
             message: "Wallet health check performed on #{new Date()}"
             result: result
@@ -67,7 +67,7 @@ module.exports = (app)->
         walletInfo.status = MarketHelper.getWalletLastUpdatedStatus walletInfo.last_updated
 
         WalletHealth.updateFromWalletInfo walletInfo, (err, result)->
-          return next(new restify.ConflictError "Can't update wallet health from walletInfo")  if err
+          return next(new errors.InternalServerError "Can't update wallet health from walletInfo")  if err
           res.send
             message: "Wallet health check performed on #{new Date()}"
             result: result

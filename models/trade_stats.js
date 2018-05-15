@@ -84,6 +84,7 @@
               type: marketId,
               start_time: {
                 gte: new Date(startTime),
+                lt: new Date(endTime)
               },
             },
             // order: [["start_time", "DESC"]]

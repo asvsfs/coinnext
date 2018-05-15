@@ -15,6 +15,7 @@
 
   MarketHelper = require("../../lib/market_helper");
 
+  errors = require('restify-errors');
   module.exports = function(app) {
     app.post("/publish_order", function(req, res, next) {
       var data, orderCurrency;
@@ -23,12 +24,12 @@
       orderCurrency = data["" + data.action + "_currency"];
       return MarketStats.findEnabledMarket(orderCurrency, "BTC", function(err, market) {
         if (!market) {
-          return next(new restify.ConflictError("Market for " + orderCurrency + " is disabled."));
+          return next(new errors.InternalServerError("Market for " + orderCurrency + " is disabled."));
         }
         return TradeHelper.createOrder(data, function(err, newOrder) {
           var orderData;
           if (err) {
-            return next(new restify.ConflictError(err));
+            return next(new errors.InternalServerError(err));
           }
           orderData = {
             external_order_id: newOrder.id,
@@ -43,7 +44,7 @@
             if (err) {
               console.error("Could add add_order event for order " + newOrder.id + " - " + err);
               if (err) {
-                return next(new restify.ConflictError("Could not submit order."));
+                return next(new errors.InternalServerError("Could not submit order."));
               }
             }
             res.send({
@@ -63,12 +64,12 @@
       return Order.findById(orderId, function(err, order) {
         var orderCurrency;
         if (err || !order || !order.canBeCanceled()) {
-          return next(new restify.ConflictError(err));
+          return next(new errors.InternalServerError(err));
         }
         orderCurrency = order["" + order.action + "_currency"];
         return MarketStats.findEnabledMarket(orderCurrency, "BTC", function(err, market) {
           if (!market) {
-            return next(new restify.ConflictError("" + (new Date()) + " - Will not process order " + orderId + ", the market for " + orderCurrency + " is disabled."));
+            return next(new errors.InternalServerError("" + (new Date()) + " - Will not process order " + orderId + ", the market for " + orderCurrency + " is disabled."));
           }
           return global.db.sequelize.transaction(function(transaction) {
             return global.queue.Event.addCancelOrder({
@@ -76,7 +77,7 @@
             }, function(err) {
               if (err) {
                 return transaction.rollback().success(function() {
-                  return next(new restify.ConflictError("Could not cancel order " + orderId + " - " + err));
+                  return next(new errors.InternalServerError("Could not cancel order " + orderId + " - " + err));
                 });
               }
               order.in_queue = true;
@@ -85,7 +86,7 @@
               }).complete(function(err) {
                 if (err) {
                   return transaction.rollback().success(function() {
-                    return next(new restify.ConflictError("Could not set order " + orderId + " for canceling - " + err));
+                    return next(new errors.InternalServerError("Could not set order " + orderId + " for canceling - " + err));
                   });
                 }
                 return transaction.commit().success(function() {

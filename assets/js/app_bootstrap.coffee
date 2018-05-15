@@ -151,6 +151,7 @@ $(document).ready ()->
 
     tradeChart = new App.TradeChartView
       el: $trade.find("#trade-chart")
+      type:  "#{$trade.data('currency1')}_#{$trade.data('currency2')}"
       collection: new App.TradeStatsCollection null,
         type: "#{$trade.data('currency1')}_#{$trade.data('currency2')}"
     tradeChart.render()

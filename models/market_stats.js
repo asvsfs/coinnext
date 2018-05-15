@@ -165,8 +165,8 @@
               type: MarketHelper.getMarket(type)
             }
           }).complete(function(err, marketStats) {
-            return GLOBAL.db.Order.findTopBid(order.buy_currency, order.sell_currency, function(err1, topBidOrder) {
-              return GLOBAL.db.Order.findTopAsk(order.buy_currency, order.sell_currency, function(err2, topAskOrder) {
+            return global.db.Order.findTopBid(order.buy_currency, order.sell_currency, function(err1, topBidOrder) {
+              return global.db.Order.findTopAsk(order.buy_currency, order.sell_currency, function(err2, topAskOrder) {
                 marketStats.top_bid = topBidOrder ? topBidOrder.unit_price : 0;
                 marketStats.top_ask = topAskOrder ? topAskOrder.unit_price : 0;
                 return marketStats.save().complete(callback);
@@ -185,8 +185,8 @@
               type: MarketHelper.getMarket(type)
             }
           }).complete(function(err, marketStats) {
-            return GLOBAL.db.Order.findTopBid(orderToMatch.buy_currency, orderToMatch.sell_currency, function(err1, topBidOrder) {
-              return GLOBAL.db.Order.findTopAsk(orderToMatch.buy_currency, orderToMatch.sell_currency, function(err2, topAskOrder) {
+            return global.db.Order.findTopBid(orderToMatch.buy_currency, orderToMatch.sell_currency, function(err1, topBidOrder) {
+              return global.db.Order.findTopAsk(orderToMatch.buy_currency, orderToMatch.sell_currency, function(err2, topAskOrder) {
                 marketStats.top_bid = topBidOrder ? topBidOrder.unit_price : 0;
                 marketStats.top_ask = topAskOrder ? topAskOrder.unit_price : 0;
                 return marketStats.save().complete(callback);
@@ -220,7 +220,7 @@
               if (order.action === "sell") {
                 marketStats.volume1 = parseInt(math.add(MarketHelper.toBignum(marketStats.volume1), MarketHelper.toBignum(orderLog.matched_amount)));
                 marketStats.volume2 = parseInt(math.select(MarketHelper.toBignum(marketStats.volume2)).add(MarketHelper.toBignum(orderLog.result_amount)).add(MarketHelper.toBignum(orderLog.fee)).done());
-                return GLOBAL.db.TradeStats.findLast24hByType(type, function(err, tradeStats) {
+                return global.db.TradeStats.findLast24hByType(type, function(err, tradeStats) {
                   var growthRatio;
                   if (tradeStats == null) {
                     tradeStats = {};
