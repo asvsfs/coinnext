@@ -1,5 +1,7 @@
 class App.DataFeed
   constructor: (@url,@type) -> 
+    console.log(@url)
+    console.log(@type)
     # @socket = io.connect()
   onReady: (callback) ->
     console.log "onReady"
@@ -20,30 +22,53 @@ class App.DataFeed
 
   resolveSymbol: (symbolName, onSymbolResolvedCallback, onResolveErrorCallback) ->
     console.log "resolveSymbol"
-    $.ajax({
-      method: "POST",
-      url: "#{@url}/currentCandle",
-      data:
-        step 1800000
-    })
-    .done((msg)->
-      onRealtimeCallback(msg))
-    
+    func = () ->
+      $.ajax({
+        method: "POST",
+        url: "/symbols",
+        data: 
+          symbolName: symbolName
+      })
+      .done((msg)->
+        return onSymbolResolvedCallback(msg) if not obj? or obj.length is 0
+        onResolveErrorCallback('این مارکت وجود ندارد!')
+        )
+    func()
 
-  getBars: (symbolInfo,resolution, from, to, onHistoryCallback, onErrorCallback, firstDataRequest) ->
+  getBars: (symbolInfo, resolution, from, to, onHistoryCallback, onErrorCallback, firstDataRequest) ->
     console.log "getBars"
+    func = () ->
+      $.ajax({
+        method: "POST",
+        url: "/history",
+        data:
+          symbol: symbolInfo.name,
+          resolution: "30m",
+          from: from,
+          to: to,
+          marketId: 1
+      })
+      .done((msg)->
+        noData =
+          noData:true
+        if msg.length == 0
+          noData={noData:true}
+        onHistoryCallback(msg,noData))
+    func()
 
   subscribeBars: (symbolInfo, resolution, onRealtimeCallback, subscriberUID, onResetCacheNeededCallback) ->
     console.log "subscribeBars"
     func = () ->
       $.ajax({
         method: "POST",
-        url: "#{@url}/currentCandle",
+        url: "/currentCandle",
         data:
-          step 1800000
+          step: 1800000
       })
       .done((msg)->
-        onRealtimeCallback(msg)
+        console.log('get new candle realtime')
+        onRealtimeCallback(msg) unless not obj? or obj.length is 0
+
         setTimeout(func, 3000))
     func()
 

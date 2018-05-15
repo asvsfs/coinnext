@@ -1,16 +1,17 @@
 class App.TradeChartView extends App.MasterView
 
   collection: null
-
+  type: ""
   initialize: (options = {})->
     TradingView.onready ()->
       widget = window.tvWidget = new TradingView.widget 
         debug:true
-        fullscreen:true
-        symbol: 'LTC_BTC'
+        fullscreen:false
+        symbol: options.type
         interval: '30m'
+        autosize: true
         container_id: "trade-chart"
-        datafeed: new App.DataFeed("http://localhost:5000",@type)
+        datafeed: new App.DataFeed("http://localhost:5000", options.type)
         library_path: "/assets/vendor/charting_library/"
         locale:  'en'
         drawings_access : type:'black', tools: [ { name: "Regression Trend" } ]
@@ -20,9 +21,6 @@ class App.TradeChartView extends App.MasterView
         charts_storage_api_version: "1.1"
         client_id: 'tradingview.com'
         user_id: 'public_user_id'
-
-
-
   getParameterByName : (name) ->
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]')
     regex = new RegExp("[\\?&]#{name}=([^&#]*)")

@@ -42,27 +42,30 @@
     /**
      * GET /symbols?symbol=AAL, GET /symbols?symbol=NYSE:MSFT
      */
-    app.get('/symbols', (req,res)=>{
-
-      res.json({
-        "name":"LTC_BTC",
-        "exchange-traded": "SEPARDAZ",
-        "exchange-listed": "SEPARDAZ",
-        "timezone": "Asia/Tehran",
-        "minmov": 1,
-        "minmov2": 0,
-        "pointvalue": 1,
-        "fractional":true,
-        "has_intraday": true,
-        "has_no_volume":false,
-        // "has_seconds":true,
-        "has_empty_bars":true,
-        "session-regular":"0000-2400|0000-2400:1|0000-2400:7",
-        "description": "LTC_BTC",
-        "type": "crypto",
-        "supported_resolutions": ['30'],
-        "pricescale": 100,
-      });
+    app.post('/symbols', (req,res)=>{
+      let market = MarketHelper.getMarket(req.body.symbolName)
+      if(market){
+        res.json({
+          "name": req.body.symbolName,
+          "exchange-traded": "SEPARDAZ",
+          "exchange-listed": "SEPARDAZ",
+          "timezone": "Asia/Tehran",
+          "minmov": 1,
+          "minmov2": 0,
+          "pointvalue": 1,
+          "fractional":true,
+          "has_intraday": true,
+          "has_no_volume":false,
+          // "has_seconds":true,
+          "has_empty_bars":true,
+          "session-regular":"0000-2400|0000-2400:1|0000-2400:7",
+          "description": req.body.symbolName,
+          "type": "crypto",
+          "supported_resolutions": ['30'],
+          "pricescale": 100,
+        });
+      }
+      
 
     })
 
@@ -84,7 +87,7 @@
       let resolution = req.body.resolution;
       let from = req.body.from;
       let to = req.body.to;
-      let marketId = req.body.marketId;
+      let marketId =MarketHelper.getMarket(symbol);
     //   return res.json({
     //     s: "ok",
     //     t: [tt+30, tt+(30*60), tt+(30*60*2), tt+(30*60*3)],
@@ -105,6 +108,7 @@
         if (tradeStats == null) {
           tradeStats = [];
         }
+        
         return res.json(JsonRenderer.tradeStats_tradingView(tradeStats));
       });
     })
@@ -151,8 +155,8 @@
           markets[marketType].volume = parseInt(math.add(MarketHelper.toBignum(markets[marketType].volume), MarketHelper.toBignum(orderLog.matched_amount)));
           markets[marketType].exchange_volume = parseInt(math.add(MarketHelper.toBignum(markets[marketType].exchange_volume), MarketHelper.toBignum(orderLog.result_amount)));
         }
-        markets = _.values(markets);
-        
+        // markets = _.values(markets);
+        return res.json(JsonRenderer.tradeStats_tradingView(markets));
         // return TradeStats.bulkCreate(markets).complete(function(err, result) {
         //   return res.send({
         //     message: "Trade stats aggregated from " + (new Date(startTime)) + " to " + (new Date(endTime)),
