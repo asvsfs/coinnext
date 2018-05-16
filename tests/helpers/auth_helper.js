@@ -1,8 +1,8 @@
 var _ = require("underscore");
 var request = require("supertest");
 var userData = {
-  email: "test@test.com",
-  password: "test12345_"
+  email: "anasvsfs@gmail.com",
+  password: "Amir123*"
 };
 
 Auth = {
