@@ -50,7 +50,7 @@
           return removedCurrencies.indexOf(curr) === -1;
         });
         return res.render("admin/stats", {
-          title: "Stats - Admin - CoinNext",
+          title: "Stats - Admin - Separdaz",
           page: "stats",
           adminUser: req.user,
           currencies: currencies
@@ -74,7 +74,7 @@
           };
         }
         return res.render("admin/users", {
-          title: "Users - Admin - CoinNext",
+          title: "Users - Admin - Separdaz",
           page: "users",
           adminUser: req.user,
           currencies: MarketHelper.getCurrencyTypes(),
@@ -103,7 +103,7 @@
           return AuthStats.findAll(query).complete(function(err, authStats) {
             return UserToken.findByUserAndType(user.id, "google_auth", function(err, userToken) {
               return res.render("admin/user", {
-                title: "User " + user.email + " - " + user.id + " - Admin - CoinNext",
+                title: "User " + user.email + " - " + user.id + " - Admin - Separdaz",
                 page: "users",
                 adminUser: req.user,
                 currencies: MarketHelper.getCurrencyTypes(),
@@ -137,7 +137,7 @@
         return Order.findByOptions(openOptions, function(err, openOrders) {
           return Order.findByOptions(closedOptions, function(err, closedOrders) {
             return res.render("admin/wallet", {
-              title: "Wallet " + wallet.id + " - Admin - CoinNext",
+              title: "Wallet " + wallet.id + " - Admin - Separdaz",
               page: "wallets",
               adminUser: req.user,
               currencies: MarketHelper.getCurrencyTypes(),
@@ -170,7 +170,7 @@
           };
         }
         return res.render("admin/wallets", {
-          title: "Wallets - Admin - CoinNext",
+          title: "Wallets - Admin - Separdaz",
           page: "wallets",
           adminUser: req.user,
           currencies: MarketHelper.getCurrencyTypes(),
@@ -211,7 +211,7 @@
           };
         }
         return res.render("admin/transactions", {
-          title: "Transactions - Admin - CoinNext",
+          title: "Transactions - Admin - Separdaz",
           page: "transactions",
           adminUser: req.user,
           currencies: MarketHelper.getCurrencyTypes(),
@@ -251,7 +251,7 @@
           };
         }
         return res.render("admin/payments", {
-          title: "Payments - Admin - CoinNext",
+          title: "Payments - Admin - Separdaz",
           page: "payments",
           adminUser: req.user,
           currencies: MarketHelper.getCurrencyTypes(),
@@ -376,7 +376,7 @@
     app.get("/administratie/markets", function(req, res) {
       return MarketStats.getStats(function(err, markets) {
         return res.render("admin/markets", {
-          title: "Markets - Admin - CoinNext",
+          title: "Markets - Admin - Separdaz",
           page: "markets",
           adminUser: req.user,
           currencies: MarketHelper.getCurrencyTypes(),

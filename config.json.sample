@@ -1,7 +1,7 @@
 {
   "development" : {
     "mysql": {
-      "db": "coinnext_dev",
+      "db": "separdaz_dev",
       "user": "root",
       "password": "",
       "port": 3306,
@@ -9,7 +9,7 @@
       "logging": true
     },
     "queue": {
-      "db": "coinnext_queue_dev",
+      "db": "separdaz_queue_dev",
       "user": "root",
       "password": "",
       "port": 3306,
@@ -17,7 +17,7 @@
       "logging": true
     },
     "redis": {
-      "db": "coinnext_auth_dev"
+      "db": "separdaz_auth_dev"
     },
     "slackalerts": {
       "enabled": false,
@@ -45,7 +45,7 @@
         }
       }
     },
-    "salt": "coinnextsecret#1999",
+    "salt": "separdazsecret#1999",
     "emailer": {
       "enabled": false,
       "host": "http://localhost:5000",
@@ -77,7 +77,7 @@
   },
   "test" : {
     "mysql": {
-      "db": "coinnext_test",
+      "db": "separdaz_test",
       "user": "root",
       "password": "",
       "port": 3306,
@@ -85,7 +85,7 @@
       "logging": true
     },
     "queue": {
-      "db": "coinnext_queue_test",
+      "db": "separdaz_queue_test",
       "user": "root",
       "password": "",
       "port": 3306,
@@ -93,7 +93,7 @@
       "logging": true
     },
     "redis": {
-      "db": "coinnext_auth_test"
+      "db": "separdaz_auth_test"
     },
     "slackalerts": {
       "enabled": false,
@@ -121,7 +121,7 @@
         }
       }
     },
-    "salt": "coinnextsecret#1999",
+    "salt": "separdazsecret#1999",
     "emailer": {
       "enabled": false,
       "host": "http://localhost:5000",
@@ -148,7 +148,7 @@
   },
   "production" : {
     "mysql": {
-      "db": "coinnext_production",
+      "db": "separdaz_production",
       "user": "root",
       "password": "",
       "port": 3306,
@@ -156,7 +156,7 @@
       "logging": true
     },
     "queue": {
-      "db": "coinnext_queue_production",
+      "db": "separdaz_queue_production",
       "user": "root",
       "password": "",
       "port": 3306,
@@ -168,7 +168,7 @@
       "port": "",
       "user": "",
       "pass": "",
-      "db": "coinnext_auth"
+      "db": "separdaz_auth"
     },
     "slackalerts": {
       "enabled": false,
@@ -196,7 +196,7 @@
         }
       }
     },
-    "salt": "coinnextsecret#1999",
+    "salt": "separdazsecret#1999",
     "emailer": {
       "enabled": true,
       "host": "https://separdaz.com",
