@@ -21,7 +21,7 @@ html(lang='en')
     include templates/market_ticker
     include templates/chat_message
 
-    != js('application')
+    != js('application') //using Jade with connect-assets,
 
     - if (process.env.NODE_ENV === "production")
       include _analytics
