@@ -19,9 +19,9 @@
       "dialect":"mysql"
     },
     "redis": {
-      "uri":  "redis://h:p8c8e04acb775fe2a72f9d8ef93fc4980a91b0967dfe6dbe9a0e2e3b266cb1c88@ec2-34-246-92-26.eu-west-1.compute.amazonaws.com:6669",
-      "host": "ec2-34-246-92-26.eu-west-1.compute.amazonaws.com",
-      "port": "6669",
+      "uri":  "redis://h:p8c8e04acb775fe2a72f9d8ef93fc4980a91b0967dfe6dbe9a0e2e3b266cb1c88@ec2-52-17-221-155.eu-west-1.compute.amazonaws.com:9029",
+      "host": "ec2-52-17-221-155.eu-west-1.compute.amazonaws.com",
+      "port": "9029",
       "user": "h",
       "pass": "p8c8e04acb775fe2a72f9d8ef93fc4980a91b0967dfe6dbe9a0e2e3b266cb1c88"
       

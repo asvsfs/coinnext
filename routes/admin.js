@@ -416,6 +416,9 @@
     });
     return login = function(req, res, next) {
       return passport.authenticate("local", function(err, user, info) {
+        console.log(err)
+        console.log(user)
+        console.log(info)
         if (err) {
           return res.redirect("/administratie/login");
         }

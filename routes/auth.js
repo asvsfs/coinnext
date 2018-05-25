@@ -246,7 +246,7 @@
         return res.json(user);
       });
     });
-    app.del("/google_auth/:id?", function(req, res) {
+    app.delete("/google_auth/:id?", function(req, res) {
       if (!req.user) {
         return JsonRenderer.error(null, res, 401, false);
       }
