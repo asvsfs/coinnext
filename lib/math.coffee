@@ -1,3 +1,4 @@
-exports = module.exports = require("mathjs")
-  number: "bignumber"
-  precision: 20
+{ create, all } = require('mathjs')
+mathjs = create(all);
+mathjs.config({ number: 'BigNumber',precision:64 });
+exports = module.exports = mathjs

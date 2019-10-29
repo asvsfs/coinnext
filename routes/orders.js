@@ -71,7 +71,7 @@
         }
         return order.cancel(function(err) {
           if (err) {
-            console.error("Could not cancel order - " + err);
+            console.error(`Could not cancel order - ${err}`);
           }
           if (err) {
             return res.json(JsonRenderer.order(order));

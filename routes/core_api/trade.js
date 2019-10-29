@@ -15,16 +15,15 @@
 
   MarketHelper = require("../../lib/market_helper");
 
-  errors = require('restify-errors');
   module.exports = function(app) {
     app.post("/publish_order", function(req, res, next) {
       var data, orderCurrency;
       data = req.body;
       data.in_queue = true;
-      orderCurrency = data["" + data.action + "_currency"];
+      orderCurrency = data[`${data.action}_currency`];
       return MarketStats.findEnabledMarket(orderCurrency, "BTC", function(err, market) {
         if (!market) {
-          return next(new errors.InternalServerError("Market for " + orderCurrency + " is disabled."));
+          return next(new errors.InternalServerError(`Market for ${orderCurrency} is disabled.`));
         }
         return TradeHelper.createOrder(data, function(err, newOrder) {
           var orderData;
@@ -42,7 +41,7 @@
           };
           return global.queue.Event.addOrder(orderData, function(err) {
             if (err) {
-              console.error("Could add add_order event for order " + newOrder.id + " - " + err);
+              console.error(`Could add add_order event for order ${newOrder.id} - ${err}`);
               if (err) {
                 return next(new errors.InternalServerError("Could not submit order."));
               }
@@ -66,10 +65,10 @@
         if (err || !order || !order.canBeCanceled()) {
           return next(new errors.InternalServerError(err));
         }
-        orderCurrency = order["" + order.action + "_currency"];
+        orderCurrency = order[`${order.action}_currency`];
         return MarketStats.findEnabledMarket(orderCurrency, "BTC", function(err, market) {
           if (!market) {
-            return next(new errors.InternalServerError("" + (new Date()) + " - Will not process order " + orderId + ", the market for " + orderCurrency + " is disabled."));
+            return next(new errors.InternalServerError(`${new Date()} - Will not process order ${orderId}, the market for ${orderCurrency} is disabled.`));
           }
           return global.db.sequelize.transaction(function(transaction) {
             return global.queue.Event.addCancelOrder({
@@ -77,7 +76,7 @@
             }, function(err) {
               if (err) {
                 return transaction.rollback().success(function() {
-                  return next(new errors.InternalServerError("Could not cancel order " + orderId + " - " + err));
+                  return next(new errors.InternalServerError(`Could not cancel order ${orderId} - ${err}`));
                 });
               }
               order.in_queue = true;
@@ -86,7 +85,7 @@
               }).complete(function(err) {
                 if (err) {
                   return transaction.rollback().success(function() {
-                    return next(new errors.InternalServerError("Could not set order " + orderId + " for canceling - " + err));
+                    return next(new errors.InternalServerError(`Could not set order ${orderId} for canceling - ${err}`));
                   });
                 }
                 return transaction.commit().success(function() {

@@ -1,5 +1,5 @@
 (function() {
-  var AuthStats, JsonRenderer, MarketHelper, MarketStats, Order, Payment, Transaction, User, UserToken, Wallet, jsonBeautifier, _;
+  var AuthStats, JsonRenderer, MarketHelper, MarketStats, Order, Payment, Transaction, User, UserToken, Wallet, _, jsonBeautifier;
 
   Wallet = global.db.Wallet;
 
@@ -66,13 +66,10 @@
         limit: count,
         offset: from
       };
-      return User.findAndCountAll(query).complete(function(err, result) {
-        if (result == null) {
-          result = {
-            rows: [],
-            count: 0
-          };
-        }
+      return User.findAndCountAll(query).complete(function(err, result = {
+          rows: [],
+          count: 0
+        }) {
         return res.render("admin/users", {
           title: "Users - Admin - CoinNext",
           page: "users",
@@ -103,7 +100,7 @@
           return AuthStats.findAll(query).complete(function(err, authStats) {
             return UserToken.findByUserAndType(user.id, "google_auth", function(err, userToken) {
               return res.render("admin/user", {
-                title: "User " + user.email + " - " + user.id + " - Admin - CoinNext",
+                title: `User ${user.email} - ${user.id} - Admin - CoinNext`,
                 page: "users",
                 adminUser: req.user,
                 currencies: MarketHelper.getCurrencyTypes(),
@@ -137,7 +134,7 @@
         return Order.findByOptions(openOptions, function(err, openOrders) {
           return Order.findByOptions(closedOptions, function(err, closedOrders) {
             return res.render("admin/wallet", {
-              title: "Wallet " + wallet.id + " - Admin - CoinNext",
+              title: `Wallet ${wallet.id} - Admin - CoinNext`,
               page: "wallets",
               adminUser: req.user,
               currencies: MarketHelper.getCurrencyTypes(),
@@ -162,13 +159,10 @@
         limit: count,
         offset: from
       };
-      return Wallet.findAndCountAll(query).complete(function(err, result) {
-        if (result == null) {
-          result = {
-            rows: [],
-            count: 0
-          };
-        }
+      return Wallet.findAndCountAll(query).complete(function(err, result = {
+          rows: [],
+          count: 0
+        }) {
         return res.render("admin/wallets", {
           title: "Wallets - Admin - CoinNext",
           page: "wallets",
@@ -194,7 +188,8 @@
         include: [
           {
             model: global.db.User,
-            attributes: ["username", "email"]
+            attributes: ["username",
+          "email"]
           }
         ]
       };
@@ -203,13 +198,10 @@
           user_id: userId
         };
       }
-      return Transaction.findAndCountAll(query).complete(function(err, result) {
-        if (result == null) {
-          result = {
-            rows: [],
-            count: 0
-          };
-        }
+      return Transaction.findAndCountAll(query).complete(function(err, result = {
+          rows: [],
+          count: 0
+        }) {
         return res.render("admin/transactions", {
           title: "Transactions - Admin - CoinNext",
           page: "transactions",
@@ -243,13 +235,10 @@
           user_id: userId
         };
       }
-      return Payment.findAndCountAll(query).complete(function(err, result) {
-        if (result == null) {
-          result = {
-            rows: [],
-            count: 0
-          };
-        }
+      return Payment.findAndCountAll(query).complete(function(err, result = {
+          rows: [],
+          count: 0
+        }) {
         return res.render("admin/payments", {
           title: "Payments - Admin - CoinNext",
           page: "payments",
@@ -266,91 +255,80 @@
     app.put("/administratie/pay/:id", function(req, res) {
       var id;
       id = req.params.id;
-      return global.coreAPIClient.send("process_payment", [id], (function(_this) {
-        return function(err, res2, body) {
-          if (err) {
-            return JsonRenderer.error(err, res);
-          }
-          if (body && (body.paymentId != null)) {
-            return Payment.findById(id, function(err, payment) {
-              if (!payment.isProcessed()) {
-                return JsonRenderer.error("Could not process payment - " + (JSON.stringify(body)), res);
-              }
-              if (err) {
-                return JsonRenderer.error(err, res);
-              }
-              return res.json(JsonRenderer.payment(payment));
-            });
-          } else {
-            return JsonRenderer.error("Could not process payment - " + (JSON.stringify(body)), res);
-          }
-        };
-      })(this));
+      return global.coreAPIClient.send("process_payment", [id], (err, res2, body) => {
+        if (err) {
+          return JsonRenderer.error(err, res);
+        }
+        if (body && (body.paymentId != null)) {
+          return Payment.findById(id, function(err, payment) {
+            if (!payment.isProcessed()) {
+              return JsonRenderer.error(`Could not process payment - ${JSON.stringify(body)}`, res);
+            }
+            if (err) {
+              return JsonRenderer.error(err, res);
+            }
+            return res.json(JsonRenderer.payment(payment));
+          });
+        } else {
+          return JsonRenderer.error(`Could not process payment - ${JSON.stringify(body)}`, res);
+        }
+      });
     });
     app.del("/administratie/payment/:id", function(req, res) {
       var id;
       id = req.params.id;
-      return global.coreAPIClient.send("cancel_payment", [id], (function(_this) {
-        return function(err, res2, body) {
-          if (err) {
-            return JsonRenderer.error(err, res);
-          }
-          if (body && (body.paymentId != null)) {
-            return res.json({
-              id: id,
-              status: "removed"
-            });
-          } else {
-            return JsonRenderer.error("Could not cancel payment - " + (JSON.stringify(body)), res);
-          }
-        };
-      })(this));
+      return global.coreAPIClient.send("cancel_payment", [id], (err, res2, body) => {
+        if (err) {
+          return JsonRenderer.error(err, res);
+        }
+        if (body && (body.paymentId != null)) {
+          return res.json({
+            id: id,
+            status: "removed"
+          });
+        } else {
+          return JsonRenderer.error(`Could not cancel payment - ${JSON.stringify(body)}`, res);
+        }
+      });
     });
     app.get("/administratie/banksaldo/:currency", function(req, res) {
       var currency;
       currency = req.params.currency;
-      return global.coreAPIClient.send("wallet_balance", [currency], (function(_this) {
-        return function(err, res2, body) {
-          if (err) {
-            return JsonRenderer.error(err, res);
-          }
-          if (body && (body.balance != null)) {
-            return res.json(body);
-          } else {
-            return res.json({
-              currency: currency,
-              balance: "wallet error"
-            });
-          }
-        };
-      })(this));
+      return global.coreAPIClient.send("wallet_balance", [currency], (err, res2, body) => {
+        if (err) {
+          return JsonRenderer.error(err, res);
+        }
+        if (body && (body.balance != null)) {
+          return res.json(body);
+        } else {
+          return res.json({
+            currency: currency,
+            balance: "wallet error"
+          });
+        }
+      });
     });
     app.post("/administratie/wallet_info", function(req, res) {
       var currency;
       currency = req.body.currency;
-      return global.coreAPIClient.send("wallet_info", [currency], (function(_this) {
-        return function(err, res2, body) {
-          if (err) {
-            return JsonRenderer.error(err, res);
-          }
-          if (body && (body.info != null)) {
-            return res.json(body);
-          } else {
-            return res.json({
-              currency: currency,
-              info: "wallet error"
-            });
-          }
-        };
-      })(this));
+      return global.coreAPIClient.send("wallet_info", [currency], (err, res2, body) => {
+        if (err) {
+          return JsonRenderer.error(err, res);
+        }
+        if (body && (body.info != null)) {
+          return res.json(body);
+        } else {
+          return res.json({
+            currency: currency,
+            info: "wallet error"
+          });
+        }
+      });
     });
     app.post("/administratie/search_user", function(req, res) {
       var renderUser, term;
       term = req.body.term;
-      renderUser = function(err, user) {
-        if (user == null) {
-          user = {};
-        }
+      renderUser = function(err, user = {}) {
         return res.json(user);
       };
       if (!_.isNaN(parseInt(term))) {
@@ -368,7 +346,7 @@
             return User.findById(wallet.user_id, renderUser);
           }
           return res.json({
-            error: "Could not find user by " + term
+            error: `Could not find user by ${term}`
           });
         });
       });
@@ -399,7 +377,7 @@
             if (err) {
               console.error(err);
               return res.json({
-                error: "Could not send email " + err
+                error: `Could not send email ${err}`
               });
             } else {
               return res.json({
@@ -409,7 +387,7 @@
           });
         } else {
           return res.json({
-            error: "Could not find user " + userId
+            error: `Could not find user ${userId}`
           });
         }
       });

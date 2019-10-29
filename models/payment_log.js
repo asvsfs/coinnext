@@ -11,10 +11,10 @@
         set: function(response) {
           var e, log;
           try {
-            log = typeof response === "string" ? response : "" + response;
+            log = typeof response === "string" ? response : `${response}`;
             return this.setDataValue("log", log);
-          } catch (_error) {
-            e = _error;
+          } catch (error) {
+            e = error;
             return this.setDataValue("log", response);
           }
         }

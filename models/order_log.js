@@ -72,10 +72,7 @@
         }
       },
       classMethods: {
-        logMatch: function(matchedData, transaction, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        logMatch: function(matchedData, transaction, callback = function() {}) {
           return OrderLog.create(matchedData, {
             transaction: transaction
           }).complete(callback);
@@ -92,7 +89,8 @@
             include: [
               {
                 model: global.db.Order,
-                attributes: ["buy_currency", "sell_currency"],
+                attributes: ["buy_currency",
+              "sell_currency"],
                 where: {
                   action: MarketHelper.getOrderAction(action)
                 }
@@ -102,11 +100,8 @@
           };
           return OrderLog.findAll(query).complete(callback);
         },
-        findActiveByOptions: function(options, callback) {
+        findActiveByOptions: function(options = {}, callback) {
           var currencies, query;
-          if (options == null) {
-            options = {};
-          }
           query = {
             where: {
               active: true
@@ -114,7 +109,9 @@
             include: [
               {
                 model: global.db.Order,
-                attributes: ["buy_currency", "sell_currency", "action"],
+                attributes: ["buy_currency",
+              "sell_currency",
+              "action"],
                 where: {}
               }
             ],
@@ -142,10 +139,7 @@
           }
           return OrderLog.findAll(query).complete(callback);
         },
-        getNumberOfTrades: function(options, callback) {
-          if (options == null) {
-            options = {};
-          }
+        getNumberOfTrades: function(options = {}, callback) {
           return OrderLog.count().complete(callback);
         }
       },

@@ -27,24 +27,15 @@
     }, {
       tableName: "auth_stats",
       classMethods: {
-        findByUser: function(userId, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findByUser: function(userId, callback = function() {}) {
           return AuthStats.findAll({
             where: {
               user_id: userId
             }
           }).complete(callback);
         },
-        log: function(data, sendByMail, callback) {
+        log: function(data, sendByMail = true, callback = function() {}) {
           var stats;
-          if (sendByMail == null) {
-            sendByMail = true;
-          }
-          if (callback == null) {
-            callback = function() {};
-          }
           stats = {
             user_id: data.user.id,
             ip: data.ip
@@ -56,11 +47,8 @@
             return callback(err, stats);
           });
         },
-        sendUserLoginNotice: function(stats, email, callback) {
+        sendUserLoginNotice: function(stats, email, callback = function() {}) {
           var data, emailer, options;
-          if (callback == null) {
-            callback = function() {};
-          }
           data = {
             ip: stats.ip || "unknown",
             auth_date: stats.created_at.toFormat("MMMM D, YYYY at HH24:MI"),

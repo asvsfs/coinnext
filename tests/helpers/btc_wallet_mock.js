@@ -1,5 +1,5 @@
 (function() {
-  var BtcWallet, exports, trTime, transactionData, transactionDetails, transactionsData, _;
+  var BtcWallet, _, exports, trTime, transactionData, transactionDetails, transactionsData;
 
   _ = require("underscore");
 
@@ -32,49 +32,41 @@
   };
 
   BtcWallet = (function() {
-    function BtcWallet() {}
+    class BtcWallet {
+      getTransaction(txId, callback) {
+        var tr;
+        tr = _.clone(transactionData);
+        tr.details = [_.clone(transactionDetails)];
+        return callback(null, tr);
+      }
+
+      getTransactions(account = "*", limit = 100, from = 0, callback) {
+        return callback(null, [_.clone(transactionsData)]);
+      }
+
+      getBalance(account, callback) {
+        return callback(null, 1);
+      }
+
+      chargeAccount(account, balance, callback) {
+        return callback(null, true);
+      }
+
+      sendToAddress(address, amount, callback) {
+        return callback(null, `unique_tx_id_${address}`);
+      }
+
+      isBalanceConfirmed(existentConfirmations) {
+        return existentConfirmations >= this.confirmations;
+      }
+
+    };
 
     BtcWallet.prototype.confirmations = 6;
 
-    BtcWallet.prototype.getTransaction = function(txId, callback) {
-      var tr;
-      tr = _.clone(transactionData);
-      tr.details = [_.clone(transactionDetails)];
-      return callback(null, tr);
-    };
-
-    BtcWallet.prototype.getTransactions = function(account, limit, from, callback) {
-      if (account == null) {
-        account = "*";
-      }
-      if (limit == null) {
-        limit = 100;
-      }
-      if (from == null) {
-        from = 0;
-      }
-      return callback(null, [_.clone(transactionsData)]);
-    };
-
-    BtcWallet.prototype.getBalance = function(account, callback) {
-      return callback(null, 1);
-    };
-
-    BtcWallet.prototype.chargeAccount = function(account, balance, callback) {
-      return callback(null, true);
-    };
-
-    BtcWallet.prototype.sendToAddress = function(address, amount, callback) {
-      return callback(null, "unique_tx_id_" + address);
-    };
-
-    BtcWallet.prototype.isBalanceConfirmed = function(existentConfirmations) {
-      return existentConfirmations >= this.confirmations;
-    };
-
     return BtcWallet;
 
-  })();
+  }).call(this);
 
   exports = module.exports = BtcWallet;
 

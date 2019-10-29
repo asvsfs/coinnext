@@ -161,17 +161,11 @@
               wallet_id: walletId
             }
           };
-          return Payment.sum("amount", query).complete(function(err, totalAmount) {
-            if (totalAmount == null) {
-              totalAmount = 0;
-            }
+          return Payment.sum("amount", query).complete(function(err, totalAmount = 0) {
             if (err) {
               return err;
             }
-            return Payment.sum("fee", query).complete(function(err, totalFee) {
-              if (totalFee == null) {
-                totalFee = 0;
-              }
+            return Payment.sum("fee", query).complete(function(err, totalFee = 0) {
               if (err) {
                 return err;
               }
@@ -179,23 +173,18 @@
             });
           });
         },
-        submit: function(data, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
-          return global.coreAPIClient.sendWithData("create_payment", data, (function(_this) {
-            return function(err, res, body) {
-              if (err) {
-                console.error(err);
-                return callback(err, res, body);
-              }
-              if (body && body.id) {
-                return Payment.findById(body.id, callback);
-              }
-              console.error("Could not create payment - " + (JSON.stringify(body)));
-              return callback(body);
-            };
-          })(this));
+        submit: function(data, callback = function() {}) {
+          return global.coreAPIClient.sendWithData("create_payment", data, (err, res, body) => {
+            if (err) {
+              console.error(err);
+              return callback(err, res, body);
+            }
+            if (body && body.id) {
+              return Payment.findById(body.id, callback);
+            }
+            console.error(`Could not create payment - ${JSON.stringify(body)}`);
+            return callback(body);
+          });
         }
       },
       instanceMethods: {
@@ -214,10 +203,7 @@
         isPending: function() {
           return this.status === "pending";
         },
-        process: function(response, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        process: function(response, callback = function() {}) {
           this.status = "processed";
           this.transaction_id = response;
           global.db.PaymentLog.create({
@@ -226,10 +212,7 @@
           });
           return this.save().complete(callback);
         },
-        cancel: function(reason, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        cancel: function(reason, callback = function() {}) {
           this.status = "canceled";
           global.db.PaymentLog.create({
             payment_id: this.id,
@@ -239,10 +222,7 @@
             return callback(reason, p);
           });
         },
-        errored: function(reason, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        errored: function(reason, callback = function() {}) {
           global.db.PaymentLog.create({
             payment_id: this.id,
             log: reason

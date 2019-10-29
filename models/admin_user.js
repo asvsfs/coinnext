@@ -1,5 +1,5 @@
 (function() {
-  var crypto, speakeasy, _;
+  var _, crypto, speakeasy;
 
   crypto = require("crypto");
 
@@ -32,16 +32,10 @@
     }, {
       tableName: "admin_users",
       classMethods: {
-        findById: function(id, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findById: function(id, callback = function() {}) {
           return AdminUser.find(id).complete(callback);
         },
-        findByEmail: function(email, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findByEmail: function(email, callback = function() {}) {
           return AdminUser.find({
             where: {
               email: email
@@ -49,7 +43,7 @@
           }).complete(callback);
         },
         hashPassword: function(password) {
-          return crypto.createHash("sha256").update("" + password + (global.appConfig().salt), "utf8").digest("hex");
+          return crypto.createHash("sha256").update(`${password}${(global.appConfig().salt)}`, "utf8").digest("hex");
         },
         createNewUser: function(data, callback) {
           var userData;
@@ -62,11 +56,8 @@
         isValidPassword: function(password) {
           return this.password === AdminUser.hashPassword(password);
         },
-        generateGAuthData: function(callback) {
+        generateGAuthData: function(callback = function() {}) {
           var data;
-          if (callback == null) {
-            callback = function() {};
-          }
           data = speakeasy.generate_key({
             name: "administratiecnx",
             length: 20,
@@ -85,11 +76,8 @@
           });
           return currentPass === pass;
         },
-        generateToken: function(callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
-          this.token = crypto.createHash("sha256").update("" + this._id + (global.appConfig().salt) + (Date.now()), "utf8").digest("hex");
+        generateToken: function(callback = function() {}) {
+          this.token = crypto.createHash("sha256").update(`${this._id}${(global.appConfig().salt)}${Date.now()}`, "utf8").digest("hex");
           return this.save().complete(function(err, u) {
             return callback(u.token);
           });

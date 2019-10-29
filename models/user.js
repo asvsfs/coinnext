@@ -1,5 +1,5 @@
 (function() {
-  var BANNED_USERNAMES_REGEX, Emailer, MarketHelper, crypto, phonetic, speakeasy, _;
+  var BANNED_USERNAMES_REGEX, Emailer, MarketHelper, _, crypto, phonetic, speakeasy;
 
   MarketHelper = require("../lib/market_helper");
 
@@ -81,17 +81,11 @@
     }, {
       tableName: "users",
       classMethods: {
-        findById: function(id, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findById: function(id, callback = function() {}) {
           return User.find(id).complete(callback);
         },
-        findByToken: function(token, callback) {
+        findByToken: function(token, callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             where: {
               token: token
@@ -102,27 +96,18 @@
               }
             ]
           };
-          return global.db.UserToken.find(query).complete(function(err, userToken) {
-            if (userToken == null) {
-              userToken = {};
-            }
+          return global.db.UserToken.find(query).complete(function(err, userToken = {}) {
             return callback(err, userToken.user);
           });
         },
-        findByEmail: function(email, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findByEmail: function(email, callback = function() {}) {
           return User.find({
             where: {
               email: email
             }
           }).complete(callback);
         },
-        findByUsername: function(username, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findByUsername: function(username, callback = function() {}) {
           return User.find({
             where: {
               username: username
@@ -130,16 +115,13 @@
           }).complete(callback);
         },
         hashPassword: function(password) {
-          return crypto.createHash("sha256").update("" + password + (global.appConfig().salt), "utf8").digest("hex");
+          return crypto.createHash("sha256").update(`${password}${(global.appConfig().salt)}`, "utf8").digest("hex");
         },
-        passwordMeetsRequirements: function(password) {
-          if (password == null) {
-            password = "";
-          }
-          if (password.length < 8) {
+        passwordMeetsRequirements: function(password = "") {
+          if (password.length < 8) { // min 8 characters
             return false;
           }
-          if (!/[0-9]/.test(password)) {
+          if (!/[0-9]/.test(password)) { // at least one number
             return false;
           }
           return true;
@@ -155,7 +137,7 @@
           return User.create(userData).complete(callback);
         },
         generateUsername: function(seed) {
-          seed = crypto.createHash("sha256").update("username_" + seed + (global.appConfig().salt), "utf8").digest("hex");
+          seed = crypto.createHash("sha256").update(`username_${seed}${(global.appConfig().salt)}`, "utf8").digest("hex");
           return phonetic.generate({
             seed: seed
           });
@@ -165,69 +147,56 @@
         isValidPassword: function(password) {
           return this.password === User.hashPassword(password);
         },
-        sendChangePasswordLink: function(callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
-          return global.db.UserToken.generateChangePasswordTokenForUser(this.id, this.uuid, (function(_this) {
-            return function(err, userToken) {
-              var data, emailer, options, passUrl;
-              passUrl = "/change-password/" + userToken.token;
-              data = {
-                "pass_url": passUrl
-              };
-              options = {
-                to: {
-                  email: _this.email
-                },
-                subject: "Change password request",
-                template: "change_password"
-              };
-              emailer = new Emailer(options, data);
-              emailer.send(function(err, result) {
-                if (err) {
-                  return console.error(err);
-                }
-              });
-              return callback();
+        sendChangePasswordLink: function(callback = function() {}) {
+          return global.db.UserToken.generateChangePasswordTokenForUser(this.id, this.uuid, (err, userToken) => {
+            var data, emailer, options, passUrl;
+            passUrl = `/change-password/${userToken.token}`;
+            data = {
+              "pass_url": passUrl
             };
-          })(this));
+            options = {
+              to: {
+                email: this.email
+              },
+              subject: "Change password request",
+              template: "change_password"
+            };
+            emailer = new Emailer(options, data);
+            emailer.send(function(err, result) {
+              if (err) {
+                return console.error(err);
+              }
+            });
+            return callback();
+          });
         },
-        sendEmailVerificationLink: function(callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        sendEmailVerificationLink: function(callback = function() {}) {
           if (this.email_verified) {
             return callback();
           }
-          return global.db.UserToken.generateEmailConfirmationTokenForUser(this.id, this.uuid, (function(_this) {
-            return function(err, userToken) {
-              var data, emailer, options;
-              data = {
-                "verification_url": "/verify/" + userToken.token
-              };
-              options = {
-                to: {
-                  email: _this.email
-                },
-                subject: "Email verification",
-                template: "confirm_email"
-              };
-              emailer = new Emailer(options, data);
-              emailer.send(function(err, result) {
-                if (err) {
-                  return console.error(err);
-                }
-              });
-              return callback();
+          return global.db.UserToken.generateEmailConfirmationTokenForUser(this.id, this.uuid, (err, userToken) => {
+            var data, emailer, options;
+            data = {
+              "verification_url": `/verify/${userToken.token}`
             };
-          })(this));
+            options = {
+              to: {
+                email: this.email
+              },
+              subject: "Email verification",
+              template: "confirm_email"
+            };
+            emailer = new Emailer(options, data);
+            emailer.send(function(err, result) {
+              if (err) {
+                return console.error(err);
+              }
+            });
+            return callback();
+          });
         },
-        changePassword: function(password, callback) {
+        changePassword: function(password, callback = function() {}) {
           var newHash, oldHash;
-          if (callback == null) {
-            callback = function() {};
-          }
           oldHash = this.password;
           newHash = User.hashPassword(password);
           if (newHash === oldHash) {
@@ -239,20 +208,14 @@
           this.password = newHash;
           return this.save().complete(callback);
         },
-        setEmailVerified: function(callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        setEmailVerified: function(callback = function() {}) {
           this.email_verified = true;
           return this.save().complete(callback);
         },
         canTrade: function() {
           return this.email_verified;
         },
-        updateSettings: function(data, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        updateSettings: function(data, callback = function() {}) {
           if (data.chat_enabled != null) {
             this.chat_enabled = !!data.chat_enabled;
           }

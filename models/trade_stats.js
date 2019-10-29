@@ -62,40 +62,8 @@
       tableName: "trade_stats",
       timestamps: false,
       classMethods: {
-
-        findByTime: function(options, callback) {
-          var halfHour, marketId, oneDay, oneHour, period, query, sixHours, startTime, threeDays;
-          if (options.marketId) {
-            marketId = options.marketId;
-          }
-          if (options.period) {
-            period = options.period;
-          }
-          
-          halfHour = 1800000;
-          oneHour = 2 * halfHour;
-          sixHours = 6 * oneHour;
-          oneDay = 24 * oneHour;
-          threeDays = 3 * oneDay;
-          startTime = parseInt(options.startTime)*1000;
-          endTime = parseInt(options.endTime)*1000;
-          query = {
-            where: {
-              type: marketId,
-              start_time: {
-                gte: new Date(startTime),
-                lt: new Date(endTime)
-              },
-            },
-            // order: [["start_time", "DESC"]]
-          };
-          return TradeStats.findAll(query).complete(callback);
-        },
-        getLastStats: function(type, callback) {
+        getLastStats: function(type, callback = function() {}) {
           var aDayAgo, halfHour, query;
-          if (callback == null) {
-            callback = function() {};
-          }
           type = MarketHelper.getMarket(type);
           halfHour = 1800000;
           aDayAgo = Date.now() - 86400000 - halfHour;
@@ -153,16 +121,13 @@
           oneDay = 24 * oneHour;
           threeDays = 3 * oneDay;
           switch (period) {
-            case "30m":
-              startTime = Date.now() - halfHour;
-              break;
-            case "6h":
+            case "6hh":
               startTime = Date.now() - sixHours - halfHour;
               break;
-            case "1D":
+            case "1DD":
               startTime = Date.now() - oneDay - halfHour;
               break;
-            case "3D":
+            case "3DD":
               startTime = Date.now() - threeDays - halfHour;
               break;
             default:

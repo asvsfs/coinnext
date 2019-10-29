@@ -1,7 +1,7 @@
 (function() {
   var AuthStats, JsonRenderer, User, UserToken, reCaptcha;
 
-  Recaptcha = require("express-recaptcha").Recaptcha;
+  reCaptcha = require("recaptcha-async");
 
   User = global.db.User;
 
@@ -49,48 +49,34 @@
         title: "Send Password - Separdaz.com",
         errors: errors,
         success: success,
-        recaptchaPublicKey: global.appConfig().recaptcha.site_key
+        recaptchaPublicKey: global.appConfig().recaptcha.public_key
       });
     });
     app.post("/send-password", function(req, res) {
-      var dataIsLoaded, email;
+      var dataIsLoaded, email, recaptcha;
       email = req.body.email;
       if (!email) {
         return res.redirect("/send-password");
       }
-      var recaptcha = new Recaptcha(global.appConfig().recaptcha.site_key,global.appConfig().recaptcha.private_key);
       dataIsLoaded = false;
-      recaptcha.verify(req, function(err, data){
-        if (err) {
-          return res.redirect("/send-password?error=invalid-captcha");
-        }
-        return User.findByEmail(email, function(err, user) {
-          if (!user) {
-            return res.redirect("/send-password?success=true");
+      recaptcha = new reCaptcha.reCaptcha();
+      recaptcha.on("data", function(captchaRes) {
+        if (!dataIsLoaded) {
+          dataIsLoaded = true;
+          if (!captchaRes.is_valid) {
+            return res.redirect("/send-password?error=invalid-captcha");
           }
-          return user.sendChangePasswordLink(function() {
-            return res.redirect("/send-password?success=true");
+          return User.findByEmail(email, function(err, user) {
+            if (!user) {
+              return res.redirect("/send-password?success=true");
+            }
+            return user.sendChangePasswordLink(function() {
+              return res.redirect("/send-password?success=true");
+            });
           });
-        });
+        }
       });
-      // recaptcha = new reCaptcha.reCaptcha();
-      // recaptcha.on("data", function(captchaRes) {
-      //   if (!dataIsLoaded) {
-      //     dataIsLoaded = true;
-      //     if (!captchaRes.is_valid) {
-      //       return res.redirect("/send-password?error=invalid-captcha");
-      //     }
-      //     return User.findByEmail(email, function(err, user) {
-      //       if (!user) {
-      //         return res.redirect("/send-password?success=true");
-      //       }
-      //       return user.sendChangePasswordLink(function() {
-      //         return res.redirect("/send-password?success=true");
-      //       });
-      //     });
-      //   }
-      // });
-      // return recaptcha.checkAnswer(global.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field);
+      return recaptcha.checkAnswer(global.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field);
     });
     app.get("/change-password/:token", function(req, res) {
       var oldCsrf, oldStagingAuth, token;
@@ -128,7 +114,7 @@
         return User.findByToken(token, function(err, user) {
           if (!user) {
             res.writeHead(303, {
-              "Location": "/change-password/" + token + "?error=wrong-token"
+              "Location": `/change-password/${token}?error=wrong-token`
             });
             res.end();
           }

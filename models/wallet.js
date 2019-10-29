@@ -1,5 +1,5 @@
 (function() {
-  var MarketHelper, math, _;
+  var MarketHelper, _, math;
 
   MarketHelper = require("../lib/market_helper");
 
@@ -45,7 +45,7 @@
       tableName: "wallets",
       getterMethods: {
         account: function() {
-          return "wallet_" + this.id;
+          return `wallet_${this.id}`;
         },
         currency_name: function() {
           return MarketHelper.getCurrencyName(this.currency);
@@ -74,10 +74,7 @@
             }
           }).complete(callback);
         },
-        findUserWalletByCurrency: function(userId, currency, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findUserWalletByCurrency: function(userId, currency, callback = function() {}) {
           return Wallet.find({
             where: {
               user_id: userId,
@@ -85,10 +82,7 @@
             }
           }).complete(callback);
         },
-        findOrCreateUserWalletByCurrency: function(userId, currency, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findOrCreateUserWalletByCurrency: function(userId, currency, callback = function() {}) {
           return Wallet.findOrCreate({
             user_id: userId,
             currency: MarketHelper.getCurrency(currency)
@@ -97,21 +91,15 @@
             currency: currency
           }).complete(callback);
         },
-        findUserWallets: function(userId, callback) {
+        findUserWallets: function(userId, callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             where: {
               user_id: userId
             },
             order: [["created_at", "DESC"]]
           };
-          return Wallet.findAll(query).complete(function(err, wallets) {
-            if (wallets == null) {
-              wallets = [];
-            }
+          return Wallet.findAll(query).complete(function(err, wallets = []) {
             wallets = _.sortBy(wallets, function(w) {
               if (w.currency === "BTC") {
                 return " ";
@@ -121,10 +109,7 @@
             return callback(err, wallets);
           });
         },
-        findUserWallet: function(userId, walletId, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        findUserWallet: function(userId, walletId, callback = function() {}) {
           return Wallet.find({
             where: {
               user_id: userId,
@@ -132,11 +117,8 @@
             }
           }).complete(callback);
         },
-        findByAccount: function(account, callback) {
+        findByAccount: function(account, callback = function() {}) {
           var id;
-          if (callback == null) {
-            callback = function() {};
-          }
           id = account.replace("wallet_", "");
           return Wallet.findById(id, callback);
         }
@@ -148,95 +130,72 @@
           }
           return MarketHelper.fromBigint(this[attribute]);
         },
-        generateAddress: function(callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
-          return global.coreAPIClient.send("create_account", [this.account, this.currency], (function(_this) {
-            return function(err, res, body) {
-              if (err) {
-                console.error(err);
-                return callback(err, res, body);
-              }
-              if (body && body.address) {
-                _this.address = body.address;
-                return _this.save().complete(callback);
-              } else {
-                console.error("Could not generate address - " + (JSON.stringify(body)));
-                return callback("Invalid address");
-              }
-            };
-          })(this));
+        generateAddress: function(callback = function() {}) {
+          return global.coreAPIClient.send("create_account", [this.account, this.currency], (err, res, body) => {
+            if (err) {
+              console.error(err);
+              return callback(err, res, body);
+            }
+            if (body && body.address) {
+              this.address = body.address;
+              return this.save().complete(callback);
+            } else {
+              console.error(`Could not generate address - ${JSON.stringify(body)}`);
+              return callback("Invalid address");
+            }
+          });
         },
-        addBalance: function(newBalance, transaction, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        addBalance: function(newBalance, transaction, callback = function() {}) {
           if (!_.isNaN(newBalance) && _.isNumber(newBalance)) {
             return this.increment({
               balance: newBalance
             }, {
               transaction: transaction
-            }).complete((function(_this) {
-              return function(err, wl) {
-                if (err) {
-                  return callback("Could not add the wallet balance " + newBalance + " for " + _this.id + ": " + err);
-                }
-                return Wallet.find(_this.id, {
-                  transaction: transaction
-                }).complete(callback);
-              };
-            })(this));
+            }).complete((err, wl) => {
+              if (err) {
+                return callback(`Could not add the wallet balance ${newBalance} for ${this.id}: ${err}`);
+              }
+              return Wallet.find(this.id, {
+                transaction: transaction
+              }).complete(callback);
+            });
           } else {
-            return callback("Could not add wallet balance " + newBalance + " for " + this.id);
+            return callback(`Could not add wallet balance ${newBalance} for ${this.id}`);
           }
         },
-        addHoldBalance: function(newBalance, transaction, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        addHoldBalance: function(newBalance, transaction, callback = function() {}) {
           if (!_.isNaN(newBalance) && _.isNumber(newBalance)) {
             return this.increment({
               hold_balance: newBalance
             }, {
               transaction: transaction
-            }).complete((function(_this) {
-              return function(err, wl) {
-                if (err) {
-                  return callback("Could not add the wallet hold balance " + newBalance + " for " + _this.id + ": " + err);
-                }
-                return Wallet.find(_this.id, {
-                  transaction: transaction
-                }).complete(callback);
-              };
-            })(this));
+            }).complete((err, wl) => {
+              if (err) {
+                return callback(`Could not add the wallet hold balance ${newBalance} for ${this.id}: ${err}`);
+              }
+              return Wallet.find(this.id, {
+                transaction: transaction
+              }).complete(callback);
+            });
           } else {
-            return callback("Could not add wallet hold balance " + newBalance + " for " + this.id);
+            return callback(`Could not add wallet hold balance ${newBalance} for ${this.id}`);
           }
         },
-        holdBalance: function(balance, transaction, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        holdBalance: function(balance, transaction, callback = function() {}) {
           if (!_.isNaN(balance) && _.isNumber(balance) && this.canWithdraw(balance)) {
-            return this.addBalance(-balance, transaction, (function(_this) {
-              return function(err) {
-                if (!err) {
-                  return _this.addHoldBalance(balance, transaction, callback);
-                } else {
-                  return callback("Could not hold wallet balance " + balance + " for " + _this.id + ", not enough funds?");
-                }
-              };
-            })(this));
+            return this.addBalance(-balance, transaction, (err) => {
+              if (!err) {
+                return this.addHoldBalance(balance, transaction, callback);
+              } else {
+                return callback(`Could not hold wallet balance ${balance} for ${this.id}, not enough funds?`);
+              }
+            });
           } else {
-            return callback("Could not add wallet hold balance " + balance + " for " + this.id + ", invalid balance " + balance + ".");
+            return callback(`Could not add wallet hold balance ${balance} for ${this.id}, invalid balance ${balance}.`);
           }
         },
-        canWithdraw: function(amount, includeFee) {
+        canWithdraw: function(amount, includeFee = false) {
           var withdrawAmount;
-          if (includeFee == null) {
-            includeFee = false;
-          }
           withdrawAmount = parseFloat(amount);
           if (includeFee) {
             withdrawAmount = parseFloat(math.add(MarketHelper.toBignum(withdrawAmount), MarketHelper.toBignum(this.withdrawal_fee)));

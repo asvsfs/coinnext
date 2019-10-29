@@ -1,5 +1,5 @@
 (function() {
-  var JsonRenderer, Payment, Transaction, TransactionHelper, Wallet, async, paymentsProcessedUserIds, restify, _;
+  var JsonRenderer, Payment, Transaction, TransactionHelper, Wallet, _, async, paymentsProcessedUserIds, restify;
 
   restify = require("restify");
 
@@ -15,8 +15,6 @@
 
   TransactionHelper = require("../../lib/transaction_helper");
 
-  errors = require('restify-errors');
-  
   paymentsProcessedUserIds = [];
 
   _ = require("underscore");
@@ -39,7 +37,7 @@
           if (err) {
             console.error(err);
           }
-          return res.send("" + (new Date()) + " - Added transaction " + txId + " " + currency);
+          return res.send(`${new Date()} - Added transaction ${txId} ${currency}`);
         });
       });
     });
@@ -55,13 +53,13 @@
           return TransactionHelper.loadTransaction(transaction, currency, callback);
         };
         if (!transactions) {
-          return res.send("" + (new Date()) + " - Nothing to process");
+          return res.send(`${new Date()} - Nothing to process`);
         }
         return async.mapSeries(transactions, loadTransactionCallback, function(err, result) {
           if (err) {
             console.error(err);
           }
-          return res.send("" + (new Date()) + " - Processed " + result.length + " transactions");
+          return res.send(`${new Date()} - Processed ${result.length} transactions`);
         });
       });
     });
@@ -82,7 +80,7 @@
           if (err) {
             console.log(err);
           }
-          return res.send("" + (new Date()) + " - " + result);
+          return res.send(`${new Date()} - ${result}`);
         });
       });
     });
@@ -92,7 +90,7 @@
       TransactionHelper.paymentsProcessedUserIds = [];
       return Payment.findNonProcessedById(paymentId, function(err, payment) {
         if (!payment) {
-          return next(new errors.InternalServerError("Could not find non processed payment " + paymentId));
+          return next(new errors.InternalServerError(`Could not find non processed payment ${paymentId}`));
         }
         return TransactionHelper.processPayment(payment, function(err, result) {
           return Payment.findById(paymentId, function(err, processedPayment) {
@@ -117,11 +115,11 @@
       paymentId = req.params.payment_id;
       return Payment.findById(paymentId, function(err, payment) {
         if (payment.isProcessed()) {
-          return next(new errors.InternalServerError("Could not cancel already processed payment " + paymentId + "."));
+          return next(new errors.InternalServerError(`Could not cancel already processed payment ${paymentId}.`));
         }
         return TransactionHelper.cancelPayment(payment, function(err, result) {
           if (err) {
-            return next(new errors.InternalServerError("Could not cancel already payment " + paymentId + " - " + err));
+            return next(new errors.InternalServerError(`Could not cancel already payment ${paymentId} - ${err}`));
           }
           return res.send({
             paymentId: paymentId,

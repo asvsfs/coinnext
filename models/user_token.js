@@ -9,7 +9,7 @@
 
   module.exports = function(sequelize, DataTypes) {
     var TOKEN_VALIDITY_TIME, UserToken;
-    TOKEN_VALIDITY_TIME = 86400000;
+    TOKEN_VALIDITY_TIME = 86400000; // 24 hours
     UserToken = sequelize.define("UserToken", {
       user_id: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -39,11 +39,8 @@
     }, {
       tableName: "user_tokens",
       classMethods: {
-        findByToken: function(token, callback) {
+        findByToken: function(token, callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             where: {
               token: token,
@@ -55,11 +52,8 @@
           };
           return UserToken.find(query).complete(callback);
         },
-        findByUserAndType: function(userId, type, callback) {
+        findByUserAndType: function(userId, type, callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             where: {
               user_id: userId,
@@ -74,11 +68,8 @@
           }
           return UserToken.find(query).complete(callback);
         },
-        findEmailConfirmationToken: function(userId, callback) {
+        findEmailConfirmationToken: function(userId, callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             where: {
               user_id: userId,
@@ -117,11 +108,8 @@
             gauth_key: gData.base32
           };
         },
-        addGAuthTokenForUser: function(key, userId, callback) {
+        addGAuthTokenForUser: function(key, userId, callback = function() {}) {
           var data;
-          if (callback == null) {
-            callback = function() {};
-          }
           data = {
             user_id: userId,
             type: "google_auth",
@@ -129,10 +117,7 @@
           };
           return UserToken.create(data).complete(callback);
         },
-        dropGAuthDataForUser: function(userId, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        dropGAuthDataForUser: function(userId, callback = function() {}) {
           return UserToken.update({
             active: false
           }, {
@@ -140,37 +125,28 @@
             type: MarketHelper.getTokenType("google_auth")
           }).complete(callback);
         },
-        generateEmailConfirmationTokenForUser: function(userId, seed, callback) {
+        generateEmailConfirmationTokenForUser: function(userId, seed, callback = function() {}) {
           var data;
-          if (callback == null) {
-            callback = function() {};
-          }
           data = {
             user_id: userId,
             type: "email_confirmation",
-            token: crypto.createHash("sha256").update("email_confirmations-" + userId + "-" + seed + "-" + (global.appConfig().salt) + "-" + (Date.now()), "utf8").digest("hex")
+            token: crypto.createHash("sha256").update(`email_confirmations-${userId}-${seed}-${(global.appConfig().salt)}-${Date.now()}`, "utf8").digest("hex")
           };
           return UserToken.create(data).complete(callback);
         },
-        generateChangePasswordTokenForUser: function(userId, seed, callback) {
+        generateChangePasswordTokenForUser: function(userId, seed, callback = function() {}) {
           var data;
-          if (callback == null) {
-            callback = function() {};
-          }
           data = {
             user_id: userId,
             type: "change_password",
-            token: crypto.createHash("sha256").update("change_password-" + userId + "-" + seed + "-" + (global.appConfig().salt) + "-" + (Date.now()), "utf8").digest("hex")
+            token: crypto.createHash("sha256").update(`change_password-${userId}-${seed}-${(global.appConfig().salt)}-${Date.now()}`, "utf8").digest("hex")
           };
           return UserToken.create(data).complete(callback);
         },
         getMaxExpirationTime: function() {
           return new Date(Date.now() - TOKEN_VALIDITY_TIME);
         },
-        invalidateByToken: function(token, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        invalidateByToken: function(token, callback = function() {}) {
           return UserToken.update({
             active: false
           }, {

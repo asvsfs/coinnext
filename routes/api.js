@@ -14,6 +14,7 @@
   JsonRenderer = require("./../lib/json_renderer");
 
   module.exports = function(app) {
+    // Provides an overview of all our markets
     app.get("/v1/market/summary", function(req, res, next) {
       return MarketStats.findMarkets(null, null, function(err, marketStats) {
         if (err) {
@@ -27,6 +28,9 @@
         return res.send(JsonRenderer.marketSummary(marketStats));
       });
     });
+    
+    // Provides an overview of only BTC markets at this time
+    // Example: /v1/market/summary/BTC
     app.get("/v1/market/summary/:exchange", function(req, res, next) {
       var exchange;
       exchange = req.params.exchange;
@@ -50,6 +54,9 @@
         return res.send(JsonRenderer.marketSummary(marketStats));
       });
     });
+    
+    // Provides the statistics for a single market.
+    // Example: /v1/market/trades/AUR/BTC
     app.get("/v1/market/stats/:coin/:exchange", function(req, res, next) {
       var coin, exchange;
       coin = req.params.coin;
@@ -74,6 +81,8 @@
         return res.send(JsonRenderer.marketSummary(marketStats));
       });
     });
+    // Fetches the last 100 trades for a given market.
+    // Example: /v1/market/trades/MINT/BTC
     app.get("/v1/market/trades/:coin/:exchange", function(req, res, next) {
       var coin, exchange, options;
       coin = req.params.coin;
@@ -102,6 +111,8 @@
         return res.send(JsonRenderer.lastTrades(orderLogs));
       });
     });
+    // Fetches the 50 best priced orders of a given type for a given market.
+    // Example: /v1/market/orders/MINT/BTC/BUY
     app.get("/v1/market/orders/:coin/:exchange/:type", function(req, res, next) {
       var coin, exchange, options, type;
       coin = req.params.coin;
@@ -139,6 +150,11 @@
         return res.send(JsonRenderer.lastOrders(options.action, orders));
       });
     });
+    // Fetches the chart data for a market for a given time period. 
+    // The period is an optional parameter and can be either '6hh' (6 hours), '1DD' (24 hours), '3DD' (3 days), '7DD' (1 week) or 'MAX'.
+    // If no period is defined, it will default to 6 hours. 
+    // The market ID can be found by checking the market summary or market stats.
+    // Example: /v1/market/chartdata/5/1DD
     return app.get("/v1/market/chartdata/:market_id/:period?", function(req, res, next) {
       var options;
       options = {};

@@ -83,11 +83,8 @@
             }
           }).complete(callback);
         },
-        addFromWallet: function(transactionData, currency, wallet, callback) {
+        addFromWallet: function(transactionData, currency, wallet, callback = function() {}) {
           var data, key;
-          if (callback == null) {
-            callback = function() {};
-          }
           data = {
             user_id: (wallet ? wallet.user_id : void 0),
             wallet_id: (wallet ? wallet.id : void 0),
@@ -171,10 +168,7 @@
               category: MarketHelper.getTransactionCategory("receive")
             }
           };
-          return Transaction.sum("amount", query).complete(function(err, sum) {
-            if (sum == null) {
-              sum = 0;
-            }
+          return Transaction.sum("amount", query).complete(function(err, sum = 0) {
             return callback(err, sum);
           });
         },

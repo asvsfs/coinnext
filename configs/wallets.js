@@ -11,13 +11,13 @@
     walletType = currency.toLowerCase();
     options = process.env.NODE_ENV !== "production" && (global.appConfig().wallets[walletType] == null) ? global.appConfig().wallets["btc"] : global.appConfig().wallets[walletType];
     if (process.env.NODE_ENV === "test") {
-      path = "" + (process.cwd()) + "/tests/helpers/" + walletType + "_wallet_mock.js";
+      path = `${process.cwd()}/tests/helpers/${walletType}_wallet_mock.js`;
       if (fs.existsSync(path)) {
         Wallet = require(path);
         wallets[currency] = new Wallet(options);
       }
     } else {
-      path = "" + (process.cwd()) + "/lib/crypto_wallets/" + walletType + "_wallet.js";
+      path = `${process.cwd()}/lib/crypto_wallets/${walletType}_wallet.js`;
       if (fs.existsSync(path)) {
         Wallet = require(path);
       } else {

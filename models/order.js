@@ -1,5 +1,5 @@
 (function() {
-  var MarketHelper, math, _;
+  var MarketHelper, _, math;
 
   MarketHelper = require("../lib/market_helper");
 
@@ -234,11 +234,8 @@
             }
           }).complete(callback);
         },
-        findTopBid: function(buyCurrency, sellCurrency, callback) {
+        findTopBid: function(buyCurrency, sellCurrency, callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             limit: 1,
             where: {
@@ -252,11 +249,8 @@
           };
           return Order.find(query).complete(callback);
         },
-        findTopAsk: function(buyCurrency, sellCurrency, callback) {
+        findTopAsk: function(buyCurrency, sellCurrency, callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             limit: 1,
             where: {
@@ -270,11 +264,8 @@
           };
           return Order.find(query).complete(callback);
         },
-        findByOptions: function(options, callback) {
-          var currencies, query, status, _i, _len, _ref;
-          if (options == null) {
-            options = {};
-          }
+        findByOptions: function(options = {}, callback) {
+          var currencies, i, len, query, ref, status;
           query = {
             where: {},
             order: [["created_at", "DESC"]]
@@ -287,7 +278,9 @@
               {
                 model: global.db.OrderLog,
                 required: false,
-                attributes: ["matched_amount", "result_amount", "unit_price"],
+                attributes: ["matched_amount",
+              "result_amount",
+              "unit_price"],
                 where: {}
               }
             ];
@@ -301,9 +294,9 @@
             query.where.status = MarketHelper.getOrderStatus(options.status);
           } else if (_.isArray(options.status)) {
             query.where.status = [];
-            _ref = options.status;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              status = _ref[_i];
+            ref = options.status;
+            for (i = 0, len = ref.length; i < len; i++) {
+              status = ref[i];
               query.where.status.push(MarketHelper.getOrderStatus(status));
             }
           }
@@ -394,47 +387,34 @@
         canBeCanceled: function() {
           return !this.in_queue && this.status !== "completed";
         },
-        publish: function(callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
-          return global.coreAPIClient.sendWithData("publish_order", this.values, (function(_this) {
-            return function(err, res, body) {
-              if (err) {
-                console.error(err);
-                return callback(err, res, body);
-              }
-              if (body && body.id) {
-                return Order.findById(body.id, callback);
-              }
-              console.error("Could not publish the order - " + (JSON.stringify(body)));
-              return callback(body);
-            };
-          })(this));
+        publish: function(callback = function() {}) {
+          return global.coreAPIClient.sendWithData("publish_order", this.values, (err, res, body) => {
+            if (err) {
+              console.error(err);
+              return callback(err, res, body);
+            }
+            if (body && body.id) {
+              return Order.findById(body.id, callback);
+            }
+            console.error(`Could not publish the order - ${JSON.stringify(body)}`);
+            return callback(body);
+          });
         },
-        cancel: function(callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
-          return global.coreAPIClient.send("cancel_order", [this.id], (function(_this) {
-            return function(err, res, body) {
-              if (err) {
-                console.error(err);
-                return callback(err, res, body);
-              }
-              if (body && body.id) {
-                return callback();
-              } else {
-                console.error("Could not cancel the order - " + (JSON.stringify(body)));
-                return callback("Could not cancel the order on the network");
-              }
-            };
-          })(this));
+        cancel: function(callback = function() {}) {
+          return global.coreAPIClient.send("cancel_order", [this.id], (err, res, body) => {
+            if (err) {
+              console.error(err);
+              return callback(err, res, body);
+            }
+            if (body && body.id) {
+              return callback();
+            } else {
+              console.error(`Could not cancel the order - ${JSON.stringify(body)}`);
+              return callback("Could not cancel the order on the network");
+            }
+          });
         },
-        updateFromMatchedData: function(matchedData, transaction, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        updateFromMatchedData: function(matchedData, transaction, callback = function() {}) {
           this.status = matchedData.status;
           this.matched_amount = parseInt(math.add(MarketHelper.toBignum(this.matched_amount), MarketHelper.toBignum(matchedData.matched_amount)));
           this.result_amount = parseInt(math.add(MarketHelper.toBignum(this.result_amount), MarketHelper.toBignum(matchedData.result_amount)));
@@ -446,15 +426,12 @@
             transaction: transaction
           }).complete(callback);
         },
-        calculateReceivedFromLogs: function(toFloat) {
-          var log, resultAmount, _i, _len, _ref;
-          if (toFloat == null) {
-            toFloat = false;
-          }
+        calculateReceivedFromLogs: function(toFloat = false) {
+          var i, len, log, ref, resultAmount;
           resultAmount = 0;
-          _ref = this.orderLogs;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            log = _ref[_i];
+          ref = this.orderLogs;
+          for (i = 0, len = ref.length; i < len; i++) {
+            log = ref[i];
             resultAmount = parseInt(math.add(MarketHelper.toBignum(resultAmount), MarketHelper.toBignum(log.result_amount)));
           }
           if (toFloat) {
@@ -463,22 +440,19 @@
             return resultAmount;
           }
         },
-        calculateSpentFromLogs: function(toFloat) {
-          var log, spentAmount, _i, _j, _len, _len1, _ref, _ref1;
-          if (toFloat == null) {
-            toFloat = false;
-          }
+        calculateSpentFromLogs: function(toFloat = false) {
+          var i, j, len, len1, log, ref, ref1, spentAmount;
           spentAmount = 0;
           if (this.action === "buy") {
-            _ref = this.orderLogs;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              log = _ref[_i];
+            ref = this.orderLogs;
+            for (i = 0, len = ref.length; i < len; i++) {
+              log = ref[i];
               spentAmount = parseInt(math.add(MarketHelper.toBignum(spentAmount), MarketHelper.toBignum(log.total)));
             }
           } else {
-            _ref1 = this.orderLogs;
-            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              log = _ref1[_j];
+            ref1 = this.orderLogs;
+            for (j = 0, len1 = ref1.length; j < len1; j++) {
+              log = ref1[j];
               spentAmount = parseInt(math.add(MarketHelper.toBignum(spentAmount), MarketHelper.toBignum(log.matched_amount)));
             }
           }

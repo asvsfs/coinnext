@@ -1,13 +1,13 @@
 (function() {
-  var MarketHelper, int, literal, markets, _ref;
+  var MarketHelper, int, literal, markets, ref;
 
   MarketHelper = require("../../lib/market_helper");
 
   markets = [];
 
-  _ref = MarketHelper.getMarkets();
-  for (literal in _ref) {
-    int = _ref[literal];
+  ref = MarketHelper.getMarkets();
+  for (literal in ref) {
+    int = ref[literal];
     markets.push({
       type: literal,
       status: "enabled"

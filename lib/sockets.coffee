@@ -1,67 +1,117 @@
-io = require "socket.io"
-SessionSockets = require "session.socket.io"
-redis = require "redis"
-SocketsRedisStore = require "socket.io/lib/stores/redis"
-socketPub = redis.createClient global.appConfig().redis.port, global.appConfig().redis.host, {auth_pass: global.appConfig().redis.pass}
-socketSub = redis.createClient global.appConfig().redis.port, global.appConfig().redis.host, {auth_pass: global.appConfig().redis.pass}
-socketClient = redis.createClient global.appConfig().redis.port, global.appConfig().redis.host, {auth_pass: global.appConfig().redis.pass}
-externalEventsSub = redis.createClient global.appConfig().redis.port, global.appConfig().redis.host, {auth_pass: global.appConfig().redis.pass}
+(->
+  Chat = undefined
+  JsonRenderer = undefined
+  SessionSockets = undefined
+  SocketsRedisStore = undefined
+  exports = undefined
+  externalEventsSub = undefined
+  initSockets = undefined
+  io = undefined
+  redis = undefined
+  socketClient = undefined
+  socketPub = undefined
+  socketSub = undefined
+  sockets = undefined
+  io = require('socket.io')
+  # SessionSockets = require("session.socket.io");
+  redis = require('redis')
+  SocketsRedisStore = require('socket.io-redis')
+  te = global.appConfig()
+  socketPub = redis.createClient(global.appConfig().redis.uri)
+  socketSub = redis.createClient(global.appConfig().redis.uri)
+  socketClient = redis.createClient(global.appConfig().redis.uri)
+  externalEventsSub = redis.createClient(global.appConfig().redis.uri)
+  passportSocketIo = require('passport.socketio')
+  Chat = global.db.Chat
+  JsonRenderer = require('./json_renderer')
+  sockets = {}
 
-Chat = global.db.Chat
-JsonRenderer = require "./json_renderer"
+  initSockets = (server, env, sessionStore, cookieParser) ->
+    ioOptions = undefined
 
-sockets = {}
+    onAuthorizeSuccess = (data, accept) ->
+      console.log 'successful connection to socket.io'
+      # The accept-callback still allows us to decide whether to
+      # accept the connection or not.
+      accept null, true
+      # OR
+      # If you use socket.io@1.X the callback looks different
+      accept()
+      return
 
-initSockets = (server, env, sessionStore, cookieParser)->
-  ioOptions =
-    log: if env is "production" then false else false
-  
-  sockets.io = io.listen server, ioOptions
+    onAuthorizeFail = (data, message, error, accept) ->
+      if error
+        # throw new Error(message);
+        console.log 'failed connection to socket.io:', message
+      # We use this callback to log all of our failed connections.
+      accept null, false
+      # OR
+      # If you use socket.io@1.X the callback looks different
+      # If you don't want to accept the connection
+      if error
+        accept new Error(message)
+      # this error will be sent to the user as a special error-package
+      # see: http://socket.io/docs/client-api/#socket > error-object
+      return
 
-  sockets.io.configure "production", ()->
-    sockets.io.enable "browser client minification"
-    sockets.io.enable "browser client etag"
-    sockets.io.enable "browser client gzip"
-    sockets.io.set "origins", "#{global.appConfig().users.hostname}:*"
+    ioOptions = log: if env == 'production' then false else false
+    io = io(server)
+    io.adapter SocketsRedisStore(
+      pubClient: socketPub
+      subClient: socketSub)
+    sockets.io = io
+    io.use passportSocketIo.authorize(
+      cookieParser: cookieParser
+      key: global.appConfig().session.session_key
+      secret: global.appConfig().session.cookie_secret
+      store: sessionStore
+      success: onAuthorizeSuccess
+      fail: onAuthorizeFail)
+    externalEventsSub.subscribe 'external-events'
+    externalEventsSub.on 'message', (channel, data) ->
+      e = undefined
+      sId = undefined
+      so = undefined
+      _ref = undefined
+      if channel == 'external-events'
+        try
+          data = JSON.parse(data)
+          if data.namespace == 'users'
+            _ref = sockets.io.of('/users').sockets
+            for sId of _ref
+              `sId = sId`
+              so = _ref[sId]
+              if so.user_id == data.user_id
+                so.emit data.type, data.eventData
+          if data.namespace == 'orders'
+            sockets.io.of('/orders').emit data.type, data.eventData
+        catch _error
+          e = _error
+          console.error 'Could not emit to socket ' + data + ': ' + e
+        return this
+      return
+    # sockets.sessionSockets = new SessionSockets(sockets.io, sessionStore, cookieParser, global.appConfig().session.session_key);
+    sockets.io.of('/users').on 'connection', (socket) ->
+      console.log 'user connected'
+      return
+    sockets.io.of('/orders').on 'connection', (socket) ->
+    sockets.io.of('/chat').on 'connection', (socket) ->
+      console.log 'chat connected'
+      socket.on 'add-message', (data) ->
+        if !socket.request.user
+          return
+        data.user_id = socket.request.user.id
+        Chat.addMessage data, (err, message) ->
+          if err
+            return console.error(err)
+          message.getUser().success (user) ->
+            sockets.io.of('/chat').emit 'new-message', JsonRenderer.chatMessage(message, user)
+        this
+    sockets
 
-  sockets.io.set "store", new SocketsRedisStore
-    redis: redis
-    redisPub: socketPub
-    redisSub: socketSub
-    redisClient: socketClient
+  exports = module.exports = initSockets
+  return
+).call this
 
-  externalEventsSub.subscribe "external-events"
-  externalEventsSub.on "message", (channel, data)->
-    if channel is "external-events"
-      try
-        data = JSON.parse data
-        if data.namespace is "users"
-          for sId, so of sockets.io.of("/users").sockets
-            so.emit data.type, data.eventData  if so.user_id is data.user_id
-        if data.namespace is "orders"
-          sockets.io.of("/orders").emit data.type, data.eventData
-      catch e
-        console.error "Could not emit to socket #{data}: #{e}"
-      @
-
-  sockets.sessionSockets = new SessionSockets sockets.io, sessionStore, cookieParser, global.appConfig().session.session_key
-
-  sockets.sessionSockets.of("/users").on "connection", (err, socket, session)->
-    socket.user_id = session.passport.user  if session and session.passport
-  
-  sockets.io.of("/orders").on "connection", (socket)->
-
-  sockets.sessionSockets.of("/chat").on "connection", (err, socket, session)->
-    socket.user_id = session.passport.user  if session and session.passport
-    socket.on "add-message", (data)->
-      return  if not socket.user_id
-      data.user_id = socket.user_id
-      Chat.addMessage data, (err, message)->
-        return console.error err  if err
-        message.getUser().success (user)->
-          sockets.io.of("/chat").emit "new-message", JsonRenderer.chatMessage message, user
-      @
-
-  sockets
-
-exports = module.exports = initSockets
+# ---
+# generated by js2coffee 2.2.0

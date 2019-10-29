@@ -1,5 +1,5 @@
 (function() {
-  var MarketHelper, OrderLog, TradeStats, math, _;
+  var MarketHelper, OrderLog, TradeStats, _, math;
 
   OrderLog = global.db.OrderLog;
 
@@ -20,10 +20,10 @@
       startTime = endTime - halfHour;
       markets = {};
       return OrderLog.findByTimeAndAction(startTime, endTime, "sell", function(err, orderLogs) {
-        var marketType, orderLog, _i, _len;
-        for (_i = 0, _len = orderLogs.length; _i < _len; _i++) {
-          orderLog = orderLogs[_i];
-          marketType = "" + orderLog.order.sell_currency + "_" + orderLog.order.buy_currency;
+        var i, len, marketType, orderLog;
+        for (i = 0, len = orderLogs.length; i < len; i++) {
+          orderLog = orderLogs[i];
+          marketType = `${orderLog.order.sell_currency}_${orderLog.order.buy_currency}`;
           if (!markets[marketType]) {
             markets[marketType] = {
               type: marketType,
@@ -52,7 +52,7 @@
         markets = _.values(markets);
         return TradeStats.bulkCreate(markets).complete(function(err, result) {
           return res.send({
-            message: "Trade stats aggregated from " + (new Date(startTime)) + " to " + (new Date(endTime)),
+            message: `Trade stats aggregated from ${new Date(startTime)} to ${new Date(endTime)}`,
             result: result
           });
         });

@@ -1,5 +1,5 @@
 (function() {
-  var MarketHelper, math, _;
+  var MarketHelper, _, math;
 
   MarketHelper = require("../lib/market_helper");
 
@@ -105,11 +105,8 @@
         }
       },
       classMethods: {
-        getStats: function(callback) {
+        getStats: function(callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             where: {
               status: {
@@ -118,24 +115,21 @@
             }
           };
           return MarketStats.findAll(query).complete(function(err, marketStats) {
-            var stat, stats, _i, _len;
+            var i, len, stat, stats;
             marketStats = _.sortBy(marketStats, function(s) {
               return s.type;
             });
             stats = {};
-            for (_i = 0, _len = marketStats.length; _i < _len; _i++) {
-              stat = marketStats[_i];
+            for (i = 0, len = marketStats.length; i < len; i++) {
+              stat = marketStats[i];
               stats[stat.type] = stat;
             }
             return callback(err, stats);
           });
         },
-        trackFromNewOrder: function(order, callback) {
+        trackFromNewOrder: function(order, callback = function() {}) {
           var type;
-          if (callback == null) {
-            callback = function() {};
-          }
-          type = order.action === "buy" ? "" + order.buy_currency + "_" + order.sell_currency : "" + order.sell_currency + "_" + order.buy_currency;
+          type = order.action === "buy" ? `${order.buy_currency}_${order.sell_currency}` : `${order.sell_currency}_${order.buy_currency}`;
           return MarketStats.find({
             where: {
               type: MarketHelper.getMarket(type)
@@ -154,12 +148,9 @@
             return marketStats.save().complete(callback);
           });
         },
-        trackFromCancelledOrder: function(order, callback) {
+        trackFromCancelledOrder: function(order, callback = function() {}) {
           var type;
-          if (callback == null) {
-            callback = function() {};
-          }
-          type = order.action === "buy" ? "" + order.buy_currency + "_" + order.sell_currency : "" + order.sell_currency + "_" + order.buy_currency;
+          type = order.action === "buy" ? `${order.buy_currency}_${order.sell_currency}` : `${order.sell_currency}_${order.buy_currency}`;
           return MarketStats.find({
             where: {
               type: MarketHelper.getMarket(type)
@@ -174,12 +165,9 @@
             });
           });
         },
-        trackFromMatchedOrder: function(orderToMatch, matchingOrder, callback) {
+        trackFromMatchedOrder: function(orderToMatch, matchingOrder, callback = function() {}) {
           var type;
-          if (callback == null) {
-            callback = function() {};
-          }
-          type = orderToMatch.action === "buy" ? "" + orderToMatch.buy_currency + "_" + orderToMatch.sell_currency : "" + orderToMatch.sell_currency + "_" + orderToMatch.buy_currency;
+          type = orderToMatch.action === "buy" ? `${orderToMatch.buy_currency}_${orderToMatch.sell_currency}` : `${orderToMatch.sell_currency}_${orderToMatch.buy_currency}`;
           return MarketStats.find({
             where: {
               type: MarketHelper.getMarket(type)
@@ -194,13 +182,10 @@
             });
           });
         },
-        trackFromOrderLog: function(orderLog, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        trackFromOrderLog: function(orderLog, callback = function() {}) {
           return orderLog.getOrder().complete(function(err, order) {
             var type;
-            type = order.action === "buy" ? "" + order.buy_currency + "_" + order.sell_currency : "" + order.sell_currency + "_" + order.buy_currency;
+            type = order.action === "buy" ? `${order.buy_currency}_${order.sell_currency}` : `${order.sell_currency}_${order.buy_currency}`;
             return MarketStats.find({
               where: {
                 type: MarketHelper.getMarket(type)
@@ -218,13 +203,12 @@
                 marketStats.save().complete(callback);
               }
               if (order.action === "sell") {
+                // Alt currency volume traded
                 marketStats.volume1 = parseInt(math.add(MarketHelper.toBignum(marketStats.volume1), MarketHelper.toBignum(orderLog.matched_amount)));
+                // BTC Volume Traded
                 marketStats.volume2 = parseInt(math.select(MarketHelper.toBignum(marketStats.volume2)).add(MarketHelper.toBignum(orderLog.result_amount)).add(MarketHelper.toBignum(orderLog.fee)).done());
-                return global.db.TradeStats.findLast24hByType(type, function(err, tradeStats) {
+                return global.db.TradeStats.findLast24hByType(type, function(err, tradeStats = {}) {
                   var growthRatio;
-                  if (tradeStats == null) {
-                    tradeStats = {};
-                  }
                   growthRatio = MarketStats.calculateGrowthRatio(tradeStats.close_price, orderLog.unit_price);
                   marketStats.growth_ratio = math.round(MarketHelper.toBigint(growthRatio), 0);
                   return marketStats.save().complete(callback);
@@ -239,15 +223,13 @@
           }
           return parseFloat(math.select(MarketHelper.toBignum(newPrice)).multiply(MarketHelper.toBignum(100)).divide(MarketHelper.toBignum(lastPrice)).subtract(MarketHelper.toBignum(100)).done());
         },
-        findEnabledMarket: function(currency1, currency2, callback) {
+        findEnabledMarket: function(currency1, currency2, callback = function() {}) {
           var query, type;
-          if (callback == null) {
-            callback = function() {};
-          }
           if (currency1 === "BTC") {
+            // TODO: Review when both are equal to BTC
             return callback(null, true);
           }
-          type = "" + currency1 + "_" + currency2;
+          type = `${currency1}_${currency2}`;
           query = {
             where: {
               type: MarketHelper.getMarket(type),
@@ -256,21 +238,18 @@
           };
           return MarketStats.find(query).complete(callback);
         },
-        setMarketStatus: function(id, status, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        setMarketStatus: function(id, status, callback = function() {}) {
           return MarketStats.update({
             status: status
           }, {
             id: id
           }).complete(callback);
         },
-        findMarkets: function(currency1, currency2, callback) {
+        // findMarkets null, null -> all markets
+        // findMarkets null, BTC -> all BTC markets
+        // findMarkets LTC, BTC -> return LTC_BTC market
+        findMarkets: function(currency1, currency2, callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             where: {
               status: {
@@ -279,31 +258,25 @@
             }
           };
           if (currency1 !== null && currency2 !== null) {
-            query.where.type = MarketHelper.getMarket("" + currency1 + "_" + currency2);
+            query.where.type = MarketHelper.getMarket(`${currency1}_${currency2}`);
           } else if (currency1 === null && currency2 !== null) {
             query.where.type = {};
-            query.where.type["in"] = MarketHelper.getExchangeMarketsId(currency2);
+            query.where.type.in = MarketHelper.getExchangeMarketsId(currency2);
           }
           return MarketStats.findAll(query).complete(callback);
         },
-        findRemovedCurrencies: function(callback) {
+        findRemovedCurrencies: function(callback = function() {}) {
           var query;
-          if (callback == null) {
-            callback = function() {};
-          }
           query = {
             where: {
               status: MarketHelper.getMarketStatus("removed")
             }
           };
-          return MarketStats.findAll(query).complete(function(err, removedMarkets) {
-            var market, removedCurrencies, _i, _len;
-            if (removedMarkets == null) {
-              removedMarkets = [];
-            }
+          return MarketStats.findAll(query).complete(function(err, removedMarkets = []) {
+            var i, len, market, removedCurrencies;
             removedCurrencies = [];
-            for (_i = 0, _len = removedMarkets.length; _i < _len; _i++) {
-              market = removedMarkets[_i];
+            for (i = 0, len = removedMarkets.length; i < len; i++) {
+              market = removedMarkets[i];
               removedCurrencies.push(market.label);
             }
             return callback(err, removedCurrencies);

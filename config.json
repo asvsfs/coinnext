@@ -5,7 +5,7 @@
       "user": "exchange_dev",
       "password": "whatsnew",
       "port": 3306,
-      "host": "138.68.68.235",
+      "host": "138.68.68.72",
       "logging": true,
       "dialect":"mysql"
     },
@@ -14,16 +14,15 @@
       "user": "queue",
       "password": "whatsnew",
       "port": 3306,
-      "host": "138.68.68.235",
+      "host": "138.68.68.72",
       "logging": true,
       "dialect":"mysql"
     },
     "redis": {
-      "uri":  "redis://h:p8c8e04acb775fe2a72f9d8ef93fc4980a91b0967dfe6dbe9a0e2e3b266cb1c88@ec2-34-246-92-26.eu-west-1.compute.amazonaws.com:6669",
-      "host": "ec2-34-246-92-26.eu-west-1.compute.amazonaws.com",
-      "port": "6669",
-      "user": "h",
-      "pass": "p8c8e04acb775fe2a72f9d8ef93fc4980a91b0967dfe6dbe9a0e2e3b266cb1c88"
+      "uri":  "redis://:QsDtTuJC00RrHKpAQfcMsNf1rBnbo63P@redis-15606.c13.us-east-1-3.ec2.cloud.redislabs.com:15606",
+      "host": "redis-15606.c13.us-east-1-3.ec2.cloud.redislabs.com",
+      "port": "15606",
+      "pass": "QsDtTuJC00RrHKpAQfcMsNf1rBnbo63P"
       
     },
     "slackalerts": {

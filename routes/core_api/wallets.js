@@ -7,8 +7,6 @@
 
   restify = require("restify");
 
-  errors = require('restify-errors');
-  
   module.exports = function(app) {
     app.post("/create_account/:account/:currency", function(req, res, next) {
       var account, currency;
@@ -91,7 +89,7 @@
               return next(new errors.InternalServerError("Can't update wallet health from walletInfo"));
             }
             return res.send({
-              message: "Wallet health check performed on " + (new Date()),
+              message: `Wallet health check performed on ${new Date()}`,
               result: result
             });
           });
@@ -102,7 +100,7 @@
         walletInfo.balance = MarketHelper.toBigint(info.balance);
         return wallet.getBestBlock(function(err, lastBlock) {
           var lastUpdated;
-          lastUpdated = err || !lastBlock ? NaN : lastBlock.time * 1000;
+          lastUpdated = err || !lastBlock ? 0/0 : lastBlock.time * 1000;
           walletInfo.last_updated = new Date(lastUpdated);
           walletInfo.status = MarketHelper.getWalletLastUpdatedStatus(walletInfo.last_updated);
           return WalletHealth.updateFromWalletInfo(walletInfo, function(err, result) {
@@ -110,7 +108,7 @@
               return next(new errors.InternalServerError("Can't update wallet health from walletInfo"));
             }
             return res.send({
-              message: "Wallet health check performed on " + (new Date()),
+              message: `Wallet health check performed on ${new Date()}`,
               result: result
             });
           });

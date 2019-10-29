@@ -14,7 +14,7 @@
   }).forEach(function(file) {
     var currency;
     currency = file.replace(".json", "");
-    config.wallets[currency] = JSON.parse(fs.readFileSync("" + walletsConfigPath + "/" + file));
+    config.wallets[currency] = JSON.parse(fs.readFileSync(`${walletsConfigPath}/${file}`));
   });
 
   exports = module.exports = function() {

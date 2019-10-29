@@ -57,13 +57,10 @@
         getGlobalRoomName: function() {
           return GLOBAL_ROOM_NAME;
         },
-        addMessage: function(data, callback) {
-          if (callback == null) {
-            callback = function() {};
-          }
+        addMessage: function(data, callback = function() {}) {
           return Chat.findLastUserMessage(data.user_id, function(err, message) {
             if (message && message.isSpam(data)) {
-              return callback("Dropping spam message " + data.message + " by user " + data.user_id + ".");
+              return callback(`Dropping spam message ${data.message} by user ${data.user_id}.`);
             }
             return Chat.create(data).complete(callback);
           });

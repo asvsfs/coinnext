@@ -14,7 +14,6 @@
   sequelize = new Sequelize(authData.db, authData.user, authData.password, {
     port: authData.port,
     host: authData.host,
-    dialect: authData.dialect,
     logging: authData.logging,
     maxConcurrentQueries: 100,
     define: {
@@ -30,7 +29,6 @@
       maxIdleTime: 30
     }
   });
-  
 
   db = {};
 
@@ -38,7 +36,7 @@
     return (file.indexOf(".") !== 0) && (file.indexOf(".js") !== -1) && (file !== "index.js") && (file !== "associations.js");
   }).forEach(function(file) {
     var model;
-    model = sequelize["import"](path.join(__dirname, file));
+    model = sequelize.import(path.join(__dirname, file));
     db[model.name] = model;
   });
 
@@ -48,21 +46,25 @@
     }
   });
 
-  Promise.all([
-    db.User.hasMany(db.Chat),
-    db.User.hasMany(db.UserToken),
-    db.User.hasMany(db.Transaction),
-    db.Chat.belongsTo(db.User),
-    db.Transaction.belongsTo(db.User),
-    db.UserToken.belongsTo(db.User),
-    db.Payment.hasMany(db.PaymentLog),
-    db.PaymentLog.belongsTo(db.Payment),
-    db.Order.hasMany(db.OrderLog),
-    db.OrderLog.belongsTo(db.Order)
-  ]).then((values)=>{
-    // console.log(values);
-  })
-  
+  db.User.hasMany(db.Chat);
+
+  db.User.hasMany(db.UserToken);
+
+  db.User.hasMany(db.Transaction);
+
+  db.Chat.belongsTo(db.User);
+
+  db.Transaction.belongsTo(db.User);
+
+  db.UserToken.belongsTo(db.User);
+
+  db.Payment.hasMany(db.PaymentLog);
+
+  db.PaymentLog.belongsTo(db.Payment);
+
+  db.Order.hasMany(db.OrderLog);
+
+  db.OrderLog.belongsTo(db.Order);
 
   module.exports = lodash.extend({
     sequelize: sequelize,

@@ -50,7 +50,7 @@
         return res.redirect("/");
       }
       return MarketStats.getStats(function(err, marketStats) {
-        if (!marketStats["" + currency1 + "_" + currency2]) {
+        if (!marketStats[`${currency1}_${currency2}`]) {
           return res.redirect("/404");
         }
         if (req.user) {
@@ -67,7 +67,7 @@
                 });
               }
               return res.render("site/trade", {
-                title: "Trade " + (MarketHelper.getCurrencyName(currency1)) + " to " + (MarketHelper.getCurrencyName(currency2)) + " " + currency1 + "/" + currency2 + " - Separdaz",
+                title: `Trade ${MarketHelper.getCurrencyName(currency1)} to ${MarketHelper.getCurrencyName(currency2)} ${currency1}/${currency2} - Separdaz`,
                 page: "trade",
                 user: req.user,
                 currency1: currency1,
@@ -82,7 +82,7 @@
           });
         } else {
           return res.render("site/trade", {
-            title: "Trade " + (MarketHelper.getCurrencyName(currency1)) + " to " + (MarketHelper.getCurrencyName(currency2)) + " " + currency1 + "/" + currency2 + " - Separdaz - Cryptocurrency Exchange",
+            title: `Trade ${MarketHelper.getCurrencyName(currency1)} to ${MarketHelper.getCurrencyName(currency2)} ${currency1}/${currency2} - Separdaz - Cryptocurrency Exchange`,
             page: "trade",
             currency1: currency1,
             currency2: currency2,
@@ -103,10 +103,7 @@
       if (!req.user) {
         return res.redirect("/login");
       }
-      return Wallet.findUserWallets(req.user.id, function(err, wallets) {
-        if (wallets == null) {
-          wallets = [];
-        }
+      return Wallet.findUserWallets(req.user.id, function(err, wallets = []) {
         return MarketStats.findRemovedCurrencies(function(err, removedCurrencies) {
           var currencies;
           wallets = wallets.filter(function(wl) {
@@ -148,7 +145,7 @@
             currencies = MarketHelper.getSortedCurrencyNames();
             currencies = _.omit(currencies, removedCurrencies);
             return res.render("site/funds/wallet", {
-              title: "" + req.params.currency + " - Funds - Separdaz",
+              title: `${req.params.currency} - Funds - Separdaz`,
               page: "funds",
               user: req.user,
               wallets: wallets,
@@ -166,13 +163,17 @@
       });
     });
     app.get("/trade_stats/:market_type", function(req, res) {
-      return TradeStats.getLastStats(req.params.market_type, function(err, tradeStats) {
-        if (tradeStats == null) {
-          tradeStats = [];
-        }
+      return TradeStats.getLastStats(req.params.market_type, function(err, tradeStats = []) {
         return res.json(JsonRenderer.tradeStats(tradeStats));
       });
     });
+    // Settings
+    //app.get "/settings", (req, res)->
+    //  return res.redirect "/login"  if not req.user
+    //  res.render "site/settings/settings",
+    //    title: 'Settings'
+    //    page: 'settings'
+    //    user: req.user
     app.get("/settings/preferences", function(req, res) {
       if (!req.user) {
         return res.redirect("/login");
@@ -199,6 +200,7 @@
         });
       });
     });
+    // Status
     app.get("/status", function(req, res) {
       return WalletHealth.findAll().complete(function(err, wallets) {
         var sortedWallets;
@@ -212,6 +214,7 @@
         });
       });
     });
+    // Static Pages
     app.get("/legal/terms", function(req, res) {
       return res.render("static/terms", {
         title: 'Terms - Separdaz',
