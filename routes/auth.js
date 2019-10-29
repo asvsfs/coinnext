@@ -1,7 +1,7 @@
 (function() {
-  var AuthStats, JsonRenderer, User, UserToken, reCaptcha;
+  var AuthStats, JsonRenderer, User, UserToken, axios, reCAPTCHA;
 
-  reCaptcha = require("recaptcha-async");
+  reCAPTCHA = require("recaptcha2");
 
   User = global.db.User;
 
@@ -10,6 +10,8 @@
   AuthStats = global.db.AuthStats;
 
   JsonRenderer = require("../lib/json_renderer");
+
+  axios = require('axios');
 
   module.exports = function(app) {
     var login;
@@ -49,35 +51,61 @@
         title: "Send Password - Separdaz.com",
         errors: errors,
         success: success,
-        recaptchaPublicKey: global.appConfig().recaptcha.public_key
+        recaptchaPublicKey: global.appConfig().recaptcha.site_key
       });
     });
-    app.post("/send-password", function(req, res) {
-      var dataIsLoaded, email, recaptcha;
+    app.post("/send-password", async function(req, res) {
+      var dataIsLoaded, email, err, keyRes, recaptcha;
       email = req.body.email;
       if (!email) {
         return res.redirect("/send-password");
       }
       dataIsLoaded = false;
-      recaptcha = new reCaptcha.reCaptcha();
-      recaptcha.on("data", function(captchaRes) {
-        if (!dataIsLoaded) {
-          dataIsLoaded = true;
-          if (!captchaRes.is_valid) {
-            return res.redirect("/send-password?error=invalid-captcha");
-          }
-          return User.findByEmail(email, function(err, user) {
-            if (!user) {
-              return res.redirect("/send-password?success=true");
-            }
-            return user.sendChangePasswordLink(function() {
-              return res.redirect("/send-password?success=true");
-            });
-          });
-        }
+      recaptcha = new reCAPTCHA({
+        siteKey: global.appConfig().recaptcha.site_key,
+        secretKey: global.appConfig().recaptcha.private_key,
+        ssl: false
       });
-      return recaptcha.checkAnswer(global.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field);
+      keyRes = req.body['g-recaptcha-response'];
+      try {
+        res = (await axios.post("https://www.google.com/recaptcha/api/siteverify", {
+          secret: global.appConfig().recaptcha.private_key,
+          response: keyRes
+        }));
+        return User.findByEmail(email, function(err, user) {
+          if (!user) {
+            return res.redirect("/send-password?success=true");
+          }
+          return user.sendChangePasswordLink(function() {
+            return res.redirect("/send-password?success=true");
+          });
+        });
+      } catch (error) {
+        err = error;
+        return res.redirect("/send-password?error=invalid-captcha");
+      }
     });
+    
+    // recaptcha.validate(keyRes)
+    // .then () ->
+    //   console.log 'validated captcha'
+    //   User.findByEmail email, (err, user)->
+    //     return res.redirect "/send-password?success=true"  if not user
+    //     user.sendChangePasswordLink ()->
+    //       return res.redirect "/send-password?success=true"
+    // .catch (errorCodes) ->
+    //   console.log recaptcha.translateErrors errorCodes
+    //   return res.redirect "/send-password?error=invalid-captcha"
+    // recaptcha = new reCaptcha.reCaptcha()
+    // recaptcha.on "data", (captchaRes)->
+    //   if not dataIsLoaded
+    //     dataIsLoaded = true
+    //     return res.redirect "/send-password?error=invalid-captcha"  if not captchaRes.is_valid
+    //     User.findByEmail email, (err, user)->
+    //       return res.redirect "/send-password?success=true"  if not user
+    //       user.sendChangePasswordLink ()->
+    //         return res.redirect "/send-password?success=true"
+    // recaptcha.checkAnswer global.appConfig().recaptcha.private_key, req.connection.remoteAddress, req.body.recaptcha_challenge_field, req.body.recaptcha_response_field
     app.get("/change-password/:token", function(req, res) {
       var oldCsrf, oldStagingAuth, token;
       token = req.params.token;
@@ -232,7 +260,7 @@
         return res.json(user);
       });
     });
-    app.delete("/google_auth/:id?", function(req, res) {
+    app.del("/google_auth/:id?", function(req, res) {
       if (!req.user) {
         return JsonRenderer.error(null, res, 401, false);
       }

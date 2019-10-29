@@ -29,7 +29,7 @@ class Emailer
     transport.sendMail messageData, callback
 
   getTransport: ()->
-    emailer.createTransport "SMTP", global.appConfig().emailer.transport
+    emailer.createTransport global.appConfig().emailer.transport
 
   getHtml: (templateName, data)->
     templatePath = "./views/emails/#{templateName}.html"

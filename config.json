@@ -57,13 +57,13 @@
     "emailer": {
       "enabled": true,
       "host": "http://localhost:5000",
-      "from": "Separdaz Mailer <info@separdaz.com>",
+      "from": "Xtopo Mailer <info@xtopo.io>",
       "transport": {
-        "host": "mail.separdaz.com",
-        "port": 25,
-        "secure": false,
+        "host": "mail.xtopo.io",
+        "port": 465,
+        "secure": true,
         "auth": {
-            "user": "info@separdaz.com",
+            "user": "info@xtopo.io",
             "pass": "Whatsnew1%%"
         },
         "tls": {
@@ -236,8 +236,8 @@
     "assets_host": "https://d2fsloj9ifsfv5.cloudfront.net",
     "assets_key": "1397587150588",
     "recaptcha": {
-      "public_key": "",
-      "private_key": ""
+      "public_key": "6Lciqj8UAAAAAIiMhAqDVA31pYeKYTOC-epp606q",
+      "private_key": "6Lciqj8UAAAAAItoVp56HIeyg4oKWQthZW87QdMb"
     }
   }
 }

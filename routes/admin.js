@@ -100,7 +100,7 @@
           return AuthStats.findAll(query).complete(function(err, authStats) {
             return UserToken.findByUserAndType(user.id, "google_auth", function(err, userToken) {
               return res.render("admin/user", {
-                title: `User ${user.email} - ${user.id} - Admin - CoinNext`,
+                title: `User ${user.email} - ${user.id} - Admin - Separdaz`,
                 page: "users",
                 adminUser: req.user,
                 currencies: MarketHelper.getCurrencyTypes(),
@@ -134,7 +134,7 @@
         return Order.findByOptions(openOptions, function(err, openOrders) {
           return Order.findByOptions(closedOptions, function(err, closedOrders) {
             return res.render("admin/wallet", {
-              title: `Wallet ${wallet.id} - Admin - CoinNext`,
+              title: `Wallet ${wallet.id} - Admin - Separdaz`,
               page: "wallets",
               adminUser: req.user,
               currencies: MarketHelper.getCurrencyTypes(),
@@ -394,9 +394,6 @@
     });
     return login = function(req, res, next) {
       return passport.authenticate("local", function(err, user, info) {
-        console.log(err)
-        console.log(user)
-        console.log(info)
         if (err) {
           return res.redirect("/administratie/login");
         }
