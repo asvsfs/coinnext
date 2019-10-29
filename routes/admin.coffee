@@ -32,7 +32,7 @@ module.exports = (app)->
       currencies = MarketHelper.getCurrencyTypes().filter (curr)->
         removedCurrencies.indexOf(curr) is -1
       res.render "admin/stats",
-        title: "Stats - Admin - CoinNext"
+        title: "Stats - Admin - Separdaz"
         page: "stats"
         adminUser: req.user
         currencies: currencies
@@ -48,7 +48,7 @@ module.exports = (app)->
       offset: from
     User.findAndCountAll(query).complete (err, result = {rows: [], count: 0})->
       res.render "admin/users",
-        title: "Users - Admin - CoinNext"
+        title: "Users - Admin - Separdaz"
         page: "users"
         adminUser: req.user
         currencies: MarketHelper.getCurrencyTypes()
@@ -70,7 +70,7 @@ module.exports = (app)->
         AuthStats.findAll(query).complete (err, authStats)->
           UserToken.findByUserAndType user.id, "google_auth", (err, userToken)->
             res.render "admin/user",
-              title: "User #{user.email} - #{user.id} - Admin - CoinNext"
+              title: "User #{user.email} - #{user.id} - Admin - Separdaz"
               page: "users"
               adminUser: req.user
               currencies: MarketHelper.getCurrencyTypes()
@@ -96,7 +96,7 @@ module.exports = (app)->
       Order.findByOptions openOptions, (err, openOrders)->
         Order.findByOptions closedOptions, (err, closedOrders)->
           res.render "admin/wallet",
-            title: "Wallet #{wallet.id} - Admin - CoinNext"
+            title: "Wallet #{wallet.id} - Admin - Separdaz"
             page: "wallets"
             adminUser: req.user
             currencies: MarketHelper.getCurrencyTypes()
@@ -118,7 +118,7 @@ module.exports = (app)->
       offset: from
     Wallet.findAndCountAll(query).complete (err, result = {rows: [], count: 0})->
       res.render "admin/wallets",
-        title: "Wallets - Admin - CoinNext"
+        title: "Wallets - Admin - Separdaz"
         page: "wallets"
         adminUser: req.user
         currencies: MarketHelper.getCurrencyTypes()
@@ -146,7 +146,7 @@ module.exports = (app)->
         user_id: userId
     Transaction.findAndCountAll(query).complete (err, result = {rows: [], count: 0})->
       res.render "admin/transactions",
-        title: "Transactions - Admin - CoinNext"
+        title: "Transactions - Admin - Separdaz"
         page: "transactions"
         adminUser: req.user
         currencies: MarketHelper.getCurrencyTypes()
@@ -174,7 +174,7 @@ module.exports = (app)->
         user_id: userId
     Payment.findAndCountAll(query).complete (err, result = {rows: [], count: 0})->
       res.render "admin/payments",
-        title: "Payments - Admin - CoinNext"
+        title: "Payments - Admin - Separdaz"
         page: "payments"
         adminUser: req.user
         currencies: MarketHelper.getCurrencyTypes()
@@ -245,7 +245,7 @@ module.exports = (app)->
   app.get "/administratie/markets", (req, res)->
     MarketStats.getStats (err, markets)->
       res.render "admin/markets",
-        title: "Markets - Admin - CoinNext"
+        title: "Markets - Admin - Separdaz"
         page: "markets"
         adminUser: req.user
         currencies: MarketHelper.getCurrencyTypes()

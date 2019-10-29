@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 extends ../layout
 
 block content
@@ -81,3 +82,88 @@ block content
                   td #{_str.toFixed(info.volume1)} #{type.split("_")[0]}
                   -var growthRatio = _str.roundTo(info.growth_ratio, 2)
                   td(class="rate #{growthRatio > 0 ? 'up' : ''} #{growthRatio < 0 ? 'down' : ''} #{growthRatio == 0 ? 'none' : ''}") #{_str.toFixed(Math.abs(growthRatio), 2)}%
+=======
+extends ../layout
+
+block content
+  .main-content(role='main')
+    - if (!user)
+      .hero-unit
+        h1.tagline سریع ، امن ، قابل اطمینان<br /> بازار ارز رمزی
+        a(href='/signup').cta حالا شروع کنید
+      #features
+        .wrapper
+          ul.feature-list
+            li.feature-item
+              img(src="/img/hero/coins.svg", alt="Wide range of Coins").feature-img
+              .feature-text سکه های متعدد
+            li.feature-item
+              img(src="/img/hero/safe.svg", alt="Bank-Grade Security").feature-img
+              .feature-text امنیت در سطح بانکی
+            li.feature-item
+              img(src="/img/hero/save.svg", alt="Low Fees").feature-img
+              .feature-text کارمزد پایین
+            li.feature-item
+              img(src="/img/hero/support.svg", alt="Fast Support").feature-img
+              .feature-text پشتیبانی سریع
+    .wrapper
+      .col-left
+        include _market-ticker
+      .col-right
+        #coin-stats.coin-stats
+          - var totalVolume = 0;
+          - each info, type in marketStats
+            - if (info.label) totalVolume = totalVolume + info.volume2
+          ul
+            li.volume
+              label حجم کل:
+              div #{_str.toFixed(totalVolume, 4)} BTC
+            li.trades
+              label جمع مبادلات:
+              div #{tradesCount}
+
+        - if (user)
+          - if (user.chat_enabled)
+            include _chatbox
+        - else
+          include _chatbox
+        // Twitter Widget
+        <a class="twitter-timeline" href="https://twitter.com/separdaz" data-widget-id="416750665692487681" data-border-color="#dcdfe3">Tweets by @separdaz</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+      .col-center
+        include _warnings
+
+        section#announcements.container
+          .con-header
+            h3.con-header-title اعلامیه ها
+          ul.announcement-list
+            //- li.announcement-item
+            //-   .time 07/10/14
+            //-   a(href="http://blog.separdaz.com/2014/07/10/separdaz-software-for-sale/", target="_blank").title Separdaz Software for Sale
+            //- li.announcement-item
+            //-   .time 06/24/14
+            //-   a(href="http://blog.separdaz.com/2014/06/24/closing-down/", target="_blank").title Closing Down
+        section#market-list.container
+          .con-header
+            h3.con-header-title تمام بازارها
+          table.trade-data
+            tr
+              th بازار
+              th نام سکه
+              th آخرین قیمت
+              th حجم 24 ساعت
+              th تغییر 24 ساعت
+            - each info, type in marketStats
+              - if (info.label)
+                tr
+                  td <a href="/trade/#{type.replace("_", "/")}">#{type.replace("_", "/")}</a>
+                  td #{currencies[info.label]}
+                  - if (info.status === "disabled")
+                    td ON HOLD
+                  - else
+                    td #{_str.toFixed(info.last_price)}
+                  td #{_str.toFixed(info.volume1)} #{type.split("_")[0]}
+                  -var growthRatio = _str.roundTo(info.growth_ratio, 2)
+                  td(class="rate #{growthRatio > 0 ? 'up' : ''} #{growthRatio < 0 ? 'down' : ''} #{growthRatio == 0 ? 'none' : ''}") #{_str.toFixed(Math.abs(growthRatio), 2)}%
+>>>>>>> 48b7149a4fb3de9f81af85fbc2b413fd8281be78

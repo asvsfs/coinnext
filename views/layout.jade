@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 doctype html
 html(lang='en')
   head
@@ -24,4 +25,32 @@ html(lang='en')
     != js('application')
 
     - if (process.env.NODE_ENV === "production")
+=======
+doctype html
+html(lang='en')
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+
+    title #{title ? title : 'Separdaz - تبادل ارز رمزی'}
+    
+    meta(name='description', content='اولین پلتفرم تبادل ارز رمزی به زبان فارسی ، برای تبدیل انواع ارز رمزی به یک دیگر')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+
+    != css('main')
+
+    include _config
+
+  body
+    include site/_header
+    block content
+    include site/_footer
+
+    include templates/market_ticker
+    include templates/chat_message
+
+    != js('application') 
+
+    - if (process.env.NODE_ENV === "production")
+>>>>>>> 48b7149a4fb3de9f81af85fbc2b413fd8281be78
       include _analytics

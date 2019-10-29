@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 header.page-head
   .wrapper
     a(href="/", title="Return to homepage").site-logo
@@ -25,4 +26,33 @@ header.page-head
           nav.auth-nav
             ul.nav
               li: a(href='/login').btn.white ورود
+=======
+header.page-head
+  .wrapper
+    a(href="/", title="Return to homepage").site-logo
+      img(src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==", alt="Separdaz").separdaz-logo
+    //.search-bar
+    //  form.search-bar-form
+    //    i.icon-search
+    //    input(type="text", placeholder="Enter Symbol or Name")
+    nav.site-nav
+      ul.nav
+        li: a(href='/', class=(page === 'home' ? 'active' : '')) خانه
+        li: a(href='/trade', class=(page === 'trade' ? 'active' : '')) مبادله
+        //li: a(href='/status', class=(page === 'status' ? 'active' : '')) Status
+        - if (user)
+          li: a(href='/funds', class=(page === 'funds' ? 'active' : '')) سرمایه
+          li.dropdown
+            a(href="/settings/preferences", class=(page === 'preferences' ? 'active' : '')).dropdown-toggle
+              | #{user.email}
+              .caret
+            ul.dropdown-menu
+              li: a(href="/settings/preferences") تنظیمات
+              li: a(href="http://support.separdaz.com") پشتیبانی
+              li: a(href='/logout') خروج
+        - else
+          nav.auth-nav
+            ul.nav
+              li: a(href='/login').btn.white ورود
+>>>>>>> 48b7149a4fb3de9f81af85fbc2b413fd8281be78
               li: a(href='/signup').btn ساخت حساب جدید

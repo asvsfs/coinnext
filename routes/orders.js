@@ -61,7 +61,7 @@
         return res.json(JsonRenderer.orders(orders));
       });
     });
-    return app.del("/orders/:id", function(req, res) {
+    return app.delete("/orders/:id", function(req, res) {
       if (!req.user) {
         return JsonRenderer.error("You need to be logged in to delete an order.", res);
       }
