@@ -56,7 +56,7 @@
     "salt": "coinnextsecret#1999",
     "emailer": {
       "enabled": true,
-      "host": "http://localhost:5000",
+      "host": "https://exchange.xtopo.io",
       "from": "Xtopo Mailer <info@xtopo.io>",
       "transport": {
         "host": "mail.xtopo.io",

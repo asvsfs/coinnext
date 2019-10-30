@@ -34,7 +34,10 @@ class Emailer
   getHtml: (templateName, data)->
     templatePath = "./views/emails/#{templateName}.html"
     templateContent = fs.readFileSync(templatePath, encoding = "utf8")
-    _.template templateContent, data, {interpolate: /\{\{(.+?)\}\}/g}
+    _.templateSettings = {interpolate: /\{\{(.+?)\}\}/g}
+    temp = _.template templateContent
+    temp data
+
 
   getAttachments: (html)->
     attachments = []

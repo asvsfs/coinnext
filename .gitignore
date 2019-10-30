@@ -25,6 +25,8 @@ builtAssets
 erl_crash.dump
 certs
 certs/*
+.vscode
+.vs
 
 
 
